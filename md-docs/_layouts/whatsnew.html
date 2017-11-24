@@ -1,0 +1,101 @@
+---
+layout: docs
+---
+
+<style>
+  h2 {
+    font-size: 24px !important;
+  }
+  .box-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+
+  @media screen and (max-width: 1000px){
+    .box {
+      width: 100%;
+    }
+  }
+  @media screen and (min-width: 1000px){
+    .box {
+      width: 47%;
+    }
+  }
+</style>
+
+<section class="body">
+  {{ content }}
+  <div class="box-container">
+    {% for feature in page.features %}
+    <div class="box">
+      <h2>{{ feature.title }}</h2>
+      <p>{{ feature.description }}</p>
+      <a href="{{ feature.link }}">Learn more ></a>
+    </div>
+    {% endfor %}
+    <div class="box">
+      <h2>Getting Started</h2>
+      <p>Learn how to import Couchbase Lite in new or existing projects. Persist, update, delete documents in the local database and enable synchronization with Sync Gateway to see those changes replicated.</p>
+      {% if site.version == '2.0' %}
+        <a href="guides/couchbase-lite/index.html">Get started ></a>
+      {% else %}
+        <a href="installation/index.html">Get started ></a>
+      {% endif %}
+    </div>
+    <div class="box">
+      <h2>{{ page.sample.title }}</h2>
+      <p>
+        {{ page.sample.description }}
+      </p>
+      <a href="{{ page.sample.link }}">Start building ></a>
+    </div>
+    <div class="box">
+      <h2>Release Notes</h2>
+      <p>
+        This release contains a number of bug fixes and enhancements for Sync Gateway and Couchbase Lite.
+      </p>
+      <h4>Couchbase Lite - {{ site.cbl_version }}</h4>
+      <ul>
+        {% if site.version == '2.0' %}
+          <li>
+            <a href="references/couchbase-lite/release-notes/index.html?language=swift">Swift</a>
+          </li>
+          <li>
+            <a href="references/couchbase-lite/release-notes/index.html?language=objc">Objective-C</a>
+          </li>
+          <li>
+            <a href="references/couchbase-lite/release-notes/index.html?language=java">Android</a>
+          </li>
+          <li>
+            <a href="references/couchbase-lite/release-notes/index.html?language=csharp">.NET</a>
+          </li>
+        {% else %}
+          <li>
+            <a href="references/couchbase-lite/release-notes/iOS/index.html">iOS</a>
+          </li>
+          <li>
+            <a href="references/couchbase-lite/release-notes/Java/index.html">Android</a>
+          </li>
+          <li>
+            <a href="references/couchbase-lite/release-notes/Dot-Net/index.html">.NET</a>
+          </li>
+        {% endif %}
+
+      </ul>
+      <h4>Sync Gateway - {{site.sg_version }}</h4>
+      <ul>
+        {% if site.version == '2.0' %}
+          <li>
+            <a href="https://developer.couchbase.com/documentation/mobile/current/references/sync-gateway/release-notes/index.html">Sync Gateway</a>
+          </li>
+        {% else %}
+          <li>
+            <a href="references/sync-gateway/release-notes/index.html">Sync Gateway</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</section>

@@ -3,6 +3,17 @@ id: ios-release-notes
 title: iOS release notes
 ---
 
+__Deprecation notices__
+
+The following features are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
+
+- ForestDB
+- Geo queries
+
+The following platforms are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
+
+- iOS 8
+
 ## 1.4.1 release
 
 __Performance Improvements__
@@ -67,17 +78,6 @@ __Bugs__
 - [__#1579__](https://github.com/couchbase/couchbase-lite-ios/issues/1579) [NSLock lock]: deadlock when deleting database (ForestDB)
 - [__#1580__](https://github.com/couchbase/couchbase-lite-ios/issues/1580) Wrong "reason" response for GET on purged documents
 - [__#1621__](https://github.com/couchbase/couchbase-lite-ios/issues/1621) OIDC failing with Grocery Sync when creating new google project
-
-__Deprecation notices__
-
-The following features are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
-
-- ForestDB
-- Geo queries
-
-The following platforms are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
-
-- iOS 8
 
 ## Where to get it
 

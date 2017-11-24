@@ -1,11 +1,7 @@
 ---
-title: What's New
-permalink: whatsnew.html
 ---
 
 {% include landing.html %}
-
-> **Note:** The 1.5 release is a Sync Gateway only release. The latest release of Couchbase Lite remains 1.4.1.
 
 With Sync Gateway 1.5, you can seamlessly extend an existing Couchbase Server deployment to connect with remote edge devices that are occasionally disconnected or connected.
 
@@ -45,18 +41,18 @@ This new feature was made opt-in primarily out of consideration for existing cus
 
 The reference to the configuration API changes can be found below.
 
-- [$dbname.enable\_shared\_bucket\_access](guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-enable_shared_bucket_access) to enable convergence for a given database.
-- [$dbname.import\_docs](guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-import_docs) to give a particular Sync Gateway node the role of importing the documents.
-- [$dbname.import\_filter](guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-import_filter) to select which document(s) to make aware to mobile clients.
+- [$dbname.enable\_shared\_bucket\_access](config-properties/index.html#1.5/databases-foo_db-enable_shared_bucket_access) to enable convergence for a given database.
+- [$dbname.import\_docs](config-properties/index.html#1.5/databases-foo_db-import_docs) to give a particular Sync Gateway node the role of importing the documents.
+- [$dbname.import\_filter](config-properties/index.html#1.5/databases-foo_db-import_filter) to select which document(s) to make aware to mobile clients.
 
 When this feature is enabled, the REST API will include the following changes.
 
-- Sync Gateway purging ([/{db}/_purge](references/sync-gateway/admin-rest-api/index.html?v=1.5#/document/post__db___purge)) removes the document and its associated extended attributes.
-- Sync Gateway document expiry (PUT [/{db}/{docid}](references/sync-gateway/admin-rest-api/index.html?v=1.5#/document/put__db___doc_)) will tombstone the active revision.
+- Sync Gateway purging ([/{db}/_purge](../../references/sync-gateway/admin-rest-api/index.html?v=1.5#/document/post__db___purge)) removes the document and its associated extended attributes.
+- Sync Gateway document expiry (PUT [/{db}/{docid}](../../references/sync-gateway/admin-rest-api/index.html?v=1.5#/document/put__db___doc_)) will tombstone the active revision.
 
 ### Tombstones
 
-When this feature is enabled, mobile tombstones are not retained indefinitely. They will be purged based on the server's metadata purge interval. To ensure tombstones are replicated to clients, you should set the server's metadata purge interval based on your expected replication frequency (see the [$dbname.enable\_shared\_bucket\_access](guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-enable_shared_bucket_access) reference).
+When this feature is enabled, mobile tombstones are not retained indefinitely. They will be purged based on the server's metadata purge interval. To ensure tombstones are replicated to clients, you should set the server's metadata purge interval based on your expected replication frequency (see the [$dbname.enable\_shared\_bucket\_access](config-properties/index.html#1.5/databases-foo_db-enable_shared_bucket_access) reference).
 
 ### Upgrading
 
@@ -64,8 +60,8 @@ This section is an overview of the different options to upgrade a running cluste
 
 In each of the scenarios described below, the upgrade process will trigger views in Couchbase Server to be re-indexed. During the re-indexing, operations that are dependent on those views will not be available. The main operations relying on views to be indexed are:
 
-- A user requests data that doesn't reside in the [channel cache](guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-cache-channel_cache_max_length).
-- A new channel or role is granted to a user in the [Sync Function](guides/sync-gateway/sync-function-api-guide/index.html).
+- A user requests data that doesn't reside in the [channel cache](config-properties/index.html#1.5/databases-foo_db-cache-channel_cache_max_length).
+- A new channel or role is granted to a user in the [Sync Function](sync-function-api-guide/index.html).
 
 The unavailability of those operations may result in some requests not being process. The duration of the downtime will depend on the data set and frequency of replications with mobile clients.
 
@@ -94,16 +90,16 @@ That being said, it is possible to avoid this downtime by running the 2 upgrade 
 
 In Sync Gateway 1.5 you have the ability to define multiple server URLs in the Sync Gateway configuration, and full support for SSL between Sync Gateway and Couchbase Server.
 
-- Sync Gateway Reference ([$dbname.server](guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-server))
-- Sync Gateway Accelerator Reference ([$dbname.server](guides/sync-gateway/accelerator.html#1.5/databases-foo_db-server), [cluster_config.server](guides/sync-gateway/accelerator.html#1.5/cluster_config-server))
+- Sync Gateway Reference ([$dbname.server](config-properties/index.html#1.5/databases-foo_db-server))
+- Sync Gateway Accelerator Reference ([$dbname.server](accelerator.html#1.5/databases-foo_db-server), [cluster_config.server](accelerator.html#1.5/cluster_config-server))
 
 #### Revs Limit lower limit
 
-The [databases.foo\_db.revs\_limit](guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-revs_limit) property now has a minimal value. See the API reference for more detail.
+The [databases.foo\_db.revs\_limit](config-properties/index.html#1.5/databases-foo_db-revs_limit) property now has a minimal value. See the API reference for more detail.
 
 #### Rev Tree endpoint
 
-The [/{db}/\_revtree/{doc}](references/sync-gateway/admin-rest-api/index.html?v=1.5#/document/get__db___revtree__doc_) endpoint returns the revision tree in dot syntax for the specified document. This endpoint is not officially supported and should only be used for troubleshooting and debugging purposes.
+The [/{db}/\_revtree/{doc}](../../references/sync-gateway/admin-rest-api/index.html?v=1.5#/document/get__db___revtree__doc_) endpoint returns the revision tree in dot syntax for the specified document. This endpoint is not officially supported and should only be used for troubleshooting and debugging purposes.
 
 ### Sample App
 
@@ -133,6 +129,6 @@ As of Sync Gateway 1.5, the Bucket Shadowing feature is deprecated and no longer
 2. Update Couchbase Server SDK applications to read/write documents to the mobile bucket.
 3. Make sure that all documents are present in the mobile bucket, the Sync Function may have rejected some documents based on the access control rules for example. If you are not using a Sync Function you can ignore this verification step.
 4. Delete the shadow bucket from Couchbase Server.
-5. Perform an upgrade of Sync Gateway instances as [detailed above](whatsnew.html#upgrading). This upgrade will incur some application downtime.
+5. Perform an upgrade of Sync Gateway instances as [detailed above](../../whatsnew.html#upgrading). This upgrade will incur some application downtime.
 6. Monitor the Sync Gateway logs upon start-up.
 7. Replications with mobile clients (i.e Couchbase Lite) should now resume.

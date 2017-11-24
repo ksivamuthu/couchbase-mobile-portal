@@ -1,104 +1,17 @@
 ---
-id: dp
-title: 1.4 DP
-noedit: true
+layout: whatsnew
+features:
+  - title: Sync Gateway Accelerator
+    description: |
+     Sync Gateway Accelerator is a new component in the Couchbase ecosystem to increase <b>write</b> performance of a Sync Gateway cluster. The goal of Sync Gateway Accelerator is to move the mutation feed processing off Sync Gateway nodes, and instead distribute this work across a cluster of Sync Gateway Accelerator nodes.
+    link: 'guides/sync-gateway/accelerator.html'
+  - title: Log Rotation
+    description: |
+      Introduced in 1.4, Sync Gateway can now be configured to perform. Previously this add to be done through external scripts. This feature can be enabled in the Sync Gateway configuration file. Log rotation is a recommended method to minimize disk space usage.
+    link: 'guides/sync-gateway/deployment/index.html#built-in-log-rotation'
+sample:
+  title: ToDo Sample
+  description: |
+    This step by steps tutorial walks you through some of the more advanced features of Couchbase Lite and Sync Gateway. Such as running complex map-reduce queries, custom conflict resolution rules, user login and managing all aspects of security in the Sync Function.
+  link: 'training/index.html'
 ---
-
-{% include landing.html %}
-
-## 1.4.1 release
-
-The 1.4.1 release contains a number of bug fixes and enhancements for Sync Gateway and Couchbase Lite. This release can be found on the [download page](https://www.couchbase.com/downloads) or installed through package managers (see [Getting Started](installation/index.html) guides).
-
-Release notes:
-
-- [couchbase-lite-ios](references/couchbase-lite/release-notes/iOS.html)
-- [couchbase-lite-android](references/couchbase-lite/release-notes/Java.html)
-- [couchbase-lite-net](references/couchbase-lite/release-notes/Dot-Net.html)
-- [sync_gateway](references/sync-gateway/release-notes.html)
-
-## 1.4 release
-
-<div class="dp">
-  <h3>Couchbase Lite</h3>
-  <h4>Release notes</h4>
-  <div class="tiles">
-    <div class="column size-1of3">
-      <div class="box">
-        <div class="container">
-          <a href="references/couchbase-lite/release-notes/iOS.html">
-            <div><img src="img/ios.png" alt=""></div>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="column size-1of3">
-      <div class="box">
-        <div class="container">
-          <a href="references/couchbase-lite/release-notes/Java.html">
-            <div><img src="img/android.png" alt=""></div>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="column size-1of3">
-      <div class="box">
-        <div class="container">
-          <a href="references/couchbase-lite/release-notes/Dot-Net.html">
-            <div><img src="img/dot-net.png" alt=""></div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <h4>Deprecation notices</h4>
-  <p>The following items are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.</p>
-  <ul>
-    <li>
-      <strong>iOS:</strong> iOS 8, ForestDB, Geo Queries
-    </li>
-    <li>
-      <strong>Android:</strong> API Level < 16, ForestDB
-    </li>
-    <li>
-      <strong>.NET:</strong> .NET 3.5, ForestDB, Bonjour P2P Discovery Service
-    </li>
-  </ul>
-  <h3>Sync Gateway</h3>
-  <h4>New Features</h4>
-  <div class="tiles">
-    <div class="column size-2of3">
-      <div class="box">
-        <a href="guides/sync-gateway/accelerator.html" alt="">
-          <img class="feat-image-accel" src="img/accelerator.png" alt="" />
-        </a>
-      </div>
-    </div>
-    <div class="column size-1of3">
-      <div class="box">
-        <a href="guides/sync-gateway/deployment/index.html#built-in-log-rotation" alt="">
-          <p>Log rotation</p>
-          <img class="feat-image" src="img/logs.png" alt="">
-        </a>
-      </div>
-    </div>
-  </div>
-  <h4>Deprecation notices</h4>
-  <ul>
-    <li>
-      <strong>Bucket shadowing</strong> is being deprecated in 1.4 and will be unsupported in an upcoming version (2.x) of Couchbase Mobile. The recommended approach to perform operations on the bucket dedicated to Couchbase Mobile is to use the Sync Gateway REST API.
-    </li>
-  </ul>
-  <h4>Release notes</h4>
-  <div class="tiles">
-    <div class="column size-1of3">
-      <div class="box">
-        <div class="container">
-          <a href="references/sync-gateway/release-notes.html">
-            <p style="text-align: center;">SG</p>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

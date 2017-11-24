@@ -1,4 +1,5 @@
 ---
+permalink: guides/couchbase-lite/native-api/cert-pinning/index.html
 ---
 
 Communication between Couchbase Lite and Sync Gateway is encrypted and secured using SSL/TLS. The SSL/TLS protocol relies on a Public Key Infrastructure (PKI) mechanism using a X.509 certificate to establish the Sync Gateway server’s identity. The certificate is typically issued/signed by a trusted Certificate Authority and is installed on the Sync Gateway. In a development environment, this certificate may be self-signed.
@@ -18,7 +19,7 @@ At a very high level, the TLS protocol works as follows.
 A X.509 certificate containing the public key and server identity is installed on the Sync Gateway. This public key certificate may be signed by a trusted third party Certificate Authority or may be self-signed, the latter typically the case in development environments.
 During connection establishment, the client app running Couchbase Lite verifies the identity of the Sync Gateway using the server certificate. Couchbase Lite uses the trusted CA’s root certificate to validate the certificate. Once verified, the client proceeds with the secret key exchange. The shared secret is then used to encyrpt communication between the client and Sync Gateway.
 
-![](img/tls.png)
+![](../img/tls.png)
 
 Please refer to the RFC for specifics on the SSL/TLS protocol.
 
@@ -42,7 +43,7 @@ The Couchbase Mobile stack includes the Couchbase Lite embedded database running
 
 ### Installing Certificate on the Sync Gateway
 
-Follow the instructions in the [Couchbase Developer Portal](../../../current/guides/sync-gateway/configuring-ssl/index.html) to install relevant server certificate on your Sync Gateway
+Follow the instructions in the [Couchbase Developer Portal](https://developer.couchbase.com/documentation/mobile/current/guides/sync-gateway/configuring-ssl/index.html) to install relevant server certificate on your Sync Gateway
 
 Couple of points to note during certificate generation:
 
@@ -50,7 +51,7 @@ Couple of points to note during certificate generation:
 – Install the certificates in a location accesible to the Sync Gateway
 – If you are generating a self-signed certificate, probably the most important field is the `CommonName`. It should be your Sync Gateway’s FQDN. If you Sync Gateway does not have one, then you must specify use `localhost` for localhost or the static IPAddress of your Sync Gateway.
 
-![](img/selfsignedcert.png)
+![](../img/selfsignedcert.png)
 
 Once configured, your sync gateway should be accesible via https.
 
@@ -66,11 +67,11 @@ Once configured, your sync gateway should be accesible via https.
 
 - Open your .xcodeproj file and drag and drop the .der files into your poejct. Make sure you have “Copy files if needed” option checked
 
-	![](img/copycert.png)
+	![](../img/copycert.png)
 
 - After copying, your project structure would be something like this
 
-	![](img/certadded.png)
+	![](../img/certadded.png)
 
 - Pinning the Sync Gateway Server Certificate
   This takes just a few lines of code. The code should be executed once. So doing it at the point in code where you initialize the [CBLManager](https://developer.couchbase.com/documentation/mobile/1.4/references/couchbase-lite/couchbase-lite/manager/manager/index.html) may be a good option.

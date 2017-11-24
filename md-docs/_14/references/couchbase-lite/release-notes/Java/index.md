@@ -3,6 +3,16 @@ id: java-release-notes
 title: Java release notes
 ---
 
+__Deprecation notices__
+
+The following features are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
+
+- ForestDB
+
+The following platforms are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
+
+- Android API Level < 16 
+
 ## 1.4.1 release
 
 __Performance Improvements__
@@ -81,16 +91,6 @@ __Bugs__
 - [__#1595__](https://github.com/couchbase/couchbase-lite-java-core/issues/1595) Database error with peer-2-peer-sanity test
 - [__#1597__](https://github.com/couchbase/couchbase-lite-java-core/issues/1597) P2P - ForestDB Error: forceInsert()
 - [__#1599__](https://github.com/couchbase/couchbase-lite-java-core/issues/1599) Updates not propagating to SQLite Client
-
-__Deprecation notices__
-
-The following features are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
-
-- ForestDB
-
-The following platforms are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
-
-- Android API Level < 16 
 
 ## Where to get it
 

@@ -3,6 +3,17 @@ id: dot-net-release-notes
 title: .NET release notes
 ---
 
+__Deprecation notices__
+
+The following features are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
+
+- ForestDB
+- Bonjour P2P Discovery Service
+
+The following platforms are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
+
+- .NET 3.5
+
 ## 1.4.1 release
 
 __Performance Improvements__
@@ -86,17 +97,6 @@ __Bugs__
 - [__#807__](https://github.com/couchbase/couchbase-lite-net/issues/807) Handle closed web sockets by reconnecting
 - [__#825__](https://github.com/couchbase/couchbase-lite-net/issues/825) Pull replication doesn't restart with web sockets
 - [__#826__](https://github.com/couchbase/couchbase-lite-net/issues/826) .NET not sending all docs to a client pull replication (p2p, SSL)
-
-__Deprecation notices__
-
-The following features are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
-
-- ForestDB
-- Bonjour P2P Discovery Service
-
-The following platforms are being deprecated in Couchbase Mobile 1.4 and will be unsupported in 2.0.
-
-- .NET 3.5
 
 ## Where to get it
 

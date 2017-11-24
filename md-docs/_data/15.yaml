@@ -100,6 +100,8 @@
           path: guides/sync-gateway/channels/index.html
         - title: Sync Function API
           path: guides/sync-gateway/sync-function-api-guide/index.html
+        - title: Bucket Access
+          path: guides/sync-gateway/shared-bucket-access.html
         - title: Webhooks and changes feed
           path: guides/sync-gateway/server-integration/index.html
         - title: Deployment considerations

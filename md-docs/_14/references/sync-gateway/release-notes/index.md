@@ -3,6 +3,18 @@ id: sg-release-notes
 title: SG release notes
 ---
 
+__New features__
+
+- [Sync Gateway Accelerator](../../../guides/sync-gateway/accelerator.html)
+- [Log rotation](../../../guides/sync-gateway/deployment/index.html#built-in-log-rotation)
+
+__Deprecation notices__
+
+The following features are being deprecated in 1.4 and will be unsupported in an upcoming version (2.x) of Couchbase 
+Mobile.
+
+- **Bucket shadowing** is being deprecated in 1.4 and will be unsupported in an upcoming version (2.x) of Couchbase Mobile. The recommended approach to perform operations on the bucket dedicated to Couchbase Mobile is to use the Sync Gateway REST API.
+
 ## 1.4.1 release
 
 __Enhancements__
@@ -18,11 +30,6 @@ __Bugs__
 - [__#2427__](https://github.com/couchbase/sync_gateway/issues/2427) Data race in trimEncodedRevisionsToAncestor
 
 ## 1.4 release
-
-__New features__
-
-- [Sync Gateway Accelerator](../../guides/sync-gateway/accelerator.html)
-- [Log rotation](../../guides/sync-gateway/deployment/index.html#built-in-log-rotation)
 
 __Performance Improvements__
 
@@ -60,13 +67,6 @@ __Sync Gateway Accelerator Known Issues__
 - [Sync Gateway Accel does not recover when removing a node from Couchbase Server Cluster](https://github.com/couchbaselabs/sync-gateway-accel/issues/17): removing a node from the Couchbase Server Cluster can cause Sync Gateway Accel to fail. Restarting the Accel node resolves the issue.
 - [Client Rollback Support](https://github.com/couchbaselabs/sync-gateway-accel/issues/10): when Couchbase Server issues a rollback, Sync Gateway Accel handles that rollback and rolls back the data in the channel index bucket. However, we're not yet invalidating client sequence/since values that were sent to clients pre-rollback. As a result, clients may miss documents written to sequence values in the rollback window.
 - [Add Index Document Inspection REST API](https://github.com/couchbaselabs/sync-gateway-accel/issues/126): the majority of the index bucket contents are stored as binary documents. Getting a human-readable version of the contents of these documents would be very useful while debugging some types of issues.
-
-__Deprecation notices__
-
-The following features are being deprecated in 1.4 and will be unsupported in an upcoming version (2.x) of Couchbase 
-Mobile.
-
-- Bucket Shadowing
 
 ## Where to get it
 

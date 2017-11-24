@@ -38,7 +38,7 @@ To run an example, create a new file named **sync-gateway-config.json** with the
 
 In the configuration file above, the **replicator_2** property enables the new replication protocol. To use this protocol with Couchbase Lite 2.0, the replication URL should specify **blip** as the URL scheme (see the [Replication API](index.html#replication-api) section below). Mobile clients using Couchbase Lite 1.x can continue to use **http** as the URL scheme. Sync Gateway 1.5 will automatically use the 1.x replication protocol when a Couchbase Lite 1.x client connects through "http://localhost:4984/db" and the 2.0 replication protocol when a Couchbase Lite 2.0 client connects through "blip://localhost:4984/db".
 
-Download the current Sync Gateway [developer build](../../whatsnew.html) and start it from the command line with the configuration file created above.
+[Download Sync Gateway](https://www.couchbase.com/downloads) and start it from the command line with the configuration file created above.
 
 ```bash
 ~/Downloads/couchbase-sync-gateway/bin/sync_gateway sync-gateway-config.json

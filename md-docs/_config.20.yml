@@ -3,6 +3,8 @@ collections:
     output: true
     permalink: /:path:output_ext
 version: '2.0'
+cbl_version: '2.0 DB20'
+sg_version: '1.5'
 ios_dev_build: '2.0DB020'
 android_dev_build: '2.0.0-DB020'
 dev_build_release_date: 'November 21, 2017'
