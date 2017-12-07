@@ -50,6 +50,14 @@ database.CreateIndex("TypeNameIndex", Index.ValueIndex().On(
         ValueIndexItem.Expression(Expression.Property("name"))));
 ```
 
+<block class="java" />
+
+```java
+database.createIndex("TypeNameIndex",
+        Index.valueIndex(ValueIndexItem.property("type"),
+                ValueIndexItem.property("name")));
+```
+
 <block class="all" />
 
 If there are multiple expressions, the first one will be the primary key, the second the secondary key, etc.
@@ -133,22 +141,21 @@ using(var rows = query.Run()) {
 <block class="java" />
 
 ```java
-Query query = Query.select(SelectResult.expression(Expression.property("name")))
-	.from(DataSource.database(database))
-	.where(
-		Expression.property("type").equalTo("user")
-		.and(Expression.property("admin").equalTo(false))
-	);
-
-ResultSet rows = null;
+Query query = Query
+        .select(SelectResult.expression(Meta.id),
+                SelectResult.property("name"),
+                SelectResult.property("type"))
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("hotel"))
+        .orderBy(Ordering.expression(Meta.id));;
 try {
-	rows = query.run();
+    ResultSet rs = query.execute();
+    for (Result result : rs) {
+        Log.i("Sample", String.format("hotel id :: %s", result.getString("_id")));
+        Log.i("Sample", String.format("hotel name :: %s", result.getString("name")));
+    }
 } catch (CouchbaseLiteException e) {
-	Log.e("app", "Failed to run query", e);
-}
-Result row;
-while ((row = rows.next()) != null) {
-	Log.d("app", String.format("user name :: %s", row.getString("name")));
+    Log.e("Sample", e.getLocalizedMessage());
 }
 ```
 
@@ -177,7 +184,15 @@ var query = Query
 ```
 
 <block class="java" />
-
+```java
+Query query = Query
+        .select(SelectResult.all())
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("hotel"));
+    ResultSet rs = query.execute();
+    for (Result result : rs)
+        Log.i("Sample", String.format("hotel -> %s", result.getDictionary(DATABASE_NAME).toMap()));
+```
 
 
 <block class="all" />
@@ -267,7 +282,19 @@ using(var rows = query.Run()) {
 ```
 
 <block class="java" />
-
+```java
+Query query = Query
+        .select(SelectResult.all())
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("hotel"))
+        .limit(10);
+ResultSet rs = query.execute();
+for (Result result : rs) {
+    Dictionary all = result.getDictionary(DATABASE_NAME);
+    Log.i("Sample", String.format("name -> %s", all.getString("name")));
+    Log.i("Sample", String.format("type -> %s", all.getString("type")));
+}
+```
 
 
 <block class="all" />
@@ -331,7 +358,18 @@ using(var rows = query.Run()) {
 ```
 
 <block class="java" />
-
+```java
+Query query = Query
+        .select(SelectResult.expression(Meta.id),
+                SelectResult.property("name"),
+                SelectResult.property("public_likes"))
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("hotel")
+                .and(ArrayFunction.contains(Expression.property("public_likes"), "Armani Langworth")));
+ResultSet rs = query.execute();
+for (Result result : rs)
+    Log.i("Sample", String.format("public_likes -> %s", result.getArray("public_likes").toList()));
+```
 
 
 <block class="all" />
@@ -390,7 +428,18 @@ using(var rows = query.Run()) {
 ```
 
 <block class="java" />
-
+```java
+Query query = Query
+        .select(SelectResult.expression(Meta.id),
+                SelectResult.property("country"),
+                SelectResult.property("name"))
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("landmark")
+                .and(Expression.property("name").like("Royal engineers museum")));
+ResultSet rs = query.execute();
+for (Result result : rs)
+    Log.i("Sample", String.format("name -> %s", result.getString("name")));
+```
 
 
 <block class="all" />
@@ -434,7 +483,18 @@ var query = Query.Select(
 ```
 
 <block class="java" />
-
+```java
+Query query = Query
+        .select(SelectResult.expression(Meta.id),
+                SelectResult.property("country"),
+                SelectResult.property("name"))
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("landmark")
+                .and(Expression.property("name").like("%eng%e%")));
+ResultSet rs = query.execute();
+for (Result result : rs)
+    Log.i("Sample", String.format("name -> %s", result.getString("name")));
+```
 
 
 <block class="all" />
@@ -477,7 +537,18 @@ var query = Query.Select(
 ```
 
 <block class="java" />
-
+```java
+Query query = Query
+        .select(SelectResult.expression(Meta.id),
+                SelectResult.property("country"),
+                SelectResult.property("name"))
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("landmark")
+                .and(Expression.property("name").like("eng____r")));
+ResultSet rs = query.execute();
+for (Result result : rs)
+    Log.i("Sample", String.format("name -> %s", result.getString("name")));
+```
 
 
 <block class="all" />
@@ -520,7 +591,18 @@ var query = Query.Select(
 ```
 
 <block class="java" />
-
+```java
+Query query = Query
+        .select(SelectResult.expression(Meta.id),
+                SelectResult.property("country"),
+                SelectResult.property("name"))
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("landmark")
+                .and(Expression.property("name").regex("\\bEng.*r\\b")));
+ResultSet rs = query.execute();
+for (Result result : rs)
+    Log.i("Sample", String.format("name -> %s", result.getString("name")));
+```
 
 
 <block class="all" />
@@ -582,6 +664,23 @@ var query = Query.Select(
 
 <block class="java" />
 
+```java
+            Query query = Query.select(
+                    SelectResult.expression(Expression.property("name").from("airline")),
+                    SelectResult.expression(Expression.property("callsign").from("airline")),
+                    SelectResult.expression(Expression.property("destinationairport").from("route")),
+                    SelectResult.expression(Expression.property("stops").from("route")),
+                    SelectResult.expression(Expression.property("airline").from("route")))
+                    .from(DataSource.database(database).as("airline"))
+                    .join(Join.join(DataSource.database(database).as("route"))
+                            .on(Meta.id.from("airline").equalTo(Expression.property("airlineid").from("route"))))
+                    .where(Expression.property("type").from("route").equalTo("route")
+                            .and(Expression.property("type").from("airline").equalTo("airline"))
+                            .and(Expression.property("sourceairport").from("route").equalTo("RIX")));
+            ResultSet rs = query.execute();
+            for (Result result : rs)
+                Log.w("Sample", String.format("%s", result.toMap().toString()));
+```
 
 
 <block class="all" />
@@ -652,7 +751,25 @@ using(var rows = query.Run()) {
 ```
 
 <block class="java" />
-
+```java
+Query query = Query.select(
+        SelectResult.expression(Function.count("*")),
+        SelectResult.property("country"),
+        SelectResult.property("tz"))
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("airport")
+                .and(Expression.property("geo.alt").greaterThanOrEqualTo(300)))
+        .groupBy(Expression.property("country"),
+                Expression.property("tz"))
+        .orderBy(Ordering.expression(Function.count("*")).descending());
+ResultSet rs = query.execute();
+for (Result result : rs)
+    Log.i("Sample",
+            String.format("There are %d airports on the %s timezone located in %s and above 300ft",
+                    result.getInt("$1"),
+                    result.getString("tz"),
+                    result.getString("country")));
+```
 
 
 <block class="all" />
@@ -701,8 +818,18 @@ var query = Query.Select(
 ```
 
 <block class="java" />
-
-
+```java
+Query query = Query
+        .select(SelectResult.expression(Meta.id),
+                SelectResult.property("name"))
+        .from(DataSource.database(database))
+        .where(Expression.property("type").equalTo("hotel"))
+        .orderBy(Ordering.property("name").ascending())
+        .limit(10);
+ResultSet rs = query.execute();
+for (Result result : rs)
+    Log.i("Sample", String.format("%s", result.toMap()));
+```
 
 <block class="all" />
 
