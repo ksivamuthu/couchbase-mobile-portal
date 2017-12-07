@@ -282,6 +282,7 @@ using(var rows = query.Run()) {
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query
         .select(SelectResult.all())
@@ -358,6 +359,7 @@ using(var rows = query.Run()) {
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query
         .select(SelectResult.expression(Meta.id),
@@ -428,6 +430,7 @@ using(var rows = query.Run()) {
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query
         .select(SelectResult.expression(Meta.id),
@@ -483,6 +486,7 @@ var query = Query.Select(
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query
         .select(SelectResult.expression(Meta.id),
@@ -537,6 +541,7 @@ var query = Query.Select(
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query
         .select(SelectResult.expression(Meta.id),
@@ -591,6 +596,7 @@ var query = Query.Select(
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query
         .select(SelectResult.expression(Meta.id),
@@ -751,6 +757,7 @@ using(var rows = query.Run()) {
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query.select(
         SelectResult.expression(Function.count("*")),
@@ -818,6 +825,7 @@ var query = Query.Select(
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query
         .select(SelectResult.expression(Meta.id),
