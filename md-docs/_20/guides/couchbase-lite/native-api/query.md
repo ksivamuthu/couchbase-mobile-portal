@@ -184,6 +184,7 @@ var query = Query
 ```
 
 <block class="java" />
+
 ```java
 Query query = Query
         .select(SelectResult.all())
