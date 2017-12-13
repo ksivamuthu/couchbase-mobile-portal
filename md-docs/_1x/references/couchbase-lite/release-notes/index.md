@@ -5,6 +5,6 @@ title: CBL release notes
 
 Release notes are available for each supported platform by Couchbase Lite:
 
-- [iOS](iOS.html)
-- [Java](Java.html)
-- [.NET](Dot-Net.html)
+- [iOS](iOS/index.html)
+- [Java](Java/index.html)
+- [.NET](Dot-Net/index.html)
