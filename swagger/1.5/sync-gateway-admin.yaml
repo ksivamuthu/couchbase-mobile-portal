@@ -550,31 +550,7 @@ paths:
             type: array
             items:
               type: object
-              properties:
-                replication_id:
-                  type: string
-                  description: The replication Id.
-                continuous:
-                  type: boolean
-                  description: Whether the replication is continuously monitoring for changes on the source database to send them to the target.
-                source:
-                  type: string
-                  description: The URL of the source database (i.e `"http://example.com:4985/source"`).
-                target:
-                  type: string
-                  description: The URL of the target database (i.e `"http://example.com:4985/target"`).
-                docs_read:
-                  type: integer
-                  description: The number of docs that have been read (fetched) from the source database.
-                docs_written:
-                  type: integer
-                  description: The number of docs that have been written (pushed) to the target database.
-                doc_write_failures:
-                  type: integer
-                  description: The number of docs that have failed to be written (pushed) to the target database.  These docs will not be retried.
-                end_last_seq:
-                  type: integer
-                  description: The most recent `last_seq` value received from the source database during replication.
+              $ref: '#/definitions/ActiveTask'
   /{db}/_bulk_docs:
     parameters:
       - $ref: '#/parameters/db'
@@ -1755,6 +1731,33 @@ paths:
 #                                 Definitions                                  #
 ################################################################################
 definitions:
+  ActiveTask:
+    type: object
+    properties:
+      replication_id:
+        type: string
+        description: The replication Id.
+      continuous:
+        type: boolean
+        description: Whether the replication is continuously monitoring for changes on the source database to send them to the target.
+      source:
+        type: string
+        description: The URL of the source database (i.e `"http://example.com:4985/source"`).
+      target:
+        type: string
+        description: The URL of the target database (i.e `"http://example.com:4985/target"`).
+      docs_read:
+        type: integer
+        description: The number of docs that have been read (fetched) from the source database.
+      docs_written:
+        type: integer
+        description: The number of docs that have been written (pushed) to the target database.
+      doc_write_failures:
+        type: integer
+        description: The number of docs that have failed to be written (pushed) to the target database.  These docs will not be retried.
+      end_last_seq:
+        type: integer
+        description: The most recent `last_seq` value received from the source database during replication.
   DocMetadata:
     type: object
     properties:
