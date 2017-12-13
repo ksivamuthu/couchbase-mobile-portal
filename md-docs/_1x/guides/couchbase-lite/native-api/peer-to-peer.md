@@ -1,11 +1,10 @@
 ---
-id: peer-to-peer
-title: Peer-to-peer
+permalink: guides/couchbase-lite/native-api/peer-to-peer/index.html
 ---
 
 The Listener enables any Couchbase Lite database to become the remote in a replication by listening on a TCP port and by exposing the standard replication endpoints on that port.
 
-![](img/docs-listener-diagram.png)
+![](../img/docs-listener-diagram.png)
 
 It becomes an alternate entry-point into the data store. Another peer can therefor use the URL and port number in the replicator to sync data to and from the database currently listening.
 
@@ -79,7 +78,7 @@ The first step to using Bonjour for peer discovery is to advertize a service wit
 
 Given a service type, you can use an API to browse for all services with that service type. Various callback methods are invoked as peers on the network go online and offline.
 
-![](img/docs-peer-discover-diagram.png)
+![](../img/docs-peer-discover-diagram.png)
 
 Once the IP is resolved in step 3, the replication with that peer can be started in step 4. The following sections cover the different callbacks for the **advertiser** (device A) and **subscriber** (device B).
 

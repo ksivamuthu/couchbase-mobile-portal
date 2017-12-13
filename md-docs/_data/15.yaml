@@ -4,6 +4,9 @@
 - title: CSharp mananger
   ishidden: true
   path: guides/couchbase-lite/native-api/manager/csharp.html
+- title: P2P
+  ishidden: true
+  path: guides/couchbase-lite/native-api/peer-to-peer/index.html
 - title: Getting Started
   path: installation/index.html
   items:
