@@ -144,11 +144,11 @@ A One-shot replication that references a local database for either source or tar
 
 ## Monitoring replications
 
-By default a simple one-shot replication blocks until it is complete and returns the stats for the completed task. Async one-shot and continuous replications return immediately with the in flight task stats. This article shows you how to monitor the ongoing progress of active tasks.
+By default a simple one-shot replication blocks until it is complete and returns the stats for the completed task. Async one-shot and continuous replications return immediately with the in flight task stats.
 
-You can get a list of active replication tasks by sending a GET request to the server endpoint /\_active_tasks, this will return a list of all running one-shot and continuous replications for the current Sync Gateway instance.
+You can get a list of active replication tasks by sending a GET request to the `/_active_tasks` endpoint, this will return a list of all running one-shot and continuous replications for the current Sync Gateway instance.
 
-The response is a JSON array of active task objects, each object contains the original request parameters for the replication, a unique replication_id and some stats for the replication instance e.g.
+The response is a JSON array of active task objects, each object contains the original request parameters for the replication, a unique `replication_id` and some stats for the replication instance. The list of returned stats and their meaning can be found on the API reference of the [/\_active_tasks](../../../references/sync-gateway/admin-rest-api/index.html#/server/get__active_tasks) endpoint.
 
 ```javascript
 [
@@ -161,7 +161,6 @@ The response is a JSON array of active task objects, each object contains the or
         "docs_read":0,
         "docs_written":0,
         "doc_write_failures":0,
-        "start_last_seq:"0,
         "end_last_seq":null
     },
     {
@@ -173,7 +172,6 @@ The response is a JSON array of active task objects, each object contains the or
         "docs_read":1000,
         "docs_written":850,
         "doc_write_failures":10,
-        "start_last_seq:"0,
         "end_last_seq":25680
     }
 ]
