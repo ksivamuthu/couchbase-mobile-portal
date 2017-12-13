@@ -1,8 +1,3 @@
----
-id: performance-testing
-title: Performance Testing
-permalink: ready/training/test/performance-testing/index.html
----
 
 In this lesson you'll learn how to perform performance tests on your Couchbase Mobile application. You'll test the performance of Sync Gateway.
 

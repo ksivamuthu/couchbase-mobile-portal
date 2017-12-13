@@ -1,7 +1,3 @@
----
-title: Accelerator
----
-
 ## Sequence Handling
 
 When using Sync Gateway Accelerator, Sync Gateway no longer uses a global sequence managed by Sync Gateway.  Instead, it uses Couchbase Server's vbucket sequences to identify what documents to send to clients.  There are two reasons for this change:
