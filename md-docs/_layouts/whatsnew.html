@@ -32,18 +32,11 @@ layout: docs
     <div class="box">
       <h2>{{ feature.title }}</h2>
       <p>{{ feature.description }}</p>
-      <a href="{{ feature.link }}">Learn more ></a>
-    </div>
-    {% endfor %}
-    <div class="box">
-      <h2>{{ page.sample.title }}</h2>
-      <p>
-        {{ page.sample.description }}
-      </p>
-      {% for link in page.sample.links %}
-        <a href="{{ link.value }}">{{ link.name }} ></a>
+      {% for link in feature.links %}
+      <a href="{{ link.value }}">{{ link.name }} ></a>
       {% endfor %}
     </div>
+    {% endfor %}
     <div class="box">
       <h2>Release Notes</h2>
       <p>
