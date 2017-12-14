@@ -6,23 +6,6 @@ permalink: guides/sync-gateway/deployment/index.html
 
 The following guide describes a set of recommended best practices for a production deployment of Couchbase Mobile.
 
-## Sizing and Scaling
-
-Your physical hardware determines how many active, concurrent users you can comfortably support for a single Sync Gateway. A quad-core/4GB RAM backed Sync Gateway can support up to 5k users depending on the scenario. Larger boxes, such as a eight-core/8GB RAM backed Sync Gateway, can support up to 10k users, and so forth.
-
-Alternatively, instead of scaling vertically, you can also scale horizontally by running Sync Gateway nodes as a cluster. (In general, you will want to have at least two Sync Gateway nodes to ensure high-availability in case one should fail.) This means running an identically configured instance of Sync Gateway on each of several machines, and load-balancing them by directing each incoming HTTP request to a random node. Sync Gateway nodes are “shared-nothing,” so they don’t need to coordinate any state or even know about each other. Everything they know is contained in the central Couchbase Server bucket. All Sync Gateway nodes talk to the same Couchbase Server bucket. This can, of course, be hosted by a cluster of Couchbase Server nodes.
-
-### Performance Considerations
-
-Keep in mind the following notes on performance:
-
-- Sync Gateway nodes don’t keep any local state, so they don’t require any disk beyond what's needed for logging and the application itself.
-- Sync Gateway nodes do not cache much in RAM (and this is [tunable](../config-properties/index.html#cache)). Every request is handled independently. The Sync Gateway is written with the Go programming language, which does use garbage collection, so the memory usage might be somewhat higher than for C code. However, memory usage shouldn’t be excessive, provided the number of simultaneous requests per node is kept limited.
-- Go is good at multiprocessing. It uses lightweight threads and asynchronous I/O. Adding more CPU cores to a Sync Gateway node can speed it up.
-- As is typical with databases, writes are going to put a greater load on the system than reads. In particular, replication and channels imply that there’s a lot of fan-out, where making a change triggers sending notifications to many other clients, who then perform reads to get the new data.
-
-In addition to adding Sync Gateway nodes, we recommend developers to also optimize how many connections they need to open to the sync tier. Very large-scale deployments might run into challenges managing large numbers of simultaneous open TCP connections. The replication protocol uses a "hanging-GET" technique to enable the server to push change notifications. This means that an active client running a continuous pull replication always has an open TCP connection on the server. This is similar to other applications that use server-push, also known as "Comet" techniques, as well as protocols like XMPP and IMAP. These sockets remain idle most of the time (unless documents are being modified at a very high rate), so the actual data traffic is low—the issue is just managing that many sockets. This is commonly known as the "C10k Problem" and it’s been pretty well analyzed in the last few years. Because Go uses asynchronous I/O, it’s capable of listening on large numbers of sockets provided that you make sure the OS is tuned accordingly and you’ve got enough network interfaces to provide a sufficiently large namespace of TCP port numbers per node.
-
 ## Security
 
 **Authentication**
@@ -49,14 +32,6 @@ Alternatively, Sync Gateway can be [configured](../configuring-ssl/index.html) t
 		
 [Database encryption](../../couchbase-lite/native-api/database/index.html#database-encryption) is available on the local database. Couchbase Lite uses SQLCipher; an open source extension to SQLite that provides transparent encryption of database files. The encryption specification is 256-bit AES.
 
-{% if site.version == '1.4' %}
-
-**Auditing**
-
-Beginning in Couchbase Mobile 1.4, [log rotation](index.html#log-rotation) can be enabled in the configuration file.
-
-{% endif %}
-
 ## Managing Tombstones
 
 By design, when a document is deleted in Couchbase Mobile, they are not actually deleted from the database, but simply marked as deleted (by setting the `_deleted` property). This is discussed in the [Document](../../couchbase-lite/native-api/document/index.html#deleting-documents) guide. The reason that documents are not immediately removed is to allow all devices to see that they have been deleted - particularly in the case of devices that may not be online continuously and therefore not syncing regularly.
@@ -65,11 +40,11 @@ To actually remove the documents permanently, you need to *purge* them. This can
 
 Beginning in Couchbase Mobile 1.3, documents can have a Time To Live (TTL) value - when the TTL expires the document will be purged from the local database. Note that this does not affect the copy of the document on any other device. This concept is covered in more detail in the [Document](../../couchbase-lite/native-api/document/index.html#document-expiration-ttl) guide.
 
-Depending on the use case, data model and many more variables, there can be a need to proactively manage these tombstones as they are created. For example, you might decide that if a document is deleted on a Couchbase Lite client, that you want to purge the document (on that device) as soon as the delete has been successfully replicated out to Sync Gateway. Then later on Sync Gateway, set an expiration so that they are automatically purged after a set period (perhaps a week, or a month, to allow for all other devices to sync and receive the delete notifications) - more on this later. If a document is deleted on the Sync Gateway itself (say by a batch process or REST API client), you may similarly want to set a TTL, and on the Couchbase Lite devices you can monitor the [Database Change Notifications](../../couchbase-lite/native-api/database/index.html#database-notifications) and purge locally whenever a document is marked as deleted. 
+Depending on the use case, data model and many more variables, there can be a need to proactively manage these tombstones as they are created. For example, you might decide that if a document is deleted on a Couchbase Lite client, that you want to purge the document (on that device) as soon as the delete has been successfully replicated out to Sync Gateway. Then later on Sync Gateway, set an expiration so that they are automatically purged after a set period (perhaps a week, or a month, to allow for all other devices to sync and receive the delete notifications) - more on this later. If a document is deleted on the Sync Gateway itself (say by a batch process or REST API client), you may similarly want to set a TTL, and on the Couchbase Lite devices you can monitor the [Database Change Notifications](../../couchbase-lite/native-api/database/index.html#database-notifications) and purge locally whenever a document is marked as deleted.
 
 ## Log Rotation
 
-{% if site.version == '1.4' %}
+{% if site.version == '1.5' %}
 
 ### Built-in log rotation
 
@@ -236,62 +211,6 @@ This command can be added to the logrotate configuration using the 'postrotate' 
 ```
 
 After renaming the log file logrotate will send the `SIGHUP` signal to the `sync_gateway` process, Sync Gateway will close the existing log file and open a new file at the original path, no log entries will be lost.
-
-## Sync Gateway upgrade
-
-See the [Deploy section](../../../training/deploy/install/index.html) of the tutorial for an example of a Sync Gateway rolling upgrade.
-
-## Couchbase Server cluster upgrade
-
-There are several approaches to upgrading the Couchbase Server cluster that is used by Sync Gateway:
-
-| Upgrade Strategy  | Downtime | Additional Machine Requirements 
-| ------------- | ------------- | ------------- |
-| Rolling Online Upgrade  | None  | Low |
-| Upgrade Using Inter-cluster Replication  | Small amount during switchover  | High - duplicate entire cluster |
-| Offline Upgrade  | During entire upgrade  | None  |
-
-### Rolling Online Upgrade
-
-1. Do an [Online Upgrade](https://developer.couchbase.com/documentation/server/current/install/upgrade-online.html) of Couchbase Server and wait until completion
-1. Do a rolling restart of the Sync Gateway nodes
-
-The rolling restart of the Sync Gateway nodes is needed because there is a chance the Sync Gateway nodes could lose the mutation feed (TAP or DCP) along the way.
-
-**Caveat: potential transient connection errors**
-
-The Couchbase Server rebalance operations can result in transient connection errors between Couchbase Server and Sync Gateway, which could result in Sync Gateway performance degradation.
-
-**Caveat: potential for unexpected server errors during rebalance**
-
-There is an increased potential to lose in-flight ops during a failover.
-
-### Upgrade Using Inter-cluster Replication
-
-Using an XDCR (Cross Data Center Replication) approach will have incur some Sync Gateway downtime, but less downtime than other approaches where Sync Gateway is shutdown during the entire Couchbase Server upgrade.
-
-It's important to note that the XDCR replication must be a **one way** replication from the existing (source) Couchbase Server cluster to the new (target) Couchbase Server cluster, and that no other writes can happen on the new (target) Couchbase Server cluster other than the writes from the XDCR replication, and no Sync Gateway instances should be configured to use the new (target) Couchbase Server cluster until the last step in the process.
-
-1. Start XDCR to do a one way replication from the existing (source) Couchbase Server cluster to the new (target) Couchbase Server cluster running the newer version.
-1. Wait until the target Couchbase Server has caught up to all the writes in the source Couchbase Server cluster.
-1. Shutdown Sync Gateway to prevent any new writes from coming in.
-1. Wait until the target Couchbase Server has caught up to all the writes in the source Couchbase Server cluster -- this should happen very quickly, since it will only be the residual writes in transit before the Sync Gateway shutdown.
-1. Reconfigure Sync Gateway to point to the target cluster.
-1. Restart Sync Gateway.
-
-**Caveat: small amount of downtime during switchover**
-
-Since there may be writes still in transit after Sync Gateway has been shutdown, there will need to be some downtime until the target Couchbase Server cluster is completely caught up.
-
-**Caveat: XDCR should be monitored**
-
-Make sure to monitor the XDCR relationship as per [XDCR docs](https://developer.couchbase.com/documentation/server/current/xdcr/xdcr-intro.html) 
-
-### Offline Upgrade
-
-1. Take Sync Gateway offline
-1. Upgrade Couchbase Server using any of the options mentioned in the [Upgrading Couchbase Server](https://developer.couchbase.com/documentation/server/current/install/upgrading.html) documentation.  
-1. Bring Sync Gateway online
 
 ## Troubleshooting
 

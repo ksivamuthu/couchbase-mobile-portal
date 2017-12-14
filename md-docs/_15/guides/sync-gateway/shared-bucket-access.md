@@ -54,36 +54,6 @@ When this feature is enabled, the REST API will include the following changes.
 
 When this feature is enabled, mobile tombstones are not retained indefinitely. They will be purged based on the server's metadata purge interval. To ensure tombstones are replicated to clients, you should set the server's metadata purge interval based on your expected replication frequency (see the [$dbname.enable\_shared\_bucket\_access](config-properties/index.html#1.5/databases-foo_db-enable_shared_bucket_access) reference).
 
-### Upgrading
-
-This section is an overview of the different options to upgrade a running cluster to the latest version of Sync Gateway and Couchbase Server. For a complete list of instructions, we recommend to follow the [upgrade section](http://docs.couchbase.com/tutorials/travel-sample/deploy/centos#/0/4/0) in the travel sample tutorial. You will learn how to perform a rolling upgrade and enable the shared bucket access introduced in Sync Gateway 1.5 in order to use N1QL, Mobile and Server SDKs on the same bucket.
-
-In each of the scenarios described below, the upgrade process will trigger views in Couchbase Server to be re-indexed. During the re-indexing, operations that are dependent on those views will not be available. The main operations relying on views to be indexed are:
-
-- A user requests data that doesn't reside in the [channel cache](config-properties/index.html#1.5/databases-foo_db-cache-channel_cache_max_length).
-- A new channel or role is granted to a user in the [Sync Function](sync-function-api-guide/index.html).
-
-The unavailability of those operations may result in some requests not being process. The duration of the downtime will depend on the data set and frequency of replications with mobile clients.
-
-#### From 1.4 to 1.5 (xattrs disabled)
-
-- A rolling upgrade is supported: modify your load balancer's config to stop any HTTP traffic going to the node that will be upgraded, perform the upgrade on the given node and rebalance the traffic across all nodes. Repeat this operation for each node that needs to be upgraded.
-     
-#### From 1.5 (xattrs disabled) to 1.5 (xattrs enabled)
-
-- A rolling upgrade is supported: modify your load balancer's config to stop any HTTP traffic going to the node that will be upgraded, perform the upgrade on the given node and rebalance the traffic across all nodes. Repeat this operation for each node that needs to be upgraded.
-- The mobile metadata for existing documents is automatically migrated.
-- The first node to be upgraded should have the `import_docs=continuous` property enabled.
-     
-#### From 1.4 to 1.5 (xattrs enabled)
-
-- This upgrade, if done directly, will result in application downtime because all the nodes must be taken offline during the upgrade.
-- The first node to be restarted should have the `import_docs=continuous` property enabled.
-
-That being said, it is possible to avoid this downtime by running the 2 upgrade paths mentioned above (first, an upgrade from 1.4 to 1.5, and second, an upgrade from 1.5 to 1.5 with xattrs enabled).
-
-> **Note:** Enabling convergence on your existing deployment (i.e XATTRs) is **not** reversible. It is recommended to test the upgrade on a staging environment before upgrading the production environment.
-
 ### Additional Features
 
 #### SSL and Multi-URL support

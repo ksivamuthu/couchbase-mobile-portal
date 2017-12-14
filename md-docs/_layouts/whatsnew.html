@@ -49,7 +49,9 @@ layout: docs
       <p>
         {{ page.sample.description }}
       </p>
-      <a href="{{ page.sample.link }}">Start building ></a>
+      {% for link in page.sample.links %}
+        <a href="{{ link.value }}">{{ link.name }} ></a>
+      {% endfor %}
     </div>
     <div class="box">
       <h2>Release Notes</h2>
