@@ -13,5 +13,7 @@ sample:
   title: ToDo Sample
   description: |
     This step by steps tutorial walks you through some of the more advanced features of Couchbase Lite and Sync Gateway. Such as running complex map-reduce queries, custom conflict resolution rules, user login and managing all aspects of security in the Sync Function.
-  link: 'training/index.html'
+  links:
+    - name: Start building
+      value: 'training/index.html'
 ---
