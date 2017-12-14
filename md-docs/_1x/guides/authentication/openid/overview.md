@@ -4,7 +4,7 @@ title: OpenID Connect
 permalink: guides/authentication/openid/index.html
 ---
 
-With OpenID Connect now integrated in Couchbase Mobile, you can authenticate users with providers that implement OpenID Connect. This means you won't need to setup an App Server to authenticate users with Google+, PayPal, Yahoo, Active Directory, etc. It works out of the box.
+With OpenID Connect now integrated in Couchbase Mobile, you can authenticate users with providers that implement OpenID Connect. This means you won't need to setup an App Server to authenticate users with Google+, PayPal, Yahoo, Active Directory, etc.
 
 Open ID Connect can be configured in two different ways.
 
