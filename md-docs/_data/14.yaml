@@ -3,6 +3,7 @@
   path: whatsnew.html
 - title: Getting Started
   path: installation/index.html
+  open: true
   items:
     - title: iOS/tvOS/macOS
       path: installation/ios/index.html
