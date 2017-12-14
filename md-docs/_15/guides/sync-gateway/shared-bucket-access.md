@@ -54,23 +54,6 @@ When this feature is enabled, the REST API will include the following changes.
 
 When this feature is enabled, mobile tombstones are not retained indefinitely. They will be purged based on the server's metadata purge interval. To ensure tombstones are replicated to clients, you should set the server's metadata purge interval based on your expected replication frequency (see the [$dbname.enable\_shared\_bucket\_access](config-properties/index.html#1.5/databases-foo_db-enable_shared_bucket_access) reference).
 
-### Additional Features
-
-#### SSL and Multi-URL support
-
-In Sync Gateway 1.5 you have the ability to define multiple server URLs in the Sync Gateway configuration, and full support for SSL between Sync Gateway and Couchbase Server.
-
-- Sync Gateway Reference ([$dbname.server](config-properties/index.html#1.5/databases-foo_db-server))
-- Sync Gateway Accelerator Reference ([$dbname.server](accelerator.html#1.5/databases-foo_db-server), [cluster_config.server](accelerator.html#1.5/cluster_config-server))
-
-#### Revs Limit lower limit
-
-The [databases.foo\_db.revs\_limit](config-properties/index.html#1.5/databases-foo_db-revs_limit) property now has a minimal value. See the API reference for more detail.
-
-#### Rev Tree endpoint
-
-The [/{db}/\_revtree/{doc}](../../references/sync-gateway/admin-rest-api/index.html?v=1.5#/document/get__db___revtree__doc_) endpoint returns the revision tree in dot syntax for the specified document. This endpoint is not officially supported and should only be used for troubleshooting and debugging purposes.
-
 ### Sample App
 
 The following tutorial demonstrates the extended attributes support introduced in Sync Gateway 1.5.
