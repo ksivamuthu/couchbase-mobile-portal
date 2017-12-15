@@ -24,7 +24,7 @@ The unavailability of those operations may result in some requests not being pro
 
 ## Couchbase Server
 
-All of the different upgrade paths mentioned above assume that Couchbase Server is running a [compatible version](../../../../installation/index.html) for Sync Gateway. There are 3 commonly used upgrade paths for Couchbase Server. Depending on the one you choose, there may be additional consideration to keep in mind when using Sync Gateway:
+All of the different upgrade paths mentioned above assume that Couchbase Server is running a [compatible version](../../../installation/index.html) for Sync Gateway. There are 3 commonly used upgrade paths for Couchbase Server. Depending on the one you choose, there may be additional consideration to keep in mind when using Sync Gateway:
 
 | Upgrade Strategy  | Downtime | Additional Machine Requirements | Impact when using Sync Gateway
 | ------------- | ------------- | ------------- | --------------- |
