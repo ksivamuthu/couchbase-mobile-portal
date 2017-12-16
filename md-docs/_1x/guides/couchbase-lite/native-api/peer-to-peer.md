@@ -2,39 +2,42 @@
 permalink: guides/couchbase-lite/native-api/peer-to-peer/index.html
 ---
 
-The Listener enables any Couchbase Lite database to become the remote in a replication by listening on a TCP port and by exposing the standard replication endpoints on that port.
+Two instances of Couchbase Lite can directly sync with each other without a server (peer-to-peer). At least one of them must use the Couchbase Lite Listener library, which enables any Couchbase Lite database to become the remote in a replication by listening on a TCP port and by exposing the standard replication endpoints on that port.
 
 ![](../img/docs-listener-diagram.png)
 
-It becomes an alternate entry-point into the data store. Another peer can therefor use the URL and port number in the replicator to sync data to and from the database currently listening.
+It becomes an alternate entry-point into the data store. Another peer can therefore use the URL and port number in the replicator to sync data to and from the database currently listening.
 
 Some typical Listener use cases include:
-
 
 - Trusted peers only: sync based on a QR code secret, ultrasound etc.
 - Peers within a security group: authentication based on peer discovery.
 - Wide open: experimental social messaging apps.
 - Offline/online: use peer-to-peer in conjunction with Sync Gateway.
 
+>**COMMENT:** Don't use words like "trust" or "security" in the above. Discovery is not security; even if the IP address is conveyed using a QR code, there's nothing stopping an attacker from running a port-scan on the LAN to discover it without permission. The only way to get security is to add authentication to the TCP listener, using either a password or a client cert. --Jens
+
 ### Installing the Listener library
 
 Refer to the [installation guide](./../../../../installation/index.html) of the platform of your choice to install the 
-Listener component. The Couchbase Lite Listener is coupled to Couchbase Lite. Both frameworks should always be running the same release version.
+Listener component. The Couchbase Lite Listener is coupled to Couchbase Lite. Both frameworks should always have the same release version.
 
 ### Configuring
 
-To begin using the Listener you must create an instance by specifying a manager instance and port number:
+To begin using the Listener you must create an instance by specifying a manager instance and port number. 
+
+>**COMMENT:** Make sure to note that theyre responsible for keeping a reference to the listener, or it'll be freed/GC'd and stop. (I've updated the Obj-C and Swift examples below to show it being assigned to an instance variable; not sure how to fix the other languages the same way.) --Jens
 
 <div class="tabs"></div>
 
 ```objective-c+
 CBLManager* manager = [CBLManager sharedInstance];
-CBLListener* listener = [[CBLListener alloc] initWithManager:manager port:55000];
+self.listener = [[CBLListener alloc] initWithManager:manager port:55000];
 ```
 
 ```swift+
 let manager = CBLManager.sharedInstance()
-let listener = CBLListener(manager: manager, port: 55000)
+self.listener = CBLListener(manager: manager, port: 55000)
 ```
 
 ```java+android+
@@ -57,7 +60,7 @@ Once you have set up the Listener as an endpoint for other peers to replicate to
 This section covers two ways to discover peers:
 
 - Using a QR code to encode the peer's remote URL.
-- Bonjour.
+- DNS Service Discovery (DNS-SD, aka Bonjour).
 
 ### QR code
 
@@ -65,14 +68,16 @@ This section covers two ways to discover peers:
 
 [PhotoDrop](https://github.com/couchbaselabs/photo-drop) is a P2P sharing app similar to the iOS AirDrop feature that you can use to send photos across devices. The source code is available for iOS and Android. The QR code is used for advertising an adhoc endpoint URL that a sender can scan and send photos to.
 
-### Bonjour
+### DNS-SD
 
-The first step to using Bonjour for peer discovery is to advertize a service with the following properties:
+DNS Service Discovery is a [standard](https://www.ietf.org/rfc/rfc6763.txt)) for discovering services based on a service type. It's usually coupled with [Multicast DNS](https://tools.ietf.org/html/rfc6762), which allows devices to broadcast their existence and services on a LAN without requiring a DNS server. These technologies are usually referred to as Bonjour, which is Apple's name for its implementation, but they're available under other names on most operating systems. Android calls them Network Service Discovery.
 
-- **Type:** Bonjour can be used by many other devices on the LAN (printers, scanners, other apps etc). The service type is a way to interact only with peers whose service type is the same.
-- **Name:** A string to serve as identifier for other peers. It should be unique for each peer.
+The first step to using Bonjour for peer discovery is to advertise a service with the following properties:
+
+- **Type:** Bonjour can be used by many other types of devices on the LAN (printers, scanners, other apps etc). The service type is a way to interact only with peers whose service type is the same.
+- **Name:** A string to serve as identifier for other peers. It should be unique for each peer. It does not need to be human-readable.
 - **Port:** The port number the Listener is running on.
-- **Metadata:** Optional data that will be sent in the advertizment packets (the size limit is around 15KB).
+- **Metadata:** Optional data that will be sent in the advertizment packets (the size limit is around 1.5KB).
 
 	> **Note:** Bonjour browsers are useful to monitor devices broadcasting a particular service on the LAN ([OS X Bonjour browser](http://www.macupdate.com/app/mac/13388/bonjour-browser), [iOS app](https://itunes.apple.com/gb/app/discovery-bonjour-browser/id305441017), [Windows browser](http://hobbyistsoftware.com/bonjourbrowser))
 
@@ -85,6 +90,8 @@ Once the IP is resolved in step 3, the replication with that peer can be started
 #### Advertiser
 
 Start a listener with the following.
+
+>**COMMENT:** In the Java and Android examples, also make it clear that the service instance has to be kept in a non-local variable. --Jens
 
 <div class="tabs"></div>
 
@@ -119,6 +126,8 @@ No code example is currently available.
 ```
 
 #### Subscriber
+
+>**COMMENT:** The code to do this is too involved to list in documentation, IMHO. Instead we should point people to a demo app. (Also, Apple and Google have sample code showing how to use their APIs.) --Jens
 
 To browse for peers on the network, each implementation has an asynchronous API to get notified as peers go online and offline from the network. You must implement the protocol or interface before starting the network discovery.
 
@@ -160,6 +169,8 @@ No code example is currently available.
 #### Hostname resolution
 
 The hostname resolution can be done in the listener/protocol you have implemented previously.
+
+>**COMMENT:** The ObjC/Swift code is incorrect. Resolving _every_ service is expensive and unnecessary; it can cause congestion on LANs. A service should only be resolved after the app has decided to open a connection to it.
 
 <div class="tabs"></div>
 
@@ -317,6 +328,8 @@ The replication algorithm keeps track of what was last synchronized with a parti
 Basic authentication is the recommended approach for protecting database access on the LAN. The listening peer must provide the username/password pair when instantiating the Listener.
 
 <div class="tabs"></div>
+
+>**COMMENT:** This is important, and I think you should merge it into the above example code that instantiates the Listener.
 
 ```objective-c+
 CBLListener* listener = [[CBLListener alloc] initWithManager:manager port:0];
