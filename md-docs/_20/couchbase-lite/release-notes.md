@@ -6,6 +6,22 @@ permalink: references/couchbase-lite/release-notes/index.html
 
 <block class="all" />
 
+### Developer build 21
+
+<block class="objc swift" />
+
+<block class="java" />
+
+- New Immutable Document API (Breaking API Changes)
+- New Query API (Breaking API Changes)
+  - Query syntax changes
+  - LiveQuery start automatically by adding the listener
+- Bug fixes
+
+<block class="net" />
+
+<block class="all" />
+
 ### Developer build 20
 
 <block class="objc swift" />
