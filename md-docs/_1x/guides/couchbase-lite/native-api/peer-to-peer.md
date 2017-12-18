@@ -10,12 +10,8 @@ It becomes an alternate entry-point into the data store. Another peer can theref
 
 Some typical Listener use cases include:
 
-- Trusted peers only: sync based on a QR code secret, ultrasound etc.
-- Peers within a security group: authentication based on peer discovery.
-- Wide open: experimental social messaging apps.
+- Synchronizing with selected peer devices on the same LAN network.
 - Offline/online: use peer-to-peer in conjunction with Sync Gateway.
-
->**COMMENT:** Don't use words like "trust" or "security" in the above. Discovery is not security; even if the IP address is conveyed using a QR code, there's nothing stopping an attacker from running a port-scan on the LAN to discover it without permission. The only way to get security is to add authentication to the TCP listener, using either a password or a client cert. --Jens
 
 ### Installing the Listener library
 
@@ -26,32 +22,40 @@ Listener component. The Couchbase Lite Listener is coupled to Couchbase Lite. Bo
 
 To begin using the Listener you must create an instance by specifying a manager instance and port number. 
 
->**COMMENT:** Make sure to note that theyre responsible for keeping a reference to the listener, or it'll be freed/GC'd and stop. (I've updated the Obj-C and Swift examples below to show it being assigned to an instance variable; not sure how to fix the other languages the same way.) --Jens
-
 <div class="tabs"></div>
 
 ```objective-c+
 CBLManager* manager = [CBLManager sharedInstance];
 self.listener = [[CBLListener alloc] initWithManager:manager port:55000];
+self.listener.passwords = @{@"hello": @"pw123"};
+[listener start:nil];
 ```
 
 ```swift+
 let manager = CBLManager.sharedInstance()
 self.listener = CBLListener(manager: manager, port: 55000)
+self.listener.passwords = ["hello": "pw123"]
+self.listener.start(nil)
 ```
 
 ```java+android+
 Manager manager = new Manager((Context) getApplicationContext(), Manager.DEFAULT_OPTIONS);
-LiteListener listener = new LiteListener(manager, 55000, null);
+Credentials credentials = new Credentials("hello", "pw123");
+listener = new LiteListener(manager, 55000, credentials);
 Thread thread = new Thread(listener);
 thread.start();
 ```
 
 ```c+
 Manager manager = Manager.SharedInstance;
-CouchbaseLiteTcpListener listener = new CouchbaseLiteTcpListener (manager, 55000);
-listener.Start();
+listener = new CouchbaseLiteTcpListener (manager, 55000, CouchbaseLiteTcpOptions.AllowBasicAuth);
+listener.SetPasswords(new Dictionary<string, string>() { { "hello", "pw123" } });
+listener.Start ();
 ```
+
+Make sure to keep a reference to the listener instance in your application otherwise it may be garbage collected and unexpectedly stop listening for 	incoming HTTP requests. In the example above, the listener instance is initialized as an instance property of the class.
+
+Basic authentication is the recommended approach for protecting database access on the LAN. The listening peer can optionally be initialized with a list of username/password pairs. The peer that intends to run the replication must provide the same username/password `http://username:password@hostname:port/dbname`.
 
 ## Discovery
 
@@ -70,7 +74,7 @@ This section covers two ways to discover peers:
 
 ### DNS-SD
 
-DNS Service Discovery is a [standard](https://www.ietf.org/rfc/rfc6763.txt)) for discovering services based on a service type. It's usually coupled with [Multicast DNS](https://tools.ietf.org/html/rfc6762), which allows devices to broadcast their existence and services on a LAN without requiring a DNS server. These technologies are usually referred to as Bonjour, which is Apple's name for its implementation, but they're available under other names on most operating systems. Android calls them Network Service Discovery.
+DNS Service Discovery is a [standard](https://www.ietf.org/rfc/rfc6763.txt) for discovering services based on a service type. It's usually coupled with [Multicast DNS](https://tools.ietf.org/html/rfc6762), which allows devices to broadcast their existence and services on a LAN without requiring a DNS server. These technologies are usually referred to as Bonjour, which is Apple's name for its implementation, but they're available under other names on most operating systems. Android calls them Network Service Discovery.
 
 The first step to using Bonjour for peer discovery is to advertise a service with the following properties:
 
@@ -79,224 +83,7 @@ The first step to using Bonjour for peer discovery is to advertise a service wit
 - **Port:** The port number the Listener is running on.
 - **Metadata:** Optional data that will be sent in the advertizment packets (the size limit is around 1.5KB).
 
-	> **Note:** Bonjour browsers are useful to monitor devices broadcasting a particular service on the LAN ([OS X Bonjour browser](http://www.macupdate.com/app/mac/13388/bonjour-browser), [iOS app](https://itunes.apple.com/gb/app/discovery-bonjour-browser/id305441017), [Windows browser](http://hobbyistsoftware.com/bonjourbrowser))
-
-Given a service type, you can use an API to browse for all services with that service type. Various callback methods are invoked as peers on the network go online and offline.
-
-![](../img/docs-peer-discover-diagram.png)
-
-Once the IP is resolved in step 3, the replication with that peer can be started in step 4. The following sections cover the different callbacks for the **advertiser** (device A) and **subscriber** (device B).
-
-#### Advertiser
-
-Start a listener with the following.
-
->**COMMENT:** In the Java and Android examples, also make it clear that the service instance has to be kept in a non-local variable. --Jens
-
-<div class="tabs"></div>
-
-```objective-c+
-[listener setBonjourName:@"chef123" type:@"_myapp._tcp"];
-```
-
-```swift+
-listener.setBonjourName("chef123", type: "_myapp._tcp")
-```
-
-```java+
-JmDNS jmdns = new JmDNS();
-  
-ServiceInfo serviceInfo = ServiceInfo.create("_myapp._tcp", "chef123", 55000, "A service description");
-jmdns.registerService(serviceInfo);
-```
-
-```android+
-// Create the NsdServiceInfo object, and populate it.
-NsdServiceInfo serviceInfo = new NsdServiceInfo();
-  
-serviceInfo.setServiceName("chef123");
-serviceInfo.setServiceType("_myapp._tcp);
-serviceInfo.setPort(55000);
-nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener);
-// registrationListener is an instance of NsdManager.RegistrationListener
-```
-
-```c+
-No code example is currently available.
-```
-
-#### Subscriber
-
->**COMMENT:** The code to do this is too involved to list in documentation, IMHO. Instead we should point people to a demo app. (Also, Apple and Google have sample code showing how to use their APIs.) --Jens
-
-To browse for peers on the network, each implementation has an asynchronous API to get notified as peers go online and offline from the network. You must implement the protocol or interface before starting the network discovery.
-
-- Bonjour: Implement the `NSNetServiceBrowserDelegate` protocol
-- NSD: Create a new instance of the `NsdManager.DiscoveryListener` class
-- JmDNS: Implement the `ServiceListener` interface
-
-After setting the listener or delegate, create a new instance of the discovery object.
-
-<div class="tabs"></div>
-
-```objective-c+
-NSNetServiceBrowser* browser = [NSNetServiceBrowser new];
-browser.includesPeerToPeer = YES;
-browser.delegate = self;
-[browser searchForServicesOfType:@"_myapp._tcp" inDomain:@"local."];
-```
-
-```swift+
-browser = NSNetServiceBrowser.new()
-browser.includesPeerToPeer = true
-browser.delegate = self
-browser.searchForServiceOfType("_myapp._tcp", inDomain: "local.")
-```
-
-```java+
-jmdns.addServiceListener("_myapp._tcp", new DiscoveryListener(database, jmdns, serviceName));
-```
-
-```android+
-mNsdManager.discoverServices("_myapp._tcp", NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
-// mDiscoveryListener is an instance of NsdManager.DiscoveryListener
-```
-
-```c+
-No code example is currently available.
-```
-
-#### Hostname resolution
-
-The hostname resolution can be done in the listener/protocol you have implemented previously.
-
->**COMMENT:** The ObjC/Swift code is incorrect. Resolving _every_ service is expensive and unnecessary; it can cause congestion on LANs. A service should only be resolved after the app has decided to open a connection to it.
-
-<div class="tabs"></div>
-
-```objective-c+
-- (void) netServiceBrowser:(NSNetServiceBrowser *)browser didFindService:(NSNetService *)service moreComing:(BOOL)moreComing {
-  // Start async resolve, to find service's hostname
-  service.delegate = self;
-  [service resolveWithTimeout:5];
-}
-```
-
-```swift+
-public func netServiceBrowser(browser: NSNetServiceBrowser, didFindService service:   NSNetService, moreComing: Bool) {
-  // Start async resolve, to find service's hostname
-  service.delegate = self
-  service.resolveWithTimeout(5.0)
-}
-```
-
-```java+
-@Override
-public void serviceAdded(ServiceEvent event) {
-  jmdns.requestServiceInfo(event.getType(), event.getName(), 10);
-}
-```
-
-```android+
-@Override
-public void onServiceFound(NsdServiceInfo service) {
-  nsdManager.resolveService(serviceInfo, resolveListener);
-  // Instance of NsdManager.ResolveListener
-}
-```
-
-```c+
-No code example is currently available.
-```
-
-When the IP is received, the corresponding method will get called at which point the replication can be started.
-
-<div class="tabs"></div>
-
-```objective-c+
-// NSNetService delegate callback
-- (void) netServiceDidResolveAddress:(NSNetService *)service {
-    // Construct the remote DB URL
-    NSURLComponents* components = [[NSURLComponents alloc] init];
-    components.scheme = @"http"; // Or "https" uf peer uses SSL
-    components.host = service.hostName;
-    components.port = [NSNumber numberWithInt:service.port];
-    components.path = [NSString stringWithFormat:@"/@%", remoteDatabaseName];
-    NSURL* url = [components URL];
-      
-    // Start replications
-    CBLReplication* push = [database createPushReplication:url];
-    CBLReplication* pull = [database createPullReplication:url];
-    [push start];
-    [pull start];
-}
-```
-
-```swift+
-// NSNetService delegate callback
-func netServiceDidResolveAddress(service: NSNetService) {
-    // Construct the remote DB URL
-    let components = NSURLComponents()
-    components.scheme = "http" // Or "https" if peer uses SSL
-    components.host = service.hostName!
-    components.port = service.port
-    components.path = "/" + remoteDatabaseName
-    let url = components.URL!
-    
-    // Start replications
-    let push = database?.createPushReplication(url)!
-    let pull = database?.createPullReplication(url)!
-    push?.start()
-    pull?.start()
-}
-```
-
-```java+
-@Override
-public void serviceResolved(ServiceEvent event) {
-  System.out.println("RESOLVED");
-  String[] serviceUrls = event.getInfo().getURLs();
-  try {
-    URL url = new URL(serviceUrls[0]);
-    Replication pullReplication = database.createPullReplication(url);
-    pullReplication.setContinuous(true);
-    pullReplication.start();
-    Replication pushReplication = database.createPushReplication(url);
-    pushReplication.setContinuous(true);
-    pushReplication.start();
-  } catch (IOException e){
-    throw new RuntimeException(e);
-  }
-}
-```
-
-```android+
-@Override
-public void onServiceResolved(NsdServiceInfo serviceInfo) {
-    Log.e(Application.TAG, "Resolve Succeeded. " + serviceInfo);
-    String remoteStringURL = String.format("http:/%s:%d/%s",
-            serviceInfo.getHost(),
-            serviceInfo.getPort(),
-            StorageManager.databaseName);
-    URL remoteURL = null;
-    try {
-        remoteURL = new URL(remoteStringURL);
-    } catch (MalformedURLException e) {
-        e.printStackTrace();
-    }
-    Database database = StorageManager.getInstance().database;
-    Replication push = database.createPushReplication(remoteURL);
-    Replication pull = database.createPullReplication(remoteURL);
-    push.setContinuous(true);
-    pull.setContinuous(true);
-    push.start();
-    pull.start();
-}
-```
-
-```c+
-No code example is currently available.
-```
+To browse for peers on the network, each implementation has an asynchronous API to get notified as peers go online and offline from the network. Given this method of device discovery is platform specific, we recommend to follow the guides below. Once a peer device is discovered and the hostname is resolved, you can start a push and/or pull replication in the same way you would with Sync Gateway.
 
 #### Resources
 
@@ -305,6 +92,10 @@ Useful resources to work with mDNS include:
 - **Bonjour for iOS and Mac applications:** The Couchbase Lite SDK exposes part of the Bonjour API for an easier integration. The official documentation for iOS and Mac applications can be found in the [NSNetService Programming Guide](https://developer.apple.com/library/mac/documentation/Networking/Conceptual/NSNetServiceProgGuide/Introduction.html).
 - **NSD for Android applications:** The de facto framework for Android is called Network Service Discovery (NSD) and is compatible with Bonjour since Android 4.1. The official guide can be found in the [Android NSD guide](https://developer.android.com/training/connect-devices-wirelessly/nsd.html).
 - **JmDNS:** Implementation in Java that can be used in Android and Java applications ([official repository](https://github.com/jmdns/jmdns)).
+
+#### Bonjour browsers
+
+Bonjour browsers are useful to monitor devices broadcasting a particular service on the LAN ([OS X Bonjour browser](http://www.macupdate.com/app/mac/13388/bonjour-browser), [iOS app](https://itunes.apple.com/gb/app/discovery-bonjour-browser/id305441017), [Windows browser](http://hobbyistsoftware.com/bonjourbrowser))
 
 ## Connecting
 
@@ -325,43 +116,7 @@ The replication algorithm keeps track of what was last synchronized with a parti
 
 ## Security
 
-Basic authentication is the recommended approach for protecting database access on the LAN. The listening peer must provide the username/password pair when instantiating the Listener.
-
-<div class="tabs"></div>
-
->**COMMENT:** This is important, and I think you should merge it into the above example code that instantiates the Listener.
-
-```objective-c+
-CBLListener* listener = [[CBLListener alloc] initWithManager:manager port:0];
-listener.passwords = @{@"hello": @"pw123"};
-[listener start:nil];  
-```
-
-```swift+
-var listener: CBLListener = CBLListener(manager: manager, port: 0)
-listener.passwords = ["hello": "pw123"]
-listener.start(nil)
-```
-
-```java+
-Credentials credentials = new Credentials("hello", "pw123");
-LiteListener liteListener = new LiteListener(manager, 0, credentials);
-liteListener.start();
-```
-
-```android+
-Credentials credentials = new Credentials("hello", "pw123");
-LiteListener liteListener = new LiteListener(manager, 0, credentials);
-liteListener.start();
-```
-
-```c+
-CouchbaseLiteTcpListener listener = new CouchbaseLiteTcpListener (manager, 0, CouchbaseLiteTcpOptions.AllowBasicAuth);
-listener.SetPasswords(new Dictionary<string, string>() { { "hello", "pw123" } });
-listener.Start ();
-```
-
-The peer that intends to run the replication must provide the same username/password http://username:password@hostname:port/dbname.
+In addition to using basic authentication, it is also possible to enable SSL over peer-to-peer connections.
 
 ### SSL for Peer-to-peer
 
