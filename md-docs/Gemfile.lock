@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/couchbaselabs/docs-style-guide.git
-  revision: 0dd1ee20bd6ec88138f7d17ebc65db88cb3c0a6e
+  revision: a9d4d5f478f53907cd2d8062382a9edcb72d8112
   specs:
     couchbase-theme (0.1.0)
       jekyll (~> 3.3)
