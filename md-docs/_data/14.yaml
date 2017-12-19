@@ -75,6 +75,8 @@
               path: guides/couchbase-lite/native-api/query/index.html
             - title: Replication
               path: guides/couchbase-lite/native-api/replication/index.html
+            - title: Peer-to-peer
+              path: guides/couchbase-lite/native-api/peer-to-peer/index.html
             - title: Model (iOS only)
               path: guides/couchbase-lite/native-api/model/index.html
         - title: Technical Notes
@@ -99,6 +101,8 @@
           path: guides/sync-gateway/server-integration/index.html
         - title: Deployment considerations
           path: guides/sync-gateway/deployment/index.html
+        - title: Upgrade
+          path: guides/sync-gateway/upgrade/index.html
         - title: Load Balancer
           path: guides/sync-gateway/nginx/index.html
         - title: Taking databases offline and online
