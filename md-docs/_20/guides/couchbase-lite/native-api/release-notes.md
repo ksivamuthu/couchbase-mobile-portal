@@ -6,6 +6,46 @@ permalink: references/couchbase-lite/release-notes/index.html
 
 <block class="all" />
 
+### Developer build 21
+
+<block class="objc swift" />
+
+- Major API updates, some highlighted changes include:
+    - Database.getDocument(id) will also return nil if the document was deleted.
+    - Use term ‘value’ instead of ‘object’ for value/object based type setters.
+    - Allows to specify a dispatch queue for posting changes when adding a change listener. This change has applied to Database, Replicator, and Query.
+    - Removed LiveQuery and Query itself can be listened for changes.
+    - Reorganize Query expressions - having Meta, Array, and Full-text expression into separated classes.
+    - Support Full-text match on multiple indexed properties.
+- Revise all Objective-C and Swift API to inline with the standard naming convention.
+- Default conflict resolver algorithm changes as follows:
+    * Deletion always wins.
+    * Longest generation wins or Max RevID wins if the generations are the same.
+- Database is now thread safe.
+
+<block class="java" />
+
+- New Immutable Document API (Breaking API Changes)
+- New Query API (Breaking API Changes)
+  - Query syntax changes
+  - LiveQuery start automatically by adding the listener
+- Bug fixes
+
+<block class="net" />
+
+- Fairly sweeping API changes to conform to the internal specification (in other words, to have as close to the same signatures as Java and Swift as possible).  A final review is underway and hopefully not too many more changes are needed.  Here are a few big ones:
+    - Replication, Database, and IQuery `event`s are no longer events, but now have methods (with the same signature as event handlers) registered via `AddChangeListener` (with an overload to accept a `TaskScheduler`, and now where possible the support assemblies provide a main thread task scheduler for convenience).
+    - `IQuery.Run()` -> `IQuery.Execute()`
+    - Mutable objects `Set()`, `Add()`. and `Insert()` overloads have been renamed (`Set(string, object)` -> `SetValue(string, object)`, `Set(string, string)` -> `SetString(string, string)`, etc)
+    - `Expression.Meta().ID` -> `Meta.ID`
+    - Query functions that operate on arrays moved to `ArrayFunction` class
+    - No more `ToLive()` function on queries, and no more `ILiveQuery`.  Queries are now automatically live if a change listener is added to them (No call to `Run()` needed for this behavior).  They will stop firing if all change listeners are removed, or they are disposed.
+    - Full text searching has been fleshed out more, and `Match()` has been removed from `IExpression`.  Now the way to do it is to use `FullTextExpression.Index(string).Match(searchString)` where the `Index` argument is the name of the full text index you want to use.
+    - Creating indexes now skips a step and takes arguments directly (`Index.ValueIndex().On(...)` -> `Index.ValueIndex(...)`)
+    - `Fragment` and `MutableFragment` are replaced by interfaces `IFragment` and `IMutableFragment`.  The methods of getting and setting values have been converted to properties (`ToFloat()` / `SetFloat()` -> `Float`)
+
+<block class="all" />
+
 ### Developer build 20
 
 <block class="objc swift" />

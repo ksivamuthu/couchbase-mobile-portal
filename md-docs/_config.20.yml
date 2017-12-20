@@ -3,18 +3,18 @@ collections:
     output: true
     permalink: /:path:output_ext
 version: '2.0'
-cbl_version: '2.0 DB20'
+cbl_version: '2.0 DB21'
 sg_version: '1.5'
-ios_dev_build: '2.0DB020'
-android_dev_build: '2.0.0-DB020'
-dev_build_release_date: 'November 21, 2017'
-objc_dev_build_download_link: https://packages.couchbase.com/releases/couchbase-lite/ios/2.0DB20/couchbase-lite-objc_community_2.0DB20.zip
-swift_dev_build_download_link: https://packages.couchbase.com/releases/couchbase-lite/ios/2.0DB20/couchbase-lite-swift_community_2.0DB20.zip
+ios_dev_build: '2.0DB021'
+android_dev_build: '2.0.0-DB021'
+dev_build_release_date: 'December 20, 2017'
+objc_dev_build_download_link: https://packages.couchbase.com/releases/couchbase-lite/ios/2.0DB21/couchbase-lite-objc_community_2.0DB21.zip
+swift_dev_build_download_link: https://packages.couchbase.com/releases/couchbase-lite/ios/2.0DB21/couchbase-lite-swift_community_2.0DB21.zip
 references:
-  objc: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db020/'
-  swift: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db020/'
-  csharp: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db020/'
-  java: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db020/'
+  objc: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/'
+  swift: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021/'
+  csharp: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/'
+  java: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/'
 platform_support:
   ios: iOS 9.0+
   tvos: tvOS 9.0+
