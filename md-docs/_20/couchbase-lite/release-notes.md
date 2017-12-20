@@ -10,6 +10,19 @@ permalink: references/couchbase-lite/release-notes/index.html
 
 <block class="objc swift" />
 
+- Major API updates, some highlighted changes include:
+    - Database.getDocument(id) will also return nil if the document was deleted.
+    - Use term ‘value’ instead of ‘object’ for value/object based type setters.
+    - Allows to specify a dispatch queue for posting changes when adding a change listener. This change has applied to Database, Replicator, and Query.
+    - Removed LiveQuery and Query itself can be listened for changes.
+    - Reorganize Query expressions - having Meta, Array, and Full-text expression into separated classes.
+    - Support Full-text match on multiple indexed properties.
+- Revise all Objective-C and Swift API to inline with the standard naming convention.
+- Default conflict resolver algorithm changes as follows:
+    * Deletion always wins.
+    * Longest generation wins or Max RevID wins if the generations are the same.
+- Database is now thread safe.
+
 <block class="java" />
 
 - New Immutable Document API (Breaking API Changes)
