@@ -52,6 +52,7 @@
         - title: Scale
           path: training/deploy/scale/index.html
 - title: Guides
+  open: true
   path: guides/index.html
   items:
     - title: Data Modeling
@@ -153,6 +154,7 @@
         - title: Static Providers
           path: guides/authentication/static-providers/index.html
 - title: API References
+  open: true
   path: references/index.html
   items:
     - title: Couchbase Lite
