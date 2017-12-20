@@ -10,31 +10,91 @@ permalink: guides/couchbase-lite/native-api/query/index.html
 
 Database queries have changed significantly. Instead of the map/reduce algorithm used in 1.x, they're now based on expressions, of the form "return ____ from documents where \_\_\_\_, ordered by \_\_\_\_", with semantics based on Couchbase Server's N1QL query language. If you've used {% tx Core Data|Core Data|LINQ|LINQ %}, or other query APIs based on SQL, you'll find this familiar.
 
+There are several parts to specifying a query:
+
+- SELECT: specifies the projection, which is the part of the document that is to be returned.
+- FROM: specifies the database to query the documents from.
+- JOIN: specifies the matching criteria in which to join multiple documents.
+- WHERE: specifies the query criteria that the result must satisfy.
+- GROUP BY: specifies the query criteria to group rows by.
+- ORDER BY: specifies the query criteria to sort the rows in the result.
+
+## Indexing
+
+Before we begin querying documents, let's briefly mention the importance of having a query index. A query can only be fast if there's a pre-existing database index it can search to narrow down the set of documents to examine.
+
+The following example create a new index for the `type` and `name` properties.
+
+```json
+{
+    "_id": "hotel123",
+    "type": "hotel",
+    "name": "Apple Droid"
+}
+```
+
+<block class="swift" />
+
+```swift
+database.createIndex(Index.valueIndex().on(
+                ValueIndexItem.expression(Expression.property("type")),
+                ValueIndexItem.expression(Expression.property("name"))),
+         withName: "TypeNameIndex")
+```
+
+<block class="net" />
+
+```csharp
+database.CreateIndex("TypeNameIndex", Index.ValueIndex().On(
+	ValueIndexItem.Expression(Expression.Property("type")),
+        ValueIndexItem.Expression(Expression.Property("name"))));
+```
+
+<block class="all" />
+
+If there are multiple expressions, the first one will be the primary key, the second the secondary key, etc.
+
+> **Note:** Every index has to be updated whenever a document is updated, so too many indexes can hurt performance. Thus, good performance depends on designing and creating the *right* indexes to go along with your queries.
+
 ## SELECT statement
 
-With the SELECT statement, you can query and manipulate JSON data.
+With the SELECT statement, you can query and manipulate JSON data. With projections, you retrieve just the fields that you need and not the entire document. This is especially useful when querying for a large dataset as it results in shorter processing times and better performance.
 
-The following example queries the database for users who are not administrators and returns an array with the user's name for each user that satisfies the conditions.
+A SelectResult represents a single return value of the query statement. Documents in Couchbase Lite comprise of the document properties specified as a Dictionary of Key-Value pairs and associated metadata. The metadata consists of document Id and sequence Id associated with the Document. When you query for a document, the document metadata is not returned by default. You will need to explicitly query for the metadata.
+
+- `SelectResult.all()`: Returns all properties associated with a Document.
+- `SelectResult(Expression)`: Returns properties of a Document based on the Expression.
+- `SelectResult.expression(Expression.meta().id)`: Return Document Id.
+- `SelectResult.expression(Expression.meta().sequence)`: Returns sequence Id (used in replications).
+
+You can specify a comma separated list of `SelectResult` expressions in the select statement of your Query. For instance the following select statement queries for the document `_id` as well as the `type` and `name` properties of all documents in the database. In the query result, we print the `_id` and `name` properties of each row using the property name getter method.
+
+```json
+{
+	"_id": "hotel123",
+	"type": "hotel",
+	"name": "Apple Droid"
+}
+```
 
 <block class="swift" />
 
 ```swift
 let query = Query
-	.select(SelectResult.expression(Expression.property("name")))
-	.from(DataSource.database(database))
-	.where(
-		Expression.property("type").equalTo("user")
-		.and(Expression.property("admin").equalTo(false)
+	.select(
+		SelectResult.expression(Expression.meta().id),
+		SelectResult.expression(Expression.property("type")),
+		SelectResult.expression(Expression.property("name"))
 	)
-)
+	.from(DataSource.database(database))
 
 do {
-	let rows = try query.run()
-	for row in rows {
-		print("user name :: \(row.string(forKey: "name")!)")
+	for row in try query.run() {
+		print("document id :: \(row.string(forKey: "id"))")
+		print("document name :: \(row.string(forKey: "name"))")
 	}
-} catch let error {
-	print(error.localizedDescription)
+} catch {
+	print(error)
 }
 ```
 
@@ -56,17 +116,17 @@ for (CBLQueryRow *row in rows) {
 <block class="csharp" />
 
 ```csharp
-var query = Query.Select()
+using(var query = Query.Select(SelectResult.Expression(Expression.Property("name")))
 	.From(DataSource.Database(database))
 	.Where(
 		Expression.Property("type").EqualTo("user")
 		.And(Expression.Property("admin").EqualTo(false))
-	);
-
-var rows = query.Run();
-foreach(var row in rows)
-{
-	Console.WriteLine($"doc ID :: ${row.DocumentID}");
+	))
+using(var rows = query.Run()) {
+    foreach(var row in rows)
+    {
+	Console.WriteLine($"user name :: ${row.GetString(0)}");
+    }
 }
 ```
 
@@ -74,11 +134,11 @@ foreach(var row in rows)
 
 ```java
 Query query = Query.select(SelectResult.expression(Expression.property("name")))
-		.from(DataSource.database(database))
-		.where(
-			Expression.property("type").equalTo("user")
-			.and(Expression.property("admin").equalTo(false))
-		);
+	.from(DataSource.database(database))
+	.where(
+		Expression.property("type").equalTo("user")
+		.and(Expression.property("admin").equalTo(false))
+	);
 
 ResultSet rows = null;
 try {
@@ -94,45 +154,374 @@ while ((row = rows.next()) != null) {
 
 <block class="all" />
 
-With projections, you retrieve just the fields that you need and not the entire document. This is especially useful when querying for a large dataset as it results in shorter processing times and better performance.
-
-There are several parts to specifying a query:
-
-- SELECT: specifies the projection, which is the part of the document that is to be returned.
-- FROM: specifies the database to query the documents from.
-- WHERE: specifies the query criteria that the result must satisfy.
-- GROUP BY: specifies the query criteria to group rows by.
-- ORDER BY: specifies the query criteria to sort the rows in the result.
-
-<block class="all" />
-
-### META function
-
-Meta functions retrieve information about the document (`id` or `sequence` number) to be included in the query result.
+The `SelectResult.all()` method can be used to query all the properties of a document. In this case, the document in the result is embedded in a dictionary where the key is the database name. The following snippet shows the same query using `SelectResult.all()` and the result in JSON.
 
 <block class="swift" />
 
-The following example uses the `META().id` function to find all the document of type "airline" and returns the document ID for each one.
-
 ```swift
-let query = Query.select(
-	SelectResult.expression(Expression.meta().id)
-)
-.from(DataSource.database(database!))
-.where(
-	Expression.property("type").equalTo("airport")
-)
-do {
-	for row in try query.run() {
-		print("Get docID by property name \(row.string(forKey: "id")))")
-		print("Get docID by column number \(row.string(at: 0)))")
+let query = Query
+	.select(SelectResult.all())
+	.from(DataSource.database(database))
+```
+
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+```csharp
+var query = Query
+    .Select(SelectResult.All())
+    .From(DataSource.Database(database));
+```
+
+<block class="java" />
+
+
+
+<block class="all" />
+
+```json
+[
+	{
+		"travel-sample": {
+			"callsign": "MILE-AIR",
+			"country": "United States",
+			"iata": "Q5",
+			"icao": "MLA",
+			"id": 10,
+			"name": "40-Mile Air",
+			"type": "airline"
+		}
+	},
+	{
+		"travel-sample": {
+			"callsign": "TXW",
+			"country": "United States",
+			"iata": "TQ",
+			"icao": "TXW",
+			"id": 10123,
+			"name": "Texas Wings",
+			"type": "airline"
+		}
 	}
-} catch let error {
-	print(error.localizedDescription)
+]
+```
+
+<block class="all" />
+
+## WHERE statement
+
+Similar to SQL, you can use the where clause to filter the documents to be returned as part of the query. The select statement takes in an `Expression`. You can chain any number of Expressions in order to implement sophisticated filtering capabilities.
+
+### Comparison
+
+In the example below, we use `Expression.property` type in conjunction with `equalTo` comparison expression to filter documents based on a specific document property.
+
+```json
+{
+	"_id": "hotel123",
+	"type": "hotel",
+	"name": "Apple Droid"
 }
 ```
 
-The documentID is then retrieved in the query result using the property name getter (`row.string(forKey: "id")`) or projected column getter (`row.string(at: 0)`).
+<block class="swift" />
+
+```swift
+let query = Query
+	.select(SelectResult.all())
+	.from(DataSource.database(database))
+	.where(Expression.property("type").equalTo("hotel"))
+	.limit(10)
+
+do {
+	for row in try query.run() {
+		if let dict = row.dictionary(forKey: "travel-sample") {
+			print("document name :: \(dict.string(forKey: "name"))")
+		}
+	}
+} catch {
+	print(error)
+}
+```
+
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+```csharp
+using(var query = Query.Select(SelectResult.Expression(Expression.Property("name")))
+	.From(DataSource.Database(database))
+	.Where(Expression.Property("type").EqualTo("hotel"))
+	.Limit(10))
+using(var rows = query.Run()) {
+    foreach(var row in rows)
+    {
+        Console.WriteLine($"user name :: ${row.GetString("name")}");
+    }
+}
+```
+
+<block class="java" />
+
+
+
+<block class="all" />
+
+The list of supported comparison operators include, among others, `lessThan`, `lessThanOrEqualTo`, `greaterThan`, `greaterThanOrEqualTo`, `equalTo`, `notEqualTo`.
+
+### Collection Operators
+
+Collection operators are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
+
+```json
+{
+	"_id": "hotel123",
+	"name": "Apple Droid",
+	"public_likes": ["Armani Langworth", "Elfrieda Gutkowski", "Maureen Ruecker"]
+}
+```
+
+<block class="swift" />
+
+```swift
+let query = Query
+	.select(
+		SelectResult.expression(Expression.meta().id),
+		SelectResult.expression(Expression.property("name")),
+		SelectResult.expression(Expression.property("public_likes"))
+	)
+	.from(DataSource.database(database))
+	.where(Expression.property("type").equalTo("hotel")
+		.and(Function.arrayContains(Expression.property("public_likes"), value: "Armani Langworth"))
+	)
+
+do {
+	for row in try query.run() {
+		print("public_likes :: \(row.array(forKey: "public_likes")?.toArray())")
+	}
+}
+```
+
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+```csharp
+using(var query = Query.Select(
+        SelectResult.Expression(Expression.Meta().ID),
+	SelectResult.Expression(Expression.Property("name")),
+	SelectResult.Expression(Expression.Property("public_likes")))
+	.From(DataSource.Database(database))
+	.Where(Expression.Property("type").EqualTo("hotel")
+	    .And(Function.ArrayContains(Expression.Property("public_likes"), "Armani Langworth"))))
+using(var rows = query.Run()) {
+    foreach(var row in rows)
+    {
+        // Serialize the array first to get meaningful string output
+        Console.WriteLine($"public_likes :: ${row.GetArray("public_likes")}");
+    }
+}
+```
+
+<block class="java" />
+
+
+
+<block class="all" />
+
+### Pattern Matching
+
+The `like` and `regex` expressions can be used for string matching. The former is typically used for case insensitive matches while the `regex` expressions is used for case sensitive matches.
+
+In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
+
+<block class="swift" />
+
+```swift
+let query = Query
+	.select(
+		SelectResult.expression(Expression.meta().id),
+		SelectResult.expression(Expression.property("country")),
+		SelectResult.expression(Expression.property("name"))
+	)
+	.from(DataSource.database(db))
+	.where(Expression.property("type").equalTo("landmark")
+		.and( Expression.property("name").like("Royal engineers museum"))
+	)
+	.limit(10)
+
+do {
+	for row in try query.run() {
+		print("name property :: \(row.string(forKey: "name")!)")
+	}
+}
+```
+
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+
+```csharp
+using(var query = Query.Select(
+        SelectResult.Expression(Expression.Meta().ID),
+	SelectResult.Expression(Expression.Property("country")),
+	SelectResult.Expression(Expression.Property("name")))
+	.From(DataSource.Database(database))
+	.Where(Expression.Property("type").EqualTo("landmark")
+	    .And(Expression.Property("name").Like("Royal engineers museum")))
+	.Limit(10))
+using(var rows = query.Run()) {
+    foreach(var row in rows)
+    {
+        // Serialize the array first to get meaningful string output
+        Console.WriteLine($"public_likes :: ${row.GetArray("public_likes")}");
+    }
+}
+```
+
+<block class="java" />
+
+
+
+<block class="all" />
+
+### Wildcard Match
+
+We can use `%` sign within a `like` expression to do a wildcard match against zero or more characters. Using wildcards allows you to have some fuzziness in your search string.
+
+In the example below, we are looking for documents of `type` "landmark" where the name property matches any string that begins with "eng" followed by zero or more characters, the letter "e", followed by zero or more characters. The following query will return "landmark" type documents with name matching "Engineers", "engine", "english egg" , "England Eagle" and so on. Notice that the matches may span word boundaries.
+
+<block class="swift" />
+
+```swift
+let query = Query
+	.select(
+		SelectResult.expression(Expression.meta().id),
+		SelectResult.expression(Expression.property("country")),
+		SelectResult.expression(Expression.property("name"))
+	)
+	.from(DataSource.database(db))
+	.where(Expression.property("type").equalTo("landmark")
+		.and( Expression.property("name").like("eng%e%")))
+	.limit(limit)
+```
+
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+```csharp
+var query = Query.Select(
+    SelectResult.Expression(Expression.Meta().ID)
+    SelectResult.Expression(Expression.Property("country")),
+    SelectResult.Expression(Expression.Property("name")))
+	.From(DataSource.Database(database))
+	.Where(Expression.Property("type").EqualTo("landmark")
+	    .And(Expression.Property("name").Like("eng%e%")))
+	.Limit(limit)
+```
+
+<block class="java" />
+
+
+
+<block class="all" />
+
+### Wildcard Character Match
+
+We can use `_` sign within a like expression to do a wildcard match against a single character.
+
+In the example below, we are looking for documents of type "landmark" where the `name` property matches any string that begins with "eng" followed by exactly 4 wildcard characters and ending in the letter "r".
+The following query will return "landmark" `type` documents with the `name` matching "Engineer", "engineer" and so on.
+
+<block class="swift" />
+
+```swift
+let query = Query
+	.select(SelectResult.expression(Expression.meta().id),
+		SelectResult.expression(Expression.property("country")),
+		SelectResult.expression(Expression.property("name")))
+	.from(DataSource.database(db))
+	.where(Expression.property("type").equalTo("landmark")
+		.and(Expression.property("name").like("eng____r")))
+	.limit(limit)
+```
+
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+```csharp
+var query = Query.Select(
+    SelectResult.Expression(Expression.Meta().ID),
+    SelectResult.Expression(Expression.Property("country")),
+    SelectResult.Expression(Expression.Property("name")))
+    .From(DataSource.Database(database))
+    .Where(Expression.Property("type").EqualTo("landmark")
+        .And(Expression.Property("name").Like("eng____r")))
+    .Limit(limit))
+```
+
+<block class="java" />
+
+
+
+<block class="all" />
+
+### Regex Match
+
+The `regex` expression can be used for case sensitive matches. Similar to wildcard `like` expressions, `regex` expressions based pattern matching allow you to have some fuzziness in your search string.
+
+In the example below, we are looking for documents of `type` "landmark" where the name property matches any string (on word boundaries) that begins with "eng" followed by exactly 4 wildcard characters and ending in the letter "r".
+The following query will return "landmark" type documents with name matching "Engine", "engine" and so on. Note that the `\b` specifies that the match must occur on word boundaries.
+
+<block class="swift" />
+
+```swift
+let query = Query
+	.select(
+		SelectResult.expression(Expression.meta().id),
+		SelectResult.expression(Expression.property("name"))
+	)
+	.from(DataSource.database(db))
+	.where(Expression.property("type").equalTo("landmark")
+		.and(Expression.property("name").regex("\\bEng.*e\\b")))
+	.limit(limit)
+```
+
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+```csharp
+var query = Query.Select(
+    SelectResult.Expression(Expression.Meta().ID),
+    SelectResult.Expression(Expression.Property("name")))
+    .From(DataSource.Database(db))
+    .Where(Expression.Property("type").EqualTo("landmark")
+        .And(Expression.Property("name").Regex("\\bEng.*e\\b")))
+    .Limit(limit))
+```
+
+<block class="java" />
+
+
 
 <block class="all" />
 
@@ -140,9 +529,9 @@ The documentID is then retrieved in the query result using the property name get
 
 The JOIN clause enables you to create new input objects by combining two or more source objects.
 
-<block class="swift" />
-
 The following example uses a JOIN clause to find the airline details which have routes that start from RIX. This example JOINS the document of type "route" with documents of type "airline" using the document ID (`_id`) on the "airline" document and  `airlineid` on the "route" document.
+
+<block class="swift" />
 
 ```swift
 let query = Query.select(
@@ -169,15 +558,47 @@ let query = Query.select(
 )
 ```
 
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+```csharp
+var query = Query.Select(
+        SelectResult.Expression(Expression.Property("name").From("airline")),
+        SelectResult.Expression(Expression.Property("callsign").From("airline")),
+        SelectResult.Expression(Expression.Property("destinationairport").From("route")),
+        SelectResult.Expression(Expression.Property("stops").From("route")),
+        SelectResult.Expression(Expression.Property("airline").From("route")))
+    .From(DataSource.Database(database).As("airline"))
+    .Joins(Join.DefaultJoin(DataSource.Database(database).As("route"))
+        .On(Expression.Meta().ID.From("airline").EqualTo(Expression.Property("airlineid").From("route"))))
+    .Where(
+        Expression.Property("type").From("route").EqualTo("route")
+	    .And(Expression.Property("type").From("airline").EqualTo("airline"))
+	    .And(Expression.Property("sourceairport").From("route").EqualTo("RIX")))
+```
+
+<block class="java" />
+
+
+
 <block class="all" />
 
-## GROUPBY statement
+## GROUP BY statement
 
-You can perform further processing on the data in your result set before the final projection is generated.
+You can perform further processing on the data in your result set before the final projection is generated. The following example looks for the number of airports at an altitude of 300 ft or higher and groups the results by country and timezone.
 
-<block class="swift" />
-
-The following example looks for the number of airports at an altitude of 300 ft or higher and groups the results by country and timezone.
+```json
+{
+	"_id": "airport123",
+	"type": "airport",
+	"country": "United States",
+	"geo": { "alt": 456 },
+	"tz": "America/Anchorage"
+}
+```
 
 <block class="swift" />
 
@@ -186,148 +607,118 @@ let query = Query.select(
 	SelectResult.expression(Function.count("*")),
 	SelectResult.expression(Expression.property("country")),
 	SelectResult.expression(Expression.property("tz"))
-)
-.from(DataSource.database(database!))
-.where(
-	Expression.property("type").equalTo("airport")
-	.and(Expression.property("geo.alt").greaterThanOrEqualTo(300))
-)
-.groupBy(
-	Expression.property("country"),
-	Expression.property("tz")
-)
+	)
+	.from(DataSource.database(database))
+	.where(
+		Expression.property("type").equalTo("airport")
+				.and(Expression.property("geo.alt").greaterThanOrEqualTo(300))
+	)
+	.groupBy(
+		Expression.property("country"),
+		Expression.property("tz")
+	)
+
+do {
+	for row in try query.run() {
+		print("There are \(row.int(forKey: "$1")) airports on the \(row.string(forKey: "tz")!) timezone located in \(row.string(forKey: "country")!) and above 300 ft")
+	}
+}
 ```
 
-#### Query methods
-
-<block class="swift" />
-
-{% include swift/query.html %}
-
-<block class="swift" />
-
-#### Expression methods
-
-<block class="swift" />
-
-{% include swift/expression.html %}
-
 <block class="objc" />
 
-#### Parameters
 
-The list of available expressions can be found on the API reference of the `CBLQueryExpression` class.
-
-[//]: # (TODO: #### Return Values)
-
-[//]: # (TODO: #### Aggregation and Grouping)
-
-<block class="objc" />
-
-### NSPredicate API
-
-The current Developer Build also supports the [NSPredicate](https://developer.apple.com/reference/foundation/nspredicate) query API. The {% st database.createQuery(where: NSPredicate?, groupBy: [Expression]?, having: Predicate?, returning: [Expression]?, distinct: Bool, orderBy: [SortDescriptor]?)|[database createQueryWhere:]|c|d %} method can be used to create an `NSPredicate` query.
-
-Similarly to Core Data, we support the same Core Foundation classes:
-
-1. Document criteria are expressed as an NSPredicate
-2. The sort order is an array of NSSortDescriptors
-3. The properties to return is an array of NSExpressions.
-
-For convenience, you can provide these as NSStrings: document criteria will be interpreted as NSPredicate format strings, properties to return as NSExpression format strings, and sort orders as key-paths (optionally prefixed with “-” to indicate descending order.)
-
-A CBLPredicateQuery object can be created by calling -createQueryWhere: method on CBLDatabase. After creating a query you can set additional attributes like grouping and ordering before running it.
-
-#### Parameters
-
-A query can have placeholder parameters that are filled in when it's run. This makes the query more flexible, and it improves performance since the query only has to be compiled once (see below.)
-
-Parameters are specified in the usual way when constructing the NSPredicate. In the string-based syntax they're written as “`$`”-prefixed identifiers, like “`$MinPrice`”. (The “`$`” is not considered part of the parameter name.) If constructing the predicate as an object tree, you call `+[NSExpression expressionForVariable:]`.
-
-The compiled CBLPredicateQuery has a property `parameters` , an NSDictionary that maps parameter names (minus the “`$`”!) to values. The values need to be JSON-compatible types. All parameters specified in the query need to be given values via the `parameters` property before running the query, otherwise you'll get an error.
-
-#### Return Values
-
-As in 1.x, running a CBLQuery returns an enumeration of CBLQueryRow objects. Each row's `documentID` property gives the ID of the associated document, and its `document` property loads the document object (at the cost of an extra database lookup.) But a query row can also return values directly, which is often faster than having to load the whole document.
-
-To return values directly from query rows, set the query object's `returning:` property to an array of NSExpressions (or strings that parse to NSExpressions.) It's common to use key-paths, to return document properties directly, but you can add logic or computation.
-
-To access the values returned by a CBLQueryRow, call any of the methods `-objectAtIndex:`, `integerAtIndex:`, etc., where the index corresponds to the index in the query's `returning:` array. Use the most appropriate method for the type of value returned; the numeric/boolean accessors are more efficient, as well as more convenient, because they avoid allocating NSNumber objects. `-stringAtIndex:` will return nil if the value is not a string (avoiding the possibility of an exception), and `-dateAtIndex:` additionally converts an ISO-8601 date string into an NSDate for you.
-
-#### Aggregation and Grouping
-
-If the return values of a query include calls to aggregate functions like `count()`, `min()` or `max()`, all of its rows will be combined together into one, with the aggregate functions operating on their parameters from all the rows.
-
-If you set the query's `groupBy` property, all rows that have the same values of the expressions given in that property will be grouped together. In this case, aggregate functions will operate on the rows in a group, not all the rows of the query.
-
-<block class="csharp java" />
-
-### Live Query
-
-A live query stays active and monitors the database and query index for changes. When there's a change it re-runs itself automatically, and if the query results changed it notifies any observers. The following code monitors query changes and prints the number of rows when a change occurs.
 
 <block class="csharp" />
 
 ```csharp
-var liveQuery = query.ToLive();
-liveQuery.Changed += (sender, e) => {
-	Console.WriteLine($"Number of rows :: {e.Rows.Count}");
-};
-liveQuery.Run();
+using(var query = Query.Select(
+        SelectResult.Expression(Function.Count("*")),
+	SelectResult.Expression(Expression.Property("country")),
+	SelectResult.Expression(Expression.Property("tz")))
+    .From(DataSource.Database(database))
+    .Where(
+        Expression.Property("type").EqualTo("airport")
+	    .And(Expression.Property("geo.alt").GreaterThanOrEqualTo(300)))
+    .GroupBy(
+        Expression.Property("country"),
+	Expression.Property("tz")))
+using(var rows = query.Run()) {
+    foreach(var row in rows) {
+        Console.WriteLine($"There are {row.GetInt("$1")} airports on the {row.GetString("tz")} timezone located in " +
+	    $"{row.GetString("country")} and above 300 ft");
+    }
+}
 ```
 
 <block class="java" />
 
-```java
-final LiveQuery liveQuery = query.toLive();
-liveQuery.addChangeListener(new LiveQueryChangeListener() {
-	@Override
-	public void changed(LiveQueryChange change) {
-		Log.d("query", String.format("Number of rows :: %s", change.getRows().toString()));
-	}
-});
-liveQuery.run();
+
+
+<block class="all" />
+
+```text
+There are 138 airports on the Europe/Paris timezone located in France and above 300 ft
+There are 29 airports on the Europe/London timezone located in United Kingdom and above 300 ft
+There are 50 airports on the America/Anchorage timezone located in United States and above 300 ft
+There are 279 airports on the America/Chicago timezone located in United States and above 300 ft
+There are 123 airports on the America/Denver timezone located in United States and above 300 ft
 ```
 
 <block class="all" />
 
-## Collection Operators
+## ORDER BY statement
 
-Collection operators enable you to evaluate expressions over collections or objects.
-
-### IN operator
-
-The `IN` operator evaluates to `TRUE` if the right-side value is an array and directly contains the left-side value.
+It is possible to sort the results of a query based on a given expression result. The example below returns documents of type equal to "hotel" sorted in ascending order by the value of the title property.
 
 <block class="swift" />
 
-The following example uses the `IN` operator to find the airlines that are based in France or the United States.
-
 ```swift
-let query = Query.select(
-		SelectResult.expression(Expression.property("name"))
-	)
-	.from(DataSource.database(database!))
-	.where(
-		Expression.property("country").in(countries)
-		.and(Expression.property("type").equalTo("airline"))
-	)
+let query = Query
+	.select(
+		SelectResult.expression(Expression.meta().id),
+		SelectResult.expression(Expression.property("title")))
+	.from(DataSource.database(database))
+	.where(Expression.property("type").equalTo("hotel"))
+	.orderBy(Ordering.property("title").ascending())
+	.limit(limit)
 ```
 
-Sometimes the conditions you want to filter need to be applied to the arrays nested inside the document. The `SATISFIES` keyword is used to specify the filter condition.
+<block class="objc" />
+
+
+
+<block class="csharp" />
+
+```csharp
+var query = Query.Select(
+        SelectResult.Expression(Expression.Meta().ID),
+	SelectResult.Expression(Expression.Property("title")))
+    .From(DataSource.Database(database))
+    .Where(Expression.Property("type").EqualTo("hotel"))
+    .OrderBy(Ordering.Property("title").Ascending())
+    .Limit(limit);
+```
+
+<block class="java" />
+
+
 
 <block class="all" />
 
-### Query Performance
+```text
+Aberdyfi
+Achiltibuie
+Altrincham
+Ambleside
+Annan
+Ardèche
+Armagh
+Avignon
+```
 
-Queries have to be parsed and compiled into an optimized form for the underlying database to execute. This doesn't take long, but it's best to create a {% st Query|CBLQuery|IQuery|Query %} once and then reuse it, instead of recreating it every time (of course, only reuse a {% st Query|CBLQuery|IQuery|Query %} on the same thread/queue you created it on).
+<block class="all" />
 
-Expression-based queries have different performance-vs-flexibility trade offs than map/reduce queries. Map functions can be unintuitive to design, and an individual map function isn't very flexible (all you can control is the range of keys). But any map/reduce query will be fast because, by definition, it's just a single traversal of an index.
+## Live Query
 
-On the other hand, expression-based queries are easier to design and more flexible, but there's no guarantee of performance. In fact, by default *all* queries will be unoptimized, because they have to make a linear scan of the entire database, testing every document against the criteria. In a small database you might not notice, but as the database grows, query time will increase linearly. So how do you make a query faster? By creating any necessary indexes.
-
-### Indexing
-
-A query can only be fast if there's a pre-existing database index it can search to narrow down the set of documents to examine. On the other hand, every index has to be updated whenever a document is updated, so too many indexes can hurt performance. Thus, good performance depends on designing and creating the *right* indexes to go along with your queries.
-
-To create an index, call {% st createIndex(expressions: [Expression])|createIndexOn:error:|CreateIndex()|d %} passing an array of one or more strings. These are most often key-paths, but they don't have to be. If there are multiple expressions, the first one will be the primary key, the second the secondary key, etc.
+A live query stays active and monitors the database and query index for changes. When there's a change it re-runs itself automatically, and if the query results changed it notifies any observers.
