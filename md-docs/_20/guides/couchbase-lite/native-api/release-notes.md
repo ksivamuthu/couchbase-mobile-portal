@@ -25,11 +25,17 @@ permalink: references/couchbase-lite/release-notes/index.html
 
 <block class="java" />
 
-- New Immutable Document API (Breaking API Changes)
-- New Query API (Breaking API Changes)
-  - Query syntax changes
-  - LiveQuery start automatically by adding the listener
-- Bug fixes
+- Major API updates, some highlighted changes include:
+   - Database.getDocument(id) will also return nil if the document was deleted.
+   - Use term `Value` instead of `Object` for `Value/Object` based typesetters.
+   - Allows specifying an `Executor` for posting changes when adding a change listener. This change has applied to Database, Replicator, and Query.
+   - Removed LiveQuery and Query itself can listen for changes.
+   - Reorganize Query expressions - having Meta, Array, and Full-text expression into separated classes.
+   - Support Full-text match on multiple indexed properties.
+- Revise API to inline with the standard naming convention.
+- Default conflict resolver algorithm changes as follows:
+   - Deletion always wins.
+   - Longest generation wins or Max RevID wins if the generations are the same.
 
 <block class="net" />
 
