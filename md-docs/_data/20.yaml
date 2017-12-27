@@ -1,7 +1,7 @@
 - title: Developer Builds
   path: whatsnew.html
 - title: Cert Pinning
-  path: guides/couchbase-lite/native-api/cert-pinning/index.html
+  path: guides/couchbase-lite/native-api/swift/cert-pinning/index.html
   ishidden: true
 - title: Migrating
   path: guides/migrating/index.html
