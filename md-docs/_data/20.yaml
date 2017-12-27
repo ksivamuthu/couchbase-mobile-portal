@@ -6,6 +6,9 @@
 - title: Migrating
   path: guides/migrating/index.html
   ishidden: true
+- title: Swift Debugging
+  path: guides/couchbase-lite/native-api/swift/debugging/index.html
+  ishidden: true
 - title: Couchbase Lite
   path: installation/index.html
   open: true
