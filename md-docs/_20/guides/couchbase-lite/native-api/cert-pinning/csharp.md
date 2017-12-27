@@ -51,7 +51,11 @@ Couple of points to note during certificate generation:
 – Install the certificates in a location accesible to the Sync Gateway
 – If you are generating a self-signed certificate, probably the most important field is the `CommonName`. It should be your Sync Gateway’s FQDN. If you Sync Gateway does not have one, then you must specify use `localhost` for localhost or the static IPAddress of your Sync Gateway.
 
-![](../img/selfsignedcert.png)
+## Mac:<Br>
+<img src="../img/selfsignedcert.png" width="500">
+
+## Windows:<br>
+<img src="../img/selfsignedcert2.png" width="500">
 
 Once configured, your sync gateway should be accesible via https.
 
@@ -69,7 +73,7 @@ Once configured, your sync gateway should be accesible via https.
 
 - After copying, your project structure would be something like this
 
-	![](../img/certadded.png)
+<img src="../img/certadded_net.png" height="300">&nbsp;&nbsp;<img src="../img/certadded_net2.png" height="300">
 
 - Pinning the Sync Gateway Server Certificate
   This takes just a few lines of code.
