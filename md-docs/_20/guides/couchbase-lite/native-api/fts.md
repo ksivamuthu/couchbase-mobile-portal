@@ -18,15 +18,15 @@ To run a full-text search (FTS) query, you must have created a full-text index o
 // Insert documents
 let tasks = ["buy groceries", "play chess", "book travels", "buy museum tickets"]
 for task in tasks {
-	let doc = Document()
+	let doc = MutableDocument()
 	doc.setString("task", forKey: "type")
 	doc.setString(task, forKey: "name")
-	try? database.save(doc)
+	try? database.saveDocument(doc)
 }
 
 // Create index
 do {
-	try database.createIndex(["name"], options: .fullTextIndex(language: nil, ignoreDiacritics: false))
+	try database.createIndex(Index.fullTextIndex(withItems: FullTextIndexItem.property("name")).ignoreAccents(false), withName: "nameFTSIndex")
 } catch let error {
 	print(error.localizedDescription)
 }
@@ -96,13 +96,15 @@ With the index created, an FTS query on the property that is being indexed can b
 <block class="swift" />
 
 ```swift
-let whereClause = Expression.property("name").match("'buy'")
-let ftsQuery = Query.select().from(DataSource.database(database)).where(whereClause)
+let whereClause = FullTextExpression.index("nameFTSIndex").match("'buy'")
+let ftsQuery = Query.select(SelectResult.expression(Meta.id))
+                  .from(DataSource.database(database))
+                  .where(whereClause)
 
 do {
-	let ftsQueryResult = try ftsQuery.run()
+	let ftsQueryResult = try ftsQuery.execute()
 	for row in ftsQueryResult {
-		print("document properties \(row.string(forKey: "_id"))")
+		print("document properties \(row.string(at: 0))")
 	}
 } catch let error {
 	print(error.localizedDescription)
