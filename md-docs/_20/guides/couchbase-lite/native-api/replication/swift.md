@@ -107,3 +107,5 @@ self.replication.addChangeListener { (change) in
 }
 self.replication.start()
 ```
+
+[//]: # (TODO: list all the possible error codes returned in the change.status.error object)
