@@ -1,5 +1,4 @@
 ---
-permalink: guides/couchbase-lite/native-api/database/index.html
 ---
 
 <block class="java" />
@@ -86,5 +85,3 @@ DispatchQueue.global(qos: .background).async {
 	try? database.save(document)
 }
 ```
-
-{% include refs.html name='database' %}
