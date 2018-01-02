@@ -1,5 +1,4 @@
 ---
-permalink: guides/couchbase-lite/native-api/attachment/index.html
 ---
 
 <block class="java" />
