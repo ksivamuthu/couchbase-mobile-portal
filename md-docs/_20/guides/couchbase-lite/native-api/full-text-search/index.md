@@ -1,5 +1,4 @@
 ---
-permalink: guides/couchbase-lite/native-api/full-text-search/index.html
 ---
 
 <block class="java" />
