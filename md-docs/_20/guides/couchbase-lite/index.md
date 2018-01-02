@@ -1,7 +1,4 @@
 ---
-id: api-guide
-title: API Guide
-permalink: guides/couchbase-lite/index.html
 ---
 
 <block class="java" />
