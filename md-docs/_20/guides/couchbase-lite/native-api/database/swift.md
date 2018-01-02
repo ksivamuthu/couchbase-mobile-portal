@@ -67,3 +67,7 @@ var dbConfig = DatabaseConfiguration()
 dbConfig.encryptionKey = EncryptionKey.password("secretpassword")
 self.database = try Database(name: "my-database", config: dbConfig)
 ```
+
+## Loading a pre-built database
+
+[//]: # (TODO: best practice and example)
