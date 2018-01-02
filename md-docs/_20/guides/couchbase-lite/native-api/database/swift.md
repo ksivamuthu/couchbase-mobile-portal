@@ -19,16 +19,21 @@ Just as before, the database will be created in a default location. Alternativel
 
 Databases that were created with Couchbase Mobile 1.2 or later can be read using the 2.0 API. Upon detecting it is a 1.x database file format, Couchbase Lite will automatically upgrade it to the new format used in 2.0. This feature is currently only available for the default storage type, SQLite (i.e not for ForestDB databases).
 
-##  Encryption
+## Finding a Database File
 
-[//]: # (TODO: add content about encryption: algorithm, security level...)
+When the application is running on the iOS simulator, you can easily locate the application's sandbox directory using the [SimPholders](https://simpholders.com/3/) utility.
 
-The following example demonstrates how to create a database with an encryption key (or open an existing one).
+## CLI tool
+
+The Couchbase Lite `.zip` file available from the [downloads page](https://www.couchbase.com/downloads) contains a CLI which can be used on **.cblite2** files.
+
+## Logging
+
+The log messages are split into different domains (`LogDomains`) which can be tuned to different log levels. The following example enables `verbose` logging for the `replicator` and `query` domains.
 
 ```swift
-var dbConfig = DatabaseConfiguration()
-dbConfig.encryptionKey = EncryptionKey.password("secretpassword")
-self.database = try Database(name: "my-database", config: dbConfig)
+Database.setLogLevel(.verbose, domain: .replicator)
+Database.setLogLevel(.verbose, domain: .query)
 ```
 
 ## Singleton Pattern
@@ -50,3 +55,15 @@ class DataManager {
 ```
 
 The database instance can then be access throughout the codebase using the class property: `DataManager.sharedInstance.database`.
+
+##  Encryption
+
+[//]: # (TODO: add content about encryption: algorithm, security level...)
+
+The following example demonstrates how to create a database with an encryption key (or open an existing one).
+
+```swift
+var dbConfig = DatabaseConfiguration()
+dbConfig.encryptionKey = EncryptionKey.password("secretpassword")
+self.database = try Database(name: "my-database", config: dbConfig)
+```
