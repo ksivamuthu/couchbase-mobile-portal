@@ -3,9 +3,13 @@
 
 Couchbase Mobile 2.0 uses a new replication protocol based on WebSockets. This protocol has been designed to be fast, efficient, easier to implement, and symmetrical between the client and server.
 
-## Sync Gateway Compatibility
+## Compatibility
 
 ⚠️ The new protocol is **incompatible** with Couchbase Lite 1.x, and with CouchDB-based databases including PouchDB and Cloudant. Since Couchbase Lite 2 developer builds support only the new protocol, to test replication you will need to run a version of Sync Gateway that supports it.
+
+To use this protocol with Couchbase Lite 2.0, the replication URL should specify **blip** as the URL scheme (see the [Replication API](index.html#replication-api) section below). Mobile clients using Couchbase Lite 1.x can continue to use **http** as the URL scheme. Sync Gateway 1.5 will automatically use the 1.x replication protocol when a Couchbase Lite 1.x client connects through "http://localhost:4984/db" and the 2.0 replication protocol when a Couchbase Lite 2.0 client connects through "blip://localhost:4984/db".
+
+## Starting Sync Gateway
 
 To run an example, create a new file named **sync-gateway-config.json** with the following.
 
