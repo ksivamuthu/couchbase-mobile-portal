@@ -3,8 +3,6 @@
 
 To run a full-text search (FTS) query, you must have created a full-text index on the expression being matched. Unlike regular queries, the index is not optional. The following example inserts documents and creates an FTS index on the `name` property.
 
-[//]: # (TODO: replace snippet with ObjC/C#/Java equivalent)
-
 ```java
 // Insert documents
 String[] tasks = {"buy groceries", "play chess", "book travels", "buy museum tickets"};
@@ -22,8 +20,6 @@ database.createIndex("nameFTSIndex", Index.fullTextIndex(FullTextIndexItem.prope
 Multiple properties to index can be specified in the `Index.fullTextIndex(withItems: [FullTextIndexItem])` method.
 
 With the index created, an FTS query on the property that is being indexed can be constructed and ran. The full-text search criteria is defined as a `FullTextExpression`. The left-hand side is the full-text index to use and the right-hand side is the pattern to match: usually a word or a space-separated list of words, but it can be a more powerful [FTS4 search expression](https://www.sqlite.org/fts3.html#full_text_index_queries). The following code example matches all documents that contain the word 'buy' in the value of the `name` property.
-
-[//]: # (TODO: replace snippet with ObjC/C#/Java equivalent)
 
 ```java
 Expression whereClause = FullTextExpression.index("nameFTSIndex").match("buy");

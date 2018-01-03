@@ -15,8 +15,6 @@ The following methods/initializers can be used:
 
 The following code example creates a document and persists it to the database.
 
-[//]: # (TODO: Replace code snippet below for ObjC/C#/Java guide)
-
 ```java
 Map<String, Object> dict = new HashMap<>();
 dict.put("type", "task");
@@ -31,8 +29,6 @@ try {
 ```
 
 ## Mutability
-
-[//]: # (TODO: same instructions as above)
 
 The biggest change is that `Document` properties are now mutable. Instead of having to make a mutable copy of the properties dictionary, update it, and then save it back to the document, you can now modify individual properties in place and then save.
 

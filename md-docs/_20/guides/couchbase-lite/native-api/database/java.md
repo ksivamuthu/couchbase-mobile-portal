@@ -20,15 +20,25 @@ Databases that were created with Couchbase Mobile 1.2 or later can be read using
 
 ## Finding a Database File
 
-[//]: # (TODO: replace content with best practice for Android)
+When the application is running on the Android emulator, you can locate the application's data folder and access the database file by using the **adb** CLI tools. For example, to list the different databases on the emulator, you can run the following commands.
 
-When the application is running on the iOS simulator, you can easily locate the application's sandbox directory using the [SimPholders](https://simpholders.com/3/) utility.
+```bash
+$ adb shell
+$ su
+$ cd /data/data/{APPLICATION_ID}/files
+$ ls
+```
+
+The **adb pull** command can be used to pull a specific database to your host machine.
+
+```bash
+$ adb root
+$ adb pull /data/data/{APPLICATION_ID}/files/{DATABASE_NAME}.cblite2 .
+```
 
 ## Logging
 
 The log messages are split into different domains (`LogDomains`) which can be tuned to different log levels. The following example enables `verbose` logging for the `replicator` and `query` domains.
-
-[//]: # (TODO: replace below with ObjC/C#/Java)
 
 ```java
 Database.setLogLevel(Database.LogDomain.REPLICATOR, Database.LogLevel.VERBOSE);
@@ -38,8 +48,6 @@ Database.setLogLevel(Database.LogDomain.QUERY, Database.LogLevel.VERBOSE);
 ## Singleton Pattern
 
 The database instance must be used throughout the Couchbase Lite API to Create, Update, Delete and Query documents. Hence, the singleton pattern is useful to create a single instance of the `Database` object. The following example follows the Singleton Pattern in `Swift`.
-
-[//]: # (TODO: replace below with ObjC/C#/Java)
 
 ```java
 public class DataManager {
@@ -67,8 +75,6 @@ The database instance can then be access throughout the codebase using the class
 ##  Encryption
 
 The following example demonstrates how to create a database with an encryption key (or open an existing one).
-
-[//]: # (TODO: replace below with ObjC/C#/Java)
 
 ```java
 DatabaseConfiguration config = new DatabaseConfiguration(/* Android Context*/ context);
