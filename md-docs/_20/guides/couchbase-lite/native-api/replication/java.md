@@ -47,12 +47,12 @@ Replication objects are now bidirectional, this means you can start a `push`/`pu
 
 [//]: # (TODO: replace code snippet for Java/C#/Objc)
 
-```swift
-let url = URL(string: "blip://localhost:4984/db")!
-var replConfig = ReplicatorConfiguration(withDatabase: database, targetURL: url)
-replConfig.replicatorType = .pull
-let replication = Replicator(withConfig: replConfig)
-replication.start()
+```java
+URI uri = new URI("blip://localhost:4984/db");
+ReplicatorConfiguration replConfig = new ReplicatorConfiguration(database, uri);
+replConfig.setReplicatorType(ReplicatorConfiguration.ReplicatorType.PULL);
+Replicator replication = new Replicator(replConfig);
+replication.start();
 ```
 
 As shown in the code snippet above, the URL scheme for remote database URLs has changed in Couchbase Lite 2.0. You should now use `blip:`, or `blips:` for SSL/TLS connections (or the more-standard `ws:` / `wss:` notation). You can access the Sync Gateway `_all_docs` endpoint [http://localhost:4984/db/\_all\_docs?include_docs=true](http://localhost:4984/db/_all_docs?include_docs=true) to check that the documents are successfully replicated.
@@ -65,8 +65,8 @@ As always, when there is a problem with replication, logging is your friend. The
 
 [//]: # (TODO: replace code snippet for Java/C#/Objc)
 
-```swift
-Database.setLogLevel(.verbose, domain: .replicator)
+```java
+Database.setLogLevel(Database.LogDomain.REPLICATOR, Database.LogLevel.VERBOSE);
 ```
 
 ## Replication Status
@@ -75,12 +75,14 @@ The `replication.status.activity` property can be used to check the status of a 
 
 [//]: # (TODO: replace code snippet for Java/C#/Objc)
 
-```swift
-self.replication.addChangeListener { (change) in
-    if change.status.activity == .stopped {
-        print("Replication stopped")
+```java
+replication.addChangeListener(new ReplicatorChangeListener() {
+    @Override
+    public void changed(ReplicatorChange change) {
+        if (change.getStatus().getActivityLevel() == Replicator.ActivityLevel.STOPPED)
+            Log.i(TAG, "Replication stopped");
     }
-}
+});
 ```
 
 The following table lists the different activity levels in the API and the meaning of each one.
@@ -99,11 +101,14 @@ A running replication can be interrupted for a variety of reasons such as networ
 
 [//]: # (TODO: replace code snippet for Java/C#/Objc)
 
-```swift
-self.replication.addChangeListener { (change) in
-    if let error = change.status.error as NSError? {
-        print("Error code :: \(error.code)")
+```java
+replication.addChangeListener(new ReplicatorChangeListener() {
+    @Override
+    public void changed(ReplicatorChange change) {
+        CouchbaseLiteException error = change.getStatus().getError();
+        if (error != null)
+            Log.w(TAG, "Error code:: %d", error.getCode());
     }
-}
-self.replication.start()
+});
+replication.start();
 ```

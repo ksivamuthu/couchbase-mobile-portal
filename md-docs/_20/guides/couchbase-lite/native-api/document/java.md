@@ -17,12 +17,17 @@ The following code example creates a document and persists it to the database.
 
 [//]: # (TODO: Replace code snippet below for ObjC/C#/Java guide)
 
-```swift
-let dict: [String: Any] = ["type": "task",
-                           "owner": "todo",
-                           "createdAt": Date()]
-let newTask = MutableDocument(withData: dict)
-try? database.saveDocument(newTask)
+```java
+Map<String, Object> dict = new HashMap<>();
+dict.put("type", "task");
+dict.put("owner", "todo");
+dict.put("createdAt", new Date());
+MutableDocument newTask = new MutableDocument(dict);
+try {
+    database.save(newTask);
+} catch (CouchbaseLiteException e) {
+    Log.e(TAG, "Failed to save the document", e);
+}
 ```
 
 ## Mutability
@@ -31,9 +36,13 @@ try? database.saveDocument(newTask)
 
 The biggest change is that `Document` properties are now mutable. Instead of having to make a mutable copy of the properties dictionary, update it, and then save it back to the document, you can now modify individual properties in place and then save.
 
-```swift
-newTask.setString("apples", forKey: "name")
-try? database.saveDocument(newTask)
+```java
+newTask.setString("name", "apples");
+try {
+    database.save(newTask);
+} catch (CouchbaseLiteException e) {
+    Log.e(TAG, "Failed to save the document", e);
+}
 ```
 
 This does create the possibility of confusion, since the document's in-memory state may not match what's in the database. Unsaved changes are not visible to other `Database` instances (i.e. other threads that may have other instances), or to queries.
@@ -46,29 +55,36 @@ The `Document` class now offers a set of property accessors for various scalar t
 
 In addition, as a convenience we offer `Date` accessors. Dates are a common data type, but JSON doesn't natively support them, so the convention is to store them as strings in ISO-8601 format. The following example sets the date on the `createdAt` property and reads it back using the `document.date(forKey: String)` accessor method.
 
-```swift
-newTask.setValue(Date(), forKey: "createdAt")
-let date = newTask.date(forKey: "createdAt")
+```java
+newTask.setValue("createdAt", new Date());
+Date date = newTask.getDate("createdAt");
 ```
 
 ## Batch operations
 
 If you're making multiple changes to a database at once, it's *much* faster to group them together, otherwise each individual change incurs overhead, from flushing writes to the filesystem to ensure durability. In 2.0 we've renamed the method from `inTransaction()` to `inBatch()` to emphasize that Couchbase Lite does not offer transactional guarantees, and that the purpose of the method is to optimize batch operations rather than to enable ACID transactions. The following example persists a few documents in batch.
 
-```swift
-do {
-    try database.inBatch {
-        for i in 0...10 {
-            let doc = MutableDocument()
-            doc.setValue("user", forKey: "type")
-            doc.setValue("user \(i)", forKey: "name")
-            doc.setBoolean(false, forKey: "admin")
-            try database.saveDocument(doc)
-            print("saved user document \(doc.string(forKey: "name"))")
+```java
+try {
+    database.inBatch(new Runnable() {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                MutableDocument doc = new MutableDocument();
+                doc.setValue("type", "user");
+                doc.setValue("name", String.format("user %d", i));
+                doc.setBoolean("admin", false);
+                try {
+                    database.save(doc);
+                } catch (CouchbaseLiteException e) {
+                    Log.e(TAG, e.toString());
+                }
+                Log.i(TAG, String.format("saved user document %s", doc.getString("name")));
+            }
         }
-    }
-} catch let error {
-    print(error.localizedDescription)
+    });
+} catch (CouchbaseLiteException e) {
+    Log.e(TAG, e.toString());
 }
 ```
 

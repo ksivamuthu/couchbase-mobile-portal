@@ -30,9 +30,9 @@ The log messages are split into different domains (`LogDomains`) which can be tu
 
 [//]: # (TODO: replace below with ObjC/C#/Java)
 
-```swift
-Database.setLogLevel(.verbose, domain: .replicator)
-Database.setLogLevel(.verbose, domain: .query)
+```java
+Database.setLogLevel(Database.LogDomain.REPLICATOR, Database.LogLevel.VERBOSE);
+Database.setLogLevel(Database.LogDomain.QUERY, Database.LogLevel.VERBOSE);
 ```
 
 ## Singleton Pattern
@@ -41,17 +41,24 @@ The database instance must be used throughout the Couchbase Lite API to Create, 
 
 [//]: # (TODO: replace below with ObjC/C#/Java)
 
-```swift
-class DataManager {
-  static let sharedInstance: DataManager = DataManager()
-	
-  private init() {
-    do {
-  	  self.database = try Database(name: "dbname")
-    } catch {
-  	  fatalError("Could not initialize database")
+```java
+public class DataManager {
+    private static DataManager sharedInstance;
+    private Database database;
+
+    public static DataManager instance(DatabaseConfiguration config) {
+        if (sharedInstance == null && config != null)
+            sharedInstance = new DataManager(config);
+        return sharedInstance;
     }
-  }
+
+    private DataManager(DatabaseConfiguration config) {
+        try {
+            database = new Database("dbname", config);
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+    }
 }
 ```
 
@@ -63,8 +70,8 @@ The following example demonstrates how to create a database with an encryption k
 
 [//]: # (TODO: replace below with ObjC/C#/Java)
 
-```swift
-var dbConfig = DatabaseConfiguration()
-dbConfig.encryptionKey = EncryptionKey.password("secretpassword")
-self.database = try Database(name: "my-database", config: dbConfig)
+```java
+DatabaseConfiguration config = new DatabaseConfiguration(/* Android Context*/ context);
+config.setEncryptionKey(new EncryptionKey("secretpassword"));
+Database database = new Database("my-database", config);
 ```

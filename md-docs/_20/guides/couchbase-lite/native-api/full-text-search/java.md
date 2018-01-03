@@ -5,22 +5,18 @@ To run a full-text search (FTS) query, you must have created a full-text index o
 
 [//]: # (TODO: replace snippet with ObjC/C#/Java equivalent)
 
-```swift
+```java
 // Insert documents
-let tasks = ["buy groceries", "play chess", "book travels", "buy museum tickets"]
-for task in tasks {
-	let doc = MutableDocument()
-	doc.setString("task", forKey: "type")
-	doc.setString(task, forKey: "name")
-	try? database.saveDocument(doc)
+String[] tasks = {"buy groceries", "play chess", "book travels", "buy museum tickets"};
+for (String task : tasks) {
+    MutableDocument doc = new MutableDocument();
+    doc.setString("name", task);
+    doc.setString("type", "task");
+    database.save(doc);
 }
 
 // Create index
-do {
-	try database.createIndex(Index.fullTextIndex(withItems: FullTextIndexItem.property("name")).ignoreAccents(false), withName: "nameFTSIndex")
-} catch let error {
-	print(error.localizedDescription)
-}
+database.createIndex("nameFTSIndex", Index.fullTextIndex(FullTextIndexItem.property("name")).ignoreAccents(false));
 ```
 
 Multiple properties to index can be specified in the `Index.fullTextIndex(withItems: [FullTextIndexItem])` method.
@@ -29,20 +25,14 @@ With the index created, an FTS query on the property that is being indexed can b
 
 [//]: # (TODO: replace snippet with ObjC/C#/Java equivalent)
 
-```swift
-let whereClause = FullTextExpression.index("nameFTSIndex").match("'buy'")
-let ftsQuery = Query.select(SelectResult.expression(Meta.id))
-                  .from(DataSource.database(database))
-                  .where(whereClause)
-
-do {
-	let ftsQueryResult = try ftsQuery.execute()
-	for row in ftsQueryResult {
-		print("document properties \(row.string(at: 0))")
-	}
-} catch let error {
-	print(error.localizedDescription)
-}
+```java
+Expression whereClause = FullTextExpression.index("nameFTSIndex").match("buy");
+Query ftsQuery = Query.select(SelectResult.expression(Meta.id))
+        .from(DataSource.database(database))
+        .where(whereClause);
+ResultSet ftsQueryResult = ftsQuery.execute();
+for(Result result : ftsQueryResult)
+    Log.i(TAG, String.format("document properties %s", result.getString(0)));
 ```
 
 When you run a full-text query, the resulting rows are instances of `FullTextQueryRow`. This class has additional methods that let you access the full string that was matched, and the character range(s) in that string where the match(es) occur.
