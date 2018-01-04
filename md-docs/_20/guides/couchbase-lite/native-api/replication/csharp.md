@@ -35,8 +35,14 @@ In the configuration file above, the **replicator_2** property enables the new r
 
 [//]: # (TODO: for csharp.md only, update command below for Windows dev)
 
+Windows
 ```powershell
 & 'C:\Program Files (x86)\Couchbase\sync_gateway.exe' sync-gateway-config.json
+```
+
+Unix
+```bash
+~/Downloads/couchbase-sync-gateway/bin/sync_gateway sync-gateway-config.json
 ```
 
 For platform specific installation instructions, refer to the Sync Gateway [installation guide](../../../../../current/installation/sync-gateway/index.html).
