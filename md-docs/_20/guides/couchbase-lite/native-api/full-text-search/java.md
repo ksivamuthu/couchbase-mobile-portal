@@ -31,6 +31,4 @@ for(Result result : ftsQueryResult)
     Log.i(TAG, String.format("document properties %s", result.getString(0)));
 ```
 
-When you run a full-text query, the resulting rows are instances of `FullTextQueryRow`. This class has additional methods that let you access the full string that was matched, and the character range(s) in that string where the match(es) occur.
-
-It's very common to sort full-text results in descending order of relevance. This can be a very difficult heuristic to define, but Couchbase Lite comes with a fairly simple ranking function you can use. In the `orderBy:` array, use a string of the form `rank(X)`, where `X` is the property or expression being searched, to represent the ranking of the result. Since higher rankings are better, you'll probably want to reverse the order by prefixing the string with a `-`.
+It's very common to sort full-text results in descending order of relevance. This can be a very difficult heuristic to define, but Couchbase Lite comes with a fairly simple ranking function you can use. In the `OrderBy` array, use a string of the form `Rank(X)`, where `X` is the property or expression being searched, to represent the ranking of the result.

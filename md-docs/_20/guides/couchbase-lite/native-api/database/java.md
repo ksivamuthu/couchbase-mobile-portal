@@ -12,7 +12,7 @@ DatabaseConfiguration config = new DatabaseConfiguration(/* Android Context*/ co
 Database database = new Database("my-database", config);
 ```
 
-Just as before, the database will be created in a default location. Alternatively, the `Database(name: Strings, config: DatabaseConfiguration?)` method can be used to provide specific options (the directory to create the database in, whether it is read-only etc.)
+Just as before, the database will be created in a default location. Alternatively, the `Database(name: Strings, config: DatabaseConfiguration?)` method can be used to provide specific options (the directory to create the database in, encryption key, etc.)
 
 ## Migrating from 1.x Databases
 
