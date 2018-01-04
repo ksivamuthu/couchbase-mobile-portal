@@ -35,8 +35,8 @@ In the configuration file above, the **replicator_2** property enables the new r
 
 [//]: # (TODO: for csharp.md only, update command below for Windows dev)
 
-```bash
-~/Downloads/couchbase-sync-gateway/bin/sync_gateway sync-gateway-config.json
+```powershell
+& 'C:\Program Files (x86)\Couchbase\sync_gateway.exe' sync-gateway-config.json
 ```
 
 For platform specific installation instructions, refer to the Sync Gateway [installation guide](../../../../../current/installation/sync-gateway/index.html).
@@ -45,14 +45,14 @@ For platform specific installation instructions, refer to the Sync Gateway [inst
 
 Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the `ReplicatorConfiguration` object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
 
-[//]: # (TODO: replace code snippet for Java/C#/Objc)
+[//]:
 
-```swift
-let url = URL(string: "blip://localhost:4984/db")!
-var replConfig = ReplicatorConfiguration(withDatabase: database, targetURL: url)
-replConfig.replicatorType = .pull
-let replication = Replicator(withConfig: replConfig)
-replication.start()
+```c#
+var url = new Uri("blip://localhost:4984/db");
+var replConfig = new ReplicatorConfiguration(database, url);
+replConfig.ReplicatorType = ReplicatorType.Pull;
+var replication = new Replicator(replConfig);
+replication.Start()
 ```
 
 As shown in the code snippet above, the URL scheme for remote database URLs has changed in Couchbase Lite 2.0. You should now use `blip:`, or `blips:` for SSL/TLS connections (or the more-standard `ws:` / `wss:` notation). You can access the Sync Gateway `_all_docs` endpoint [http://localhost:4984/db/\_all\_docs?include_docs=true](http://localhost:4984/db/_all_docs?include_docs=true) to check that the documents are successfully replicated.
@@ -63,22 +63,23 @@ Starting in Couchbase Lite 2.0, replication between two local databases is now s
 
 As always, when there is a problem with replication, logging is your friend. The following example increases the log output for activity related to replication with Sync Gateway.
 
-[//]: # (TODO: replace code snippet for Java/C#/Objc)
+[//]:
 
-```swift
-Database.setLogLevel(.verbose, domain: .replicator)
+```c#
+Database.SetLogLevel(LogDomain.Replicator, LogLevel.Verbose);
 ```
 
 ## Replication Status
 
-The `replication.status.activity` property can be used to check the status of a replication. For example, when the replication is actively transferring data and when it has stopped.
+The `replication.Status.Activity` property can be used to check the status of a replication. For example, when the replication is actively transferring data and when it has stopped.
 
-[//]: # (TODO: replace code snippet for Java/C#/Objc)
+[//]:
 
-```swift
-self.replication.addChangeListener { (change) in
-    if change.status.activity == .stopped {
-        print("Replication stopped")
+```c#
+replication.AddChangeListener((sender, args) => 
+{
+    if (args.Status.Activity == ReplicatorActivityLevel.Stopped) {
+        Console.WriteLine("Replication stopped")
     }
 }
 ```
@@ -97,13 +98,14 @@ The following table lists the different activity levels in the API and the meani
 
 A running replication can be interrupted for a variety of reasons such as network errors or unauthorized access. In this case, the replication status will be updated with an `Error` which follows the standard HTTP error codes. The replication change event can be used to monitor the status of the replication. The following example monitors the replication for errors and logs the error code to the console.
 
-[//]: # (TODO: replace code snippet for Java/C#/Objc)
+[//]:
 
-```swift
-self.replication.addChangeListener { (change) in
-    if let error = change.status.error as NSError? {
-        print("Error code :: \(error.code)")
+```c#
+replication.AddChangeListener((sender, args) =>
+{
+    if(args.Status.Error != null) {
+        Console.WriteLine($"Error: {args.Status.Error.Message}");
     }
 }
-self.replication.start()
+replication.start()
 ```
