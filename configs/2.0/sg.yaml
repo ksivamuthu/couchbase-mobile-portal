@@ -583,6 +583,11 @@ properties:
           description: A set of key/value pairs to use in the querystring of the replication. For example, the channels field can be used to pull from a set of channels (in this particular case, the filter key must be set for the channels field to work as expected).
           items:
             type: string
+  replicator_compression:
+    description: |
+      TODO
+    type: integer
+    default: TODO
   serverReadTimeout:
     description: Maximum duration in seconds before timing out the read of an HTTP(S) request.
     type: integer
