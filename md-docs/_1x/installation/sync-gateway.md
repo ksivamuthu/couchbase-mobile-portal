@@ -85,6 +85,8 @@ initctl start sync_gateway
 initctl stop sync_gateway
 ```
 
+> **Note:** The `initctl restart sync_gateway` command does not work in CentOS 6. To restart Sync Gateway, the stop/start commands can be used instead.
+
 On CentOS 7:
 
 ```bash
