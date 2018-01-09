@@ -19,6 +19,10 @@ The unavailability of those operations may result in some requests not being pro
 | 1.4 | 1.5 xattrs disabled | <ul><li>A rolling upgrade is supported: modify your load balancer's config to stop any HTTP traffic going to the node that will be upgraded, perform the upgrade on the given node and re-balance the traffic across all nodes. Repeat this operation for each node that needs to be upgraded.</li></ul>
 | 1.5 xattrs disabled | 1.5 xattrs enabled | <ul><li>A rolling upgrade is supported: modify your load balancer's config to stop any HTTP traffic going to the node that will be upgraded, perform the upgrade on the given node and re-balance the traffic across all nodes. Repeat this operation for each node that needs to be upgraded.</li><li>The mobile metadata for existing documents is automatically migrated.</li><li>The first node to be upgraded should have the `import_docs=continuous` property enabled.</li></ul>
 | 1.4 | 1.5 xattrs enabled | <ul><li>This upgrade, if done directly, will result in application downtime because all the nodes must be taken offline during the upgrade.</li><li>The first node to be restarted should have the `import_docs=continuous` property enabled.</li></ul><br /> That being said, it is possible to avoid this downtime by running the 2 upgrade paths mentioned above (first, an upgrade from 1.4 to 1.5, and second, an upgrade from 1.5 to 1.5 with xattrs enabled).
+| 1.4 | 2.0 xattrs disabled | TODO
+| 1.5 xattrs disabled | 2.0 xattrs disabled | TODO
+| 1.5 xattrs enabled | 2.0 xattrs enabled | TODO
+
 
 > **Note:** Enabling convergence on your existing deployment (i.e XATTRs) is **not** reversible. It is recommended to test the upgrade on a staging environment before upgrading the production environment.
 
