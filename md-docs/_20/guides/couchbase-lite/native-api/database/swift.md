@@ -13,7 +13,19 @@ do {
 }
 ```
 
-Just as before, the database will be created in a default location. Alternatively, the `Database(name: Strings, config: DatabaseConfiguration?)` method can be used to provide specific options (the directory to create the database in, encryption key, etc.)
+Just as before, the database will be created in a default location. Alternatively, the `Database(name: Strings, config: DatabaseConfiguration?)` initializer can be used to provide specific options in the [`DatabaseConfiguration`]({{ site.references.swift }}/Structs/DatabaseConfiguration.html) object such as the database directory, encryption key through the  object.
+
+##  Encryption
+
+[//]: # (TODO: add content about encryption: algorithm, security level...)
+
+The following example demonstrates how to create a database with an encryption key (or open an existing one).
+
+```swift
+var dbConfig = DatabaseConfiguration()
+dbConfig.encryptionKey = EncryptionKey.password("secretpassword")
+self.database = try Database(name: "my-database", config: dbConfig)
+```
 
 ## Migrating from 1.x Databases
 
@@ -56,18 +68,19 @@ class DataManager {
 
 The database instance can then be access throughout the codebase using the class property: `DataManager.sharedInstance.database`.
 
-##  Encryption
-
-[//]: # (TODO: add content about encryption: algorithm, security level...)
-
-The following example demonstrates how to create a database with an encryption key (or open an existing one).
-
-```swift
-var dbConfig = DatabaseConfiguration()
-dbConfig.encryptionKey = EncryptionKey.password("secretpassword")
-self.database = try Database(name: "my-database", config: dbConfig)
-```
-
 ## Loading a pre-built database
 
-[//]: # (TODO: best practice and example)
+If your app needs to sync a lot of data initially, but that data is fairly static and won't change much, it can be a lot more efficient to bundle a database in your application and install it on the first launch. Even if some of the content changes on the server after you create the app, the app's first pull replication will bring the database up to date.
+
+To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`copy(fromPath:toDatabase:withConfig:)`]({{ site.references.swift }}/Classes/Database.html#/s:18CouchbaseLiteSwift8DatabaseC4copyySS8fromPath_SS02toD0AA0D13ConfigurationVSg10withConfigtKFZ) method as shown below.
+
+```swift
+let assetPath = Bundle.main.path(forResource: "travel-sample", ofType: "cblite2")!
+if !Database.exists(withName: "travel-sample") {
+	do {
+		try Database.copy(fromPath: assetPath, toDatabase: "travel-sample", withConfig: nil)
+	} catch {
+		fatalError("Could not load pre-built database")
+	}
+}
+```

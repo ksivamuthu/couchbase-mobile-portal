@@ -15,8 +15,6 @@ The following methods/initializers can be used:
 
 The following code example creates a document and persists it to the database.
 
-[//]:
-
 ```c#
 var dict = new Dictionary<string, object> {
     ["type"] = "task",
@@ -29,8 +27,6 @@ database.Save(newTask);
 ```
 
 ## Mutability
-
-[//]:
 
 The biggest change is that `MutableDocument` properties are now directly mutable. Instead of having to make a mutable copy of the properties dictionary, update it, and then save it back to the document, you can now modify individual properties in place and then save.
 
@@ -46,7 +42,7 @@ This does create the possibility of confusion, since the document's in-memory st
 
 [//]:
 
-The `Document` class now offers a set of property accessors for various scalar types, including boolean, integers, floating-point and strings. These accessors take care of converting to/from JSON encoding, and make sure you get the type you're expecting: for example, `document.GetString(string key)` returns either a `String` or `null`, so you can't get an unexpected object class and crash trying to use it as a string. (Even if the property in the document has an incompatible type, the accessor returns `null`.)
+The `Document` class now offers a set of [`property accessors`]({{ site.references.swift }}/Classes/Document.html#/DictionaryProtocol) for various scalar types, including boolean, integers, floating-point and strings. These accessors take care of converting to/from JSON encoding, and make sure you get the type you're expecting: for example, `document.GetString(string key)` returns either a `String` or `null`, so you can't get an unexpected object class and crash trying to use it as a string. (Even if the property in the document has an incompatible type, the accessor returns `null`.)
 
 In addition, as a convenience we offer `DateTimeOffset` accessors. Dates are a common data type, but JSON doesn't natively support them, so the convention is to store them as strings in ISO-8601 format. The following example sets the date on the `createdAt` property and reads it back using the `document.GetDate(string key)` accessor method.
 

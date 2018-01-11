@@ -18,7 +18,7 @@ There are several parts to specifying a query:
 
 Before we begin querying documents, let's briefly mention the importance of having a query index. A query can only be fast if there's a pre-existing database index it can search to narrow down the set of documents to examine.
 
-The following example create a new index for the `type` and `name` properties.
+The following example creates a new index for the `type` and `name` properties.
 
 ```json
 {
@@ -44,12 +44,12 @@ With the SELECT statement, you can query and manipulate JSON data. With projecti
 
 A SelectResult represents a single return value of the query statement. Documents in Couchbase Lite comprise of the document properties specified as a Dictionary of Key-Value pairs and associated metadata. The metadata consists of document Id and sequence Id associated with the Document. When you query for a document, the document metadata is not returned by default. You will need to explicitly query for the metadata.
 
-- `SelectResult.all()`: Returns all properties associated with a Document.
-- `SelectResult(Expression)`: Returns properties of a Document based on the Expression.
-- `SelectResult.expression(Expression.meta().id)`: Return Document Id.
-- `SelectResult.expression(Expression.meta().sequence)`: Returns sequence Id (used in replications).
+- [`SelectResult.all()`]({{ site.references.swift }}/Classes/SelectResult.html#/s:18CouchbaseLiteSwift12SelectResultC3allAC4FromCyFZ): Returns all properties associated with a document.
+- `SelectResult(`[`Expression`](/Classes/Expression.html)`.property("name"))`: Returns the `name` property associated with a document.
+- `SelectResult.expression(`[`Meta`]({{ site.references.swift }}/Classes/Meta.html)`.id``)`: Returns the document ID.
+- `SelectResult.expression(Expression.meta().sequence)`: Returns the sequence ID (used in replications).
 
-You can specify a comma separated list of `SelectResult` expressions in the select statement of your Query. For instance the following select statement queries for the document `_id` as well as the `type` and `name` properties of all documents in the database. In the query result, we print the `_id` and `name` properties of each row using the property name getter method.
+You can specify a comma separated list of `SelectResult` expressions in the select statement of your query. For instance the following select statement queries for the document `_id` as well as the `type` and `name` properties of all documents in the database. In the query result, we print the `_id` and `name` properties of each row using the property name getter method.
 
 ```json
 {
@@ -127,7 +127,7 @@ Similar to SQL, you can use the where clause to filter the documents to be retur
 
 ### Comparison
 
-In the example below, we use `Expression.property` type in conjunction with `equalTo` comparison expression to filter documents based on a specific document property.
+The `Expression`'s [comparison operators]({{ site.references.swift }}/Classes/Expression.html#/Comparison%20Operators) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
 
 ```json
 {
@@ -152,11 +152,9 @@ for (Result result : rs) {
 }
 ```
 
-The list of supported comparison operators include, among others, `lessThan`, `lessThanOrEqualTo`, `greaterThan`, `greaterThanOrEqualTo`, `equalTo`, `notEqualTo`.
-
 ### Collection Operators
 
-Collection operators are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
+[Collection operators]({{ site.references.swift }}/Classes/Expression.html#/Collection%20operators:) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
 
 ```json
 {
@@ -180,9 +178,9 @@ for (Result result : rs)
     Log.i("Sample", String.format("public_likes -> %s", result.getArray("public_likes").toList()));
 ```
 
-### Pattern Matching
+### Like Operator
 
-The `like` and `regex` expressions can be used for string matching. The former is typically used for case insensitive matches while the `regex` expressions is used for case sensitive matches.
+The [`like`]({{ site.references.swift }}/Classes/Expression.html#/s:18CouchbaseLiteSwift10ExpressionC4likeACypF) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
 
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
@@ -220,7 +218,7 @@ for (Result result : rs)
     Log.i("Sample", String.format("name -> %s", result.getString("name")));
 ```
 
-### Wildcard Character Match
+#### Wildcard Character Match
 
 We can use `_` sign within a like expression to do a wildcard match against a single character.
 

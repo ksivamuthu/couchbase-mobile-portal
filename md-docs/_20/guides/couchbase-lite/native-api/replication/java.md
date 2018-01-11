@@ -43,7 +43,9 @@ For platform specific installation instructions, refer to the Sync Gateway [inst
 
 ## Starting a Replication
 
-Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the `ReplicatorConfiguration` object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
+Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`]({{ site.references.swift }}/Structs/ReplicatorConfiguration.html) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
+
+[//]: # (TODO: replace code snippet for Java/C#/Objc)
 
 ```java
 URI uri = new URI("blip://localhost:4984/db");
@@ -67,7 +69,9 @@ Database.setLogLevel(Database.LogDomain.REPLICATOR, Database.LogLevel.VERBOSE);
 
 ## Replication Status
 
-The `replication.status.activity` property can be used to check the status of a replication. For example, when the replication is actively transferring data and when it has stopped.
+The `replication.Status.Activity` property can be used to check the status of a replication. For example, when the replication is actively transferring data and when it has stopped.
+
+[//]:
 
 ```java
 replication.addChangeListener(new ReplicatorChangeListener() {

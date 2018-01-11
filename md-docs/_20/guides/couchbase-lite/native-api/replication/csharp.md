@@ -49,7 +49,7 @@ For platform specific installation instructions, refer to the Sync Gateway [inst
 
 ## Starting a Replication
 
-Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the `ReplicatorConfiguration` object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
+Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`]({{ site.references.swift }}/Structs/ReplicatorConfiguration.html) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
 
 [//]:
 
@@ -68,8 +68,6 @@ Starting in Couchbase Lite 2.0, replication between two local databases is now s
 ## Troubleshooting
 
 As always, when there is a problem with replication, logging is your friend. The following example increases the log output for activity related to replication with Sync Gateway.
-
-[//]:
 
 ```c#
 Database.SetLogLevel(LogDomain.Replicator, LogLevel.Verbose);
@@ -103,8 +101,6 @@ The following table lists the different activity levels in the API and the meani
 ## Handling Network Errors
 
 A running replication can be interrupted for a variety of reasons such as network errors or unauthorized access. In this case, the replication status will be updated with an `Error` which follows the standard HTTP error codes. The replication change event can be used to monitor the status of the replication. The following example monitors the replication for errors and logs the error code to the console.
-
-[//]:
 
 ```c#
 replication.AddChangeListener((sender, args) =>
