@@ -51,6 +51,11 @@ properties:
         type: object
         description: The database name is stored as a key.
         properties:
+          allow_conflicts:
+            type: boolean
+            description: |
+              Setting to `false` will cause Sync Gateway to reject any attempt to write conflicting revisions (returning a `409` HTTP status code). It will be up to the client to resolve the conflict. Restarting Sync Gateway with this property enabled will not automatically result in disk space savings (compaction on a document won't occur until a document is updated). Setting this property to false will automatically set `revs_limit` to 1, therefore overriding any user specified value.
+            default: 'true'
           allow_empty_password:
             type: boolean
             description: Whether to allow empty passwords for Couchbase Server authentication.
