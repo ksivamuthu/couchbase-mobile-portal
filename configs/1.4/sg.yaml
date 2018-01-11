@@ -1,9 +1,9 @@
 type: object
 properties:
   adminInterface:
-    description: Port or TCP network address (IP address and the port) that the Admin REST API listens on.
+    description: Port or TCP network address (IP address and the port) that the Admin REST API listens on. The loopback address prefix before the port (`127.0.0.1`) means the interface will not be reachable from other hosts. To make it reachable, change it to ":4985".
     type: string
-    default: ':4985'
+    default: '127.0.0.1:4985'
   adminUI:
     description: URL of the Sync Gateway Admin Console HTML page.
     type: string
