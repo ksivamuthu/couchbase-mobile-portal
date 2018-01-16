@@ -1,6 +1,4 @@
----
----
-
+<br />
 ⚠ Support in the current Developer Build is for Android only. The SDK cannot be used in Java applications.
 
 ## Getting Started

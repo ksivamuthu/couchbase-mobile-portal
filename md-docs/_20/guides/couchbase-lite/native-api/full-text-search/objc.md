@@ -1,6 +1,3 @@
----
----
-
 To run a full-text search (FTS) query, you must have created a full-text index on the expression being matched. Unlike regular queries, the index is not optional. The following example inserts documents and creates an FTS index on the `name` property.
 
 [//]: # (TODO: replace snippet with ObjC/C#/Java equivalent)

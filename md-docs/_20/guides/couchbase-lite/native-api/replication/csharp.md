@@ -1,6 +1,3 @@
----
----
-
 Couchbase Mobile 2.0 uses a new replication protocol based on WebSockets. This protocol has been designed to be fast, efficient, easier to implement, and symmetrical between the client and server.
 
 ## Compatibility

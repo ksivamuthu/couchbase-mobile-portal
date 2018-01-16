@@ -1,6 +1,3 @@
----
----
-
 ## Getting Started
 
 - Add `http://mobile.nuget.couchbase.com/nuget/Developer/` to your Nuget package sources and expect a new build approximately every 2 weeks!
