@@ -39,7 +39,7 @@ This does create the possibility of confusion, since the document's in-memory st
 
 [//]:
 
-The `Document` class now offers a set of [`property accessors`]({{ site.references.swift }}/Classes/Document.html#/DictionaryProtocol) for various scalar types, including boolean, integers, floating-point and strings. These accessors take care of converting to/from JSON encoding, and make sure you get the type you're expecting: for example, `document.GetString(string key)` returns either a `String` or `null`, so you can't get an unexpected object class and crash trying to use it as a string. (Even if the property in the document has an incompatible type, the accessor returns `null`.)
+The `Document` class now offers a set of [`property accessors`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Classes/Document.html#/DictionaryProtocol) for various scalar types, including boolean, integers, floating-point and strings. These accessors take care of converting to/from JSON encoding, and make sure you get the type you're expecting: for example, `document.GetString(string key)` returns either a `String` or `null`, so you can't get an unexpected object class and crash trying to use it as a string. (Even if the property in the document has an incompatible type, the accessor returns `null`.)
 
 In addition, as a convenience we offer `DateTimeOffset` accessors. Dates are a common data type, but JSON doesn't natively support them, so the convention is to store them as strings in ISO-8601 format. The following example sets the date on the `createdAt` property and reads it back using the `document.GetDate(string key)` accessor method.
 

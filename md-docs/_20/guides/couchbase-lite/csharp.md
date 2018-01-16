@@ -6,4 +6,4 @@ Your app must call the relevant `Activate()` function inside of the class that i
 
 ### Resources
 
-The API references for the .NET SDK are available [here]({{ site.references.csharp }}).
+The API references for the .NET SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021).

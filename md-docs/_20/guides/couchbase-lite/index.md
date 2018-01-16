@@ -44,7 +44,7 @@
 <block class="swift" />
 
 1. [Install Carthage](https://github.com/Carthage/Carthage#installing-carthage)
-2. Add `github "couchbase/couchbase-lite-ios" "{{ site.ios_dev_build }}"` to your **Cartfile**.
+2. Add `github "couchbase/couchbase-lite-ios" "2.0DB021"` to your **Cartfile**.
 3. Run `carthage update --platform ios`.
 4. Drag **CouchbaseLiteSwift.framework** from **Carthage/Build/** to the Xcode navigator.
 5. Click on Project > General > Embedded Binary and add **CouchbaseLiteSwift.framework** to this section.
@@ -52,7 +52,7 @@
 <block class="objc" />
 
 1. [Install Carthage](https://github.com/Carthage/Carthage#installing-carthage)
-2. Add `github "couchbase/couchbase-lite-ios" "{{ site.ios_dev_build }}"` to your Cartfile.
+2. Add `github "couchbase/couchbase-lite-ios" "2.0DB021"` to your Cartfile.
 3. Run `carthage update --platform ios`.
 4. Drag **CouchbaseLite.framework** from **Carthage/Build/** to the Xcode navigator.
 5. Click on Project > General > Embedded Binary and add **CouchbaseLite.framework** to this section.
@@ -69,7 +69,7 @@
     ```ruby
     target '<your target name>' do
       use_frameworks!
-      pod 'CouchbaseLiteSwift', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '{{ site.ios_dev_build }}', :submodules => true
+      pod 'CouchbaseLiteSwift', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '2.0DB021', :submodules => true
     end
     ```
 
@@ -87,7 +87,7 @@
     ```ruby
     target '<your target name>' do
       use_frameworks!
-      pod 'CouchbaseLite', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '{{ site.ios_dev_build }}', :submodules => true
+      pod 'CouchbaseLite', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '2.0DB021', :submodules => true
     end
     ```
 
@@ -122,7 +122,7 @@ Your app must call the relevant `Activate()` function inside of the class that i
 
 	```groovy
 	dependencies {
-		compile 'com.couchbase.lite:couchbase-lite-android:{{ site.android_dev_build }}'
+		compile 'com.couchbase.lite:couchbase-lite-android:2.0.0-DB021'
 	}
 	```
 
@@ -132,7 +132,7 @@ Your app must call the relevant `Activate()` function inside of the class that i
 
 <block class="swift" />
 
-The API references for the Swift SDK are available [here]({{ site.references.swift }}).
+The API references for the Swift SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021).
 
 #### Sample App
 
@@ -156,15 +156,15 @@ The following tutorial is using the latest Developer Build to demonstrate some o
 
 <block class="objc" />
 
-The API references for the Objective-C SDK are available [here]({{ site.references.objc }}).
+The API references for the Objective-C SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021).
 
 <block class="csharp" />
 
-The API references for the .NET SDK are available [here]({{ site.references.csharp }}).
+The API references for the .NET SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021).
 
 <block class="java" />
 	
-The API references for the Java SDK are available [here]({{ site.references.java }}).
+The API references for the Java SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021).
 
 <block class="objc java" />
 

@@ -20,10 +20,10 @@
 
 	```groovy
 	dependencies {
-		compile 'com.couchbase.lite:couchbase-lite-android:{{ site.android_dev_build }}'
+		compile 'com.couchbase.lite:couchbase-lite-android:2.0.0-DB021'
 	}
 	```
 
 ### Resources
 
-The API references for the Java SDK are available [here]({{ site.references.java }}).
+The API references for the Java SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021).

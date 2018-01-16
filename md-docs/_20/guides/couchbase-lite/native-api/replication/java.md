@@ -40,7 +40,7 @@ For platform specific installation instructions, refer to the Sync Gateway [inst
 
 ## Starting a Replication
 
-Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`]({{ site.references.swift }}/Structs/ReplicatorConfiguration.html) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
+Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/Structs/ReplicatorConfiguration.html) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
 
 [//]: # (TODO: replace code snippet for Java/C#/Objc)
 

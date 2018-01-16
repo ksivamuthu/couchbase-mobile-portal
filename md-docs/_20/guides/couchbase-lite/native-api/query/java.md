@@ -1,7 +1,7 @@
 <br/>
 ⚠ Support in the current Developer Build is for Android only. The SDK cannot be used in Java applications.
 
-Database queries have changed significantly. Instead of the map/reduce algorithm used in 1.x, they're now based on expressions, of the form "return ____ from documents where \_\_\_\_, ordered by \_\_\_\_", with semantics based on Couchbase Server's N1QL query language. If you've used {% tx Core Data|Core Data|LINQ|LINQ %}, or other query APIs based on SQL, you'll find this familiar.
+Database queries have changed significantly. Instead of the map/reduce algorithm used in 1.x, they're now based on expressions, of the form "return ____ from documents where \_\_\_\_, ordered by \_\_\_\_", with semantics based on Couchbase Server's N1QL query language.
 
 There are several parts to specifying a query:
 
@@ -42,9 +42,9 @@ With the SELECT statement, you can query and manipulate JSON data. With projecti
 
 A SelectResult represents a single return value of the query statement. Documents in Couchbase Lite comprise of the document properties specified as a Dictionary of Key-Value pairs and associated metadata. The metadata consists of document Id and sequence Id associated with the Document. When you query for a document, the document metadata is not returned by default. You will need to explicitly query for the metadata.
 
-- [`SelectResult.all()`]({{ site.references.swift }}/Classes/SelectResult.html#/s:18CouchbaseLiteSwift12SelectResultC3allAC4FromCyFZ): Returns all properties associated with a document.
+- [`SelectResult.all()`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/Classes/SelectResult.html#/s:18CouchbaseLiteSwift12SelectResultC3allAC4FromCyFZ): Returns all properties associated with a document.
 - `SelectResult(`[`Expression`](/Classes/Expression.html)`.property("name"))`: Returns the `name` property associated with a document.
-- `SelectResult.expression(`[`Meta`]({{ site.references.swift }}/Classes/Meta.html)`.id``)`: Returns the document ID.
+- `SelectResult.expression(`[`Meta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/Classes/Meta.html)`.id``)`: Returns the document ID.
 - `SelectResult.expression(Expression.meta().sequence)`: Returns the sequence ID (used in replications).
 
 You can specify a comma separated list of `SelectResult` expressions in the select statement of your query. For instance the following select statement queries for the document `_id` as well as the `type` and `name` properties of all documents in the database. In the query result, we print the `_id` and `name` properties of each row using the property name getter method.
@@ -125,7 +125,7 @@ Similar to SQL, you can use the where clause to filter the documents to be retur
 
 ### Comparison
 
-The `Expression`'s [comparison operators]({{ site.references.swift }}/Classes/Expression.html#/Comparison%20Operators) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
+The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/Classes/Expression.html#/Comparison%20Operators) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
 
 ```json
 {
@@ -152,7 +152,7 @@ for (Result result : rs) {
 
 ### Collection Operators
 
-[Collection operators]({{ site.references.swift }}/Classes/Expression.html#/Collection%20operators:) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
+[Collection operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/Classes/Expression.html#/Collection%20operators:) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
 
 ```json
 {
@@ -178,7 +178,7 @@ for (Result result : rs)
 
 ### Like Operator
 
-The [`like`]({{ site.references.swift }}/Classes/Expression.html#/s:18CouchbaseLiteSwift10ExpressionC4likeACypF) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
+The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/Classes/Expression.html#/s:18CouchbaseLiteSwift10ExpressionC4likeACypF) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
 
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
