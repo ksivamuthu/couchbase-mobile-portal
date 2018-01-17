@@ -1,3 +1,7 @@
+---
+permalink: guides/couchbase-lite/csharp/database/index.html
+---
+
 ## New Database
 
 As the top-level entity in the API, new databases can be created using the `Database` class by passing in a name, configuration, or both. The following example creates a database using the `Database(string name)` method.

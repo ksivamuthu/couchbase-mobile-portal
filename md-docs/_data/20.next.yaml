@@ -1,0 +1,88 @@
+- title: Developer Builds
+  path: whatsnew.html
+- title: Couchbase Lite
+  path: installation/index.html
+  open: true
+  items:
+    - title: Java
+      items:
+        - title: Getting Started
+          path: guides/couchbase-lite/java/index.html
+        - title: Database
+          path: guides/couchbase-lite/java/database/index.html
+        - title: Document
+          path: guides/couchbase-lite/java/document/index.html
+        - title: Blob
+          path: guides/couchbase-lite/java/attachment/index.html
+        - title: Query
+          path: guides/couchbase-lite/java/query/index.html
+        - title: Search
+          path: guides/couchbase-lite/java/full-text-search/index.html
+        - title: Replication
+          path: guides/couchbase-lite/java/replication/index.html
+    - title: Swift
+      items:
+        - title: Getting Started
+          path: guides/couchbase-lite/swift/index.html
+        - title: Database
+          path: guides/couchbase-lite/swift/database/index.html
+        - title: Document
+          path: guides/couchbase-lite/swift/document/index.html
+        - title: Blob
+          path: guides/couchbase-lite/swift/attachment/index.html
+        - title: Query
+          path: guides/couchbase-lite/swift/query/index.html
+        - title: Search
+          path: guides/couchbase-lite/swift/full-text-search/index.html
+        - title: Replication
+          path: guides/couchbase-lite/swift/replication/index.html
+    - title: Objective-C
+      items:
+        - title: Getting Started
+          path: guides/couchbase-lite/objc/index.html
+        - title: Database
+          path: guides/couchbase-lite/objc/database/index.html
+        - title: Document
+          path: guides/couchbase-lite/objc/document/index.html
+        - title: Blob
+          path: guides/couchbase-lite/objc/attachment/index.html
+        - title: Query
+          path: guides/couchbase-lite/objc/query/index.html
+        - title: Search
+          path: guides/couchbase-lite/objc/full-text-search/index.html
+        - title: Replication
+          path: guides/couchbase-lite/objc/replication/index.html
+    - title: C#
+      items:
+        - title: Getting Started
+          path: guides/couchbase-lite/csharp/index.html
+        - title: Database
+          path: guides/couchbase-lite/csharp/database/index.html
+        - title: Document
+          path: guides/couchbase-lite/csharp/document/index.html
+        - title: Blob
+          path: guides/couchbase-lite/csharp/attachment/index.html
+        - title: Query
+          path: guides/couchbase-lite/csharp/query/index.html
+        - title: Search
+          path: guides/couchbase-lite/csharp/full-text-search/index.html
+        - title: Replication
+          path: guides/couchbase-lite/csharp/replication/index.html
+    - title: Getting Started
+      path: guides/couchbase-lite/index.html
+    - title: Database
+      path: guides/couchbase-lite/native-api/database/index.html
+    - title: Document
+      path: guides/couchbase-lite/native-api/document/index.html
+    - title: Blob
+      path: guides/couchbase-lite/native-api/attachment/index.html
+    - title: Query
+      path: guides/couchbase-lite/native-api/query/index.html
+    - title: Full-Text Search
+      path: guides/couchbase-lite/native-api/full-text-search/index.html
+    - title: Replication
+      path: guides/couchbase-lite/native-api/replication/index.html
+    - title: Release notes
+      path: references/couchbase-lite/release-notes/index.html
+    - title: Technical notes
+      path: guides/couchbase-lite/tech-notes/index.html

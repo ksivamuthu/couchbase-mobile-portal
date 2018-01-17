@@ -1,4 +1,5 @@
 ---
+permalink: guides/couchbase-lite/swift/cert-pinning/index.html
 ---
 
 Communication between Couchbase Lite and Sync Gateway is encrypted and secured using SSL/TLS. The SSL/TLS protocol relies on a Public Key Infrastructure (PKI) mechanism using a X.509 certificate to establish the Sync Gateway server’s identity. The certificate is typically issued/signed by a trusted Certificate Authority and is installed on the Sync Gateway. In a development environment, this certificate may be self-signed.

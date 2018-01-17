@@ -1,4 +1,6 @@
-
+---
+permalink: guides/couchbase-lite/swift/conflict-resolution/index.html
+---
 
 ### Conflict Handling
 

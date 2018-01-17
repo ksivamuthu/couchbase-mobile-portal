@@ -1,3 +1,7 @@
+---
+permalink: guides/couchbase-lite/java/document/index.html
+---
+
 In Couchbase Lite, a document's body takes the form of a JSON object — a collection of key/value pairs where the values can be different types of data such as numbers, strings, arrays or even nested objects. Every document is identified by a document ID, which can be automatically generated (as a UUID) or determined by the application; the only constraints are that it must be unique within the database, and it can't be changed.
 
 ## Initializers
