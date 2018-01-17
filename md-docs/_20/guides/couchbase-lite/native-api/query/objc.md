@@ -43,8 +43,8 @@ With the SELECT statement, you can query and manipulate JSON data. With projecti
 A SelectResult represents a single return value of the query statement. Documents in Couchbase Lite comprise of the document properties specified as a Dictionary of Key-Value pairs and associated metadata. The metadata consists of document Id and sequence Id associated with the Document. When you query for a document, the document metadata is not returned by default. You will need to explicitly query for the metadata.
 
 - [`[CBLQuerySelectResult all]`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/CBLQuerySelectResult.html#/c:objc(cs)CBLQuerySelectResult(cm)all): Returns all properties associated with a document.
-- `[CBLQuerySelectResult expression:[`[`CBLQueryExpression`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/CBLQueryExpression.html)` property:"name"])`: Returns the `name` property associated with a document.
-- `[CBLQuerySelectResult expression:[`[`CBLQueryMeta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/CBLQueryMeta.html)`.id`)]`: Returns the document ID.
+- `[CBLQuerySelectResult expression:[`[`CBLQueryExpression`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/CBLQueryExpression.html)` property:"name"]`: Returns the `name` property associated with a document.
+- `[CBLQuerySelectResult expression:`[`CBLQueryMeta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/CBLQueryMeta.html)`.id]`: Returns the document ID.
 - `SelectResult.expression(Expression.meta().sequence)`: Returns the sequence ID (used in replications).
 
 You can specify a comma separated list of `SelectResult` expressions in the select statement of your query. For instance the following select statement queries for the document `_id` as well as the `type` and `name` properties of all documents in the database. In the query result, we print the `_id` and `name` properties of each row using the property name getter method.
