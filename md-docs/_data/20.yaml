@@ -5,21 +5,7 @@
   open: true
   items:
     - title: Java
-      items:
-        - title: Getting Started
-          path: guides/couchbase-lite/java/index.html
-        - title: Database
-          path: guides/couchbase-lite/java/database/index.html
-        - title: Document
-          path: guides/couchbase-lite/java/document/index.html
-        - title: Blob
-          path: guides/couchbase-lite/java/attachment/index.html
-        - title: Query
-          path: guides/couchbase-lite/java/query/index.html
-        - title: Search
-          path: guides/couchbase-lite/java/full-text-search/index.html
-        - title: Replication
-          path: guides/couchbase-lite/java/replication/index.html
+      path: guides/couchbase-lite/java/index.html
     - title: Swift
       items:
         - title: Getting Started
