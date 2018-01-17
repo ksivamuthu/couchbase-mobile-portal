@@ -6,7 +6,7 @@ As the top-level entity in the API, new databases can be created using the `Data
 var database = new Database("my-database");
 ```
 
-Just as before, the database will be created in a default location. Alternatively, the `Database(string name, DatabaseConfiguration config)` initializer can be used to provide specific options in the [`DatabaseConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Structs/DatabaseConfiguration.html) object such as the database directory, encryption key through the  object.
+Just as before, the database will be created in a default location. Alternatively, the `Database(string name, DatabaseConfiguration config)` initializer can be used to provide specific options in the [`DatabaseConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_DatabaseConfiguration.htm) object such as the database directory, encryption key through the  object.
 
 ##  Encryption
 
@@ -74,7 +74,7 @@ The database instance can then be access throughout the codebase using the class
 
 If your app needs to sync a lot of data initially, but that data is fairly static and won't change much, it can be a lot more efficient to bundle a database in your application and install it on the first launch. Even if some of the content changes on the server after you create the app, the app's first pull replication will bring the database up to date.
 
-To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`Copy(string, DatabaseConfiguration)`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/M_Couchbase_Lite_Database_Copy.htm) method as shown below.
+To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`Database.Copy(string, DatabaseConfiguration)`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/M_Couchbase_Lite_Database_Copy.htm) method as shown below.
 
 ```c#
 // assetPath is the path on the filesystem to the cblite2 folder
