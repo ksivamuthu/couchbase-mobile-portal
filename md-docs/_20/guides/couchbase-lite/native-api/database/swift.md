@@ -14,8 +14,6 @@ Just as before, the database will be created in a default location. Alternativel
 
 ##  Encryption
 
-[//]: # (TODO: add content about encryption: algorithm, security level...)
-
 The following example demonstrates how to create a database with an encryption key (or open an existing one).
 
 ```swift

@@ -30,8 +30,6 @@ In the configuration file above, the **replicator_2** property enables the new r
 
 [Download Sync Gateway](https://www.couchbase.com/downloads) and start it from the command line with the configuration file created above.
 
-[//]: # (TODO: for csharp.md only, update command below for Windows dev)
-
 ```bash
 ~/Downloads/couchbase-sync-gateway/bin/sync_gateway sync-gateway-config.json
 ```
@@ -58,8 +56,6 @@ Starting in Couchbase Lite 2.0, replication between two local databases is now s
 
 As always, when there is a problem with replication, logging is your friend. The following example increases the log output for activity related to replication with Sync Gateway.
 
-[//]: # (TODO: replace code snippet for Java/C#/Objc)
-
 ```swift
 Database.setLogLevel(.verbose, domain: .replicator)
 ```
@@ -67,8 +63,6 @@ Database.setLogLevel(.verbose, domain: .replicator)
 ## Replication Status
 
 The `replication.status.activity` property can be used to check the status of a replication. For example, when the replication is actively transferring data and when it has stopped.
-
-[//]: # (TODO: replace code snippet for Java/C#/Objc)
 
 ```swift
 self.replication.addChangeListener { (change) in
@@ -91,8 +85,6 @@ The following table lists the different activity levels in the API and the meani
 ## Handling Network Errors
 
 A running replication can be interrupted for a variety of reasons such as network errors or unauthorized access. In this case, the replication status will be updated with an `Error` which follows the standard HTTP error codes. The replication change event can be used to monitor the status of the replication. The following example monitors the replication for errors and logs the error code to the console.
-
-[//]: # (TODO: replace code snippet for Java/C#/Objc)
 
 ```swift
 self.replication.addChangeListener { (change) in

@@ -10,8 +10,6 @@ Just as before, the database will be created in a default location. Alternativel
 
 ##  Encryption
 
-[//]: # (TODO: add content about encryption: algorithm, security level...)
-
 The following example demonstrates how to create a database with an encryption key (or open an existing one).
 
 ```c#
@@ -28,8 +26,6 @@ Databases that were created with Couchbase Mobile 1.2 or later can be read using
 
 ## Finding a Database File
 
-[//]:
-
 Where a database goes by default depends on the platform it is running on.  Here are the defaults for each platform:
 
 - .NET Core: `Path.Combine(AppContext.BaseDirectory, "CouchbaseLite")` (unless the app context is altered \[e.g. by XUnit\], this will be the same directory as the output binary)
@@ -41,8 +37,6 @@ Where a database goes by default depends on the platform it is running on.  Here
 
 The log messages are split into different domains (`LogDomains`) which can be tuned to different log levels. The following example enables `Verbose` logging for the `Replicator` and `Query` domains.
 
-[//]:
-
 ```c#
 Database.SetLogLevel(LogDomain.Replicator, LogLevel.Verbose);
 Database.SetLogLevel(LogDomain.Query, LogLevel.Verbose);
@@ -51,8 +45,6 @@ Database.SetLogLevel(LogDomain.Query, LogLevel.Verbose);
 ## Singleton Pattern
 
 The database instance must be used throughout the Couchbase Lite API to Create, Update, Delete and Query documents. Hence, the singleton pattern is useful to create a single instance of the `Database` object. The following example follows the Singleton Pattern in C#.
-
-[//]:
 
 ```c#
 class DataManager {

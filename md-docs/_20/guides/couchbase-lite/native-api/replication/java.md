@@ -30,8 +30,6 @@ In the configuration file above, the **replicator_2** property enables the new r
 
 [Download Sync Gateway](https://www.couchbase.com/downloads) and start it from the command line with the configuration file created above.
 
-[//]: # (TODO: for csharp.md only, update command below for Windows dev)
-
 ```bash
 ~/Downloads/couchbase-sync-gateway/bin/sync_gateway sync-gateway-config.json
 ```
@@ -65,8 +63,6 @@ Database.setLogLevel(Database.LogDomain.REPLICATOR, Database.LogLevel.VERBOSE);
 ## Replication Status
 
 The `replication.Status.Activity` property can be used to check the status of a replication. For example, when the replication is actively transferring data and when it has stopped.
-
-[//]:
 
 ```java
 replication.addChangeListener(new ReplicatorChangeListener() {

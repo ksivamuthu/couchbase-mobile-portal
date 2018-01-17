@@ -14,8 +14,6 @@ Just as before, the database will be created in a default location. Alternativel
 
 ##  Encryption
 
-[//]: # (TODO: add content about encryption: algorithm, security level...)
-
 The following example demonstrates how to create a database with an encryption key (or open an existing one).
 
 ```java
@@ -30,8 +28,6 @@ Databases that were created with Couchbase Mobile 1.2 or later can be read using
 
 ## Finding a Database File
 
-[//]: # (TODO: replace content with best practice for Android)
-
 When the application is running on the iOS simulator, you can easily locate the application's sandbox directory using the [SimPholders](https://simpholders.com/3/) utility.
 
 ## CLI tool
@@ -42,8 +38,6 @@ The Couchbase Lite `.zip` file available from the [downloads page](https://www.c
 
 The log messages are split into different domains (`LogDomains`) which can be tuned to different log levels. The following example enables `verbose` logging for the `replicator` and `query` domains.
 
-[//]: # (TODO: replace below with ObjC/C#/Java)
-
 ```swift
 Database.setLogLevel(.verbose, domain: .replicator)
 Database.setLogLevel(.verbose, domain: .query)
@@ -52,8 +46,6 @@ Database.setLogLevel(.verbose, domain: .query)
 ## Singleton Pattern
 
 The database instance must be used throughout the Couchbase Lite API to Create, Update, Delete and Query documents. Hence, the singleton pattern is useful to create a single instance of the `Database` object. The following example follows the Singleton Pattern in `Swift`.
-
-[//]: # (TODO: replace below with ObjC/C#/Java)
 
 ```swift
 class DataManager {

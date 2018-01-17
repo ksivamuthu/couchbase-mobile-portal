@@ -23,8 +23,6 @@ The following example creates a new index for the `type` and `name` properties.
 }
 ```
 
-[//]: # (TODO: replace below with ObjC syntax)
-
 ```swift
 database.createIndex(Index.valueIndex().on(
                 ValueIndexItem.expression(Expression.property("type")),
@@ -72,9 +70,7 @@ for (CBLQueryRow *row in rows) {
 
 The `SelectResult.all()` method can be used to query all the properties of a document. In this case, the document in the result is embedded in a dictionary where the key is the database name. The following snippet shows the same query using `SelectResult.all()` and the result in JSON.
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query
 	.select(SelectResult.all())
 	.from(DataSource.database(database))
@@ -123,9 +119,7 @@ The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/c
 }
 ```
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query
 	.select(SelectResult.all())
 	.from(DataSource.database(database))
@@ -157,9 +151,7 @@ The list of supported comparison operators include, among others, `lessThan`, `l
 }
 ```
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query
 	.select(
 		SelectResult.expression(Expression.meta().id),
@@ -184,9 +176,7 @@ The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Clas
 
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query
 	.select(
 		SelectResult.expression(Expression.meta().id),
@@ -212,9 +202,7 @@ We can use `%` sign within a `like` expression to do a wildcard match against ze
 
 In the example below, we are looking for documents of `type` "landmark" where the name property matches any string that begins with "eng" followed by zero or more characters, the letter "e", followed by zero or more characters. The following query will return "landmark" type documents with name matching "Engineers", "engine", "english egg" , "England Eagle" and so on. Notice that the matches may span word boundaries.
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query
 	.select(
 		SelectResult.expression(Expression.meta().id),
@@ -234,9 +222,7 @@ We can use `_` sign within a like expression to do a wildcard match against a si
 In the example below, we are looking for documents of type "landmark" where the `name` property matches any string that begins with "eng" followed by exactly 4 wildcard characters and ending in the letter "r".
 The following query will return "landmark" `type` documents with the `name` matching "Engineer", "engineer" and so on.
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query
 	.select(SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("country")),
@@ -254,9 +240,7 @@ The `regex` expression can be used for case sensitive matches. Similar to wildca
 In the example below, we are looking for documents of `type` "landmark" where the name property matches any string (on word boundaries) that begins with "eng" followed by exactly 4 wildcard characters and ending in the letter "r".
 The following query will return "landmark" type documents with name matching "Engine", "engine" and so on. Note that the `\b` specifies that the match must occur on word boundaries.
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query
 	.select(
 		SelectResult.expression(Expression.meta().id),
@@ -274,9 +258,7 @@ The JOIN clause enables you to create new input objects by combining two or more
 
 The following example uses a JOIN clause to find the airline details which have routes that start from RIX. This example JOINS the document of type "route" with documents of type "airline" using the document ID (`_id`) on the "airline" document and  `airlineid` on the "route" document.
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query.select(
 	SelectResult.expression(Expression.property("name").from("airline")),
 	SelectResult.expression(Expression.property("callsign").from("airline")),
@@ -315,9 +297,7 @@ You can perform further processing on the data in your result set before the fin
 }
 ```
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query.select(
 	SelectResult.expression(Function.count("*")),
 	SelectResult.expression(Expression.property("country")),
@@ -352,9 +332,7 @@ There are 123 airports on the America/Denver timezone located in United States a
 
 It is possible to sort the results of a query based on a given expression result. The example below returns documents of type equal to "hotel" sorted in ascending order by the value of the title property.
 
-[//]: # (TODO: replace below with ObjC syntax)
-
-```swift
+```objectivec
 let query = Query
 	.select(
 		SelectResult.expression(Expression.meta().id),
