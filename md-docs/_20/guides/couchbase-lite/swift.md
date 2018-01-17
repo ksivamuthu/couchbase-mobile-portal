@@ -1,3 +1,7 @@
+---
+permalink: guides/couchbase-lite/swift/index.html
+---
+
 ## Getting Started
 
 ### Frameworks

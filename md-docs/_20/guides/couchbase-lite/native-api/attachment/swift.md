@@ -1,5 +1,5 @@
 ---
-permalink: guides/couchbase-lite/attachment/attachment/index.html
+permalink: guides/couchbase-lite/swift/attachment/index.html
 ---
 
 ### Blobs

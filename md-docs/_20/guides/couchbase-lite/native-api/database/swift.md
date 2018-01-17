@@ -1,5 +1,5 @@
 ---
-permalink: guides/couchbase-lite/database/swift/index.html
+permalink: guides/couchbase-lite/swift/database/index.html
 ---
 
 ## New Database
