@@ -39,9 +39,9 @@ With the SELECT statement, you can query and manipulate JSON data. With projecti
 
 A SelectResult represents a single return value of the query statement. Documents in Couchbase Lite comprise of the document properties specified as a Dictionary of Key-Value pairs and associated metadata. The metadata consists of document Id and sequence Id associated with the Document. When you query for a document, the document metadata is not returned by default. You will need to explicitly query for the metadata.
 
-- [`SelectResult.all()`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Classes/SelectResult.html#/s:18CouchbaseLiteSwift12SelectResultC3allAC4FromCyFZ): Returns all properties associated with a document.
-- `SelectResult(`[`Expression`](/Classes/Expression.html)`.property("name"))`: Returns the `name` property associated with a document.
-- `SelectResult.expression(`[`Meta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Classes/Meta.html)`.id`)`: Returns the document ID.
+- [`SelectResult.All()`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_Query_SelectResult.htm): Returns all properties associated with a document.
+- `SelectResult(`[`Expression`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_Query_IExpression.htm)`.property("name"))`: Returns the `name` property associated with a document.
+- `SelectResult.expression(`[`Meta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_Query_Meta.htm)`.id`)`: Returns the document ID.
 - `SelectResult.expression(Expression.meta().sequence)`: Returns the sequence ID (used in replications).
 
 You can specify a comma separated list of `SelectResult` expressions in the select statement of your query. For instance the following select statement queries for the document `_id` as well as the `type` and `name` properties of all documents in the database. In the query result, we print the `_id` and `name` properties of each row using the property name getter method.
@@ -164,7 +164,7 @@ using(var rows = query.Run()) {
 
 ### Like Operator
 
-The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Classes/Expression.html#/s:18CouchbaseLiteSwift10ExpressionC4likeACypF) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
+The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/M_Couchbase_Lite_Query_IExpression_Like.htm) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
 
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
@@ -223,7 +223,7 @@ var query = Query.Select(
 
 ### Regex Operator
 
-The [`regex`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Classes/Expression.html#/s:18CouchbaseLiteSwift10ExpressionC5regexACypF) operator can be used for case sensitive matches. Similar to wildcard `like` expressions, `regex` expressions based pattern matching allow you to have some fuzziness in your search string.
+The [`regex`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/M_Couchbase_Lite_Query_IExpression_Regex.htm) operator can be used for case sensitive matches. Similar to wildcard `like` expressions, `regex` expressions based pattern matching allow you to have some fuzziness in your search string.
 
 In the example below, we are looking for documents of `type` "landmark" where the name property matches any string (on word boundaries) that begins with "eng" followed by exactly 4 wildcard characters and ending in the letter "r".
 The following query will return "landmark" type documents with name matching "Engine", "engine" and so on. Note that the `\b` specifies that the match must occur on word boundaries.

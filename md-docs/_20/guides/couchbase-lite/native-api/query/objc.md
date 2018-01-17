@@ -180,7 +180,7 @@ do {
 
 ### Like Operator
 
-The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/Expression.html#/s:18CouchbaseLiteSwift10ExpressionC4likeACypF) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
+The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/CBLQueryExpression.html#/c:objc(cs)CBLQueryExpression(im)like:) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
 
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
