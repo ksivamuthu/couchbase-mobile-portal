@@ -42,7 +42,7 @@ A SelectResult represents a single return value of the query statement. Document
 
 - [`SelectResult.all()`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021/Classes/SelectResult.html#/s:18CouchbaseLiteSwift12SelectResultC3allAC4FromCyFZ): Returns all properties associated with a document.
 - `SelectResult(`[`Expression`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021/Classes/Expression.html)`.property("name"))`: Returns the `name` property associated with a document.
-- `SelectResult.expression(`[`Meta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021/Classes/Meta.html)`.id``)`: Returns the document ID.
+- `SelectResult.expression(`[`Meta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021/Classes/Meta.html)`.id`)`: Returns the document ID.
 - `SelectResult.expression(Expression.meta().sequence)`: Returns the sequence ID (used in replications).
 
 You can specify a comma separated list of `SelectResult` expressions in the select statement of your query. For instance the following select statement queries for the document `_id` as well as the `type` and `name` properties of all documents in the database. In the query result, we print the `_id` and `name` properties of each row using the property name getter method.
