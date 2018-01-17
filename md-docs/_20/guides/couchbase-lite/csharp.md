@@ -10,7 +10,7 @@ Your app must call the relevant `Activate()` function inside of the class that i
 
 ### Supported Versions
 
-This is an attempt to show versions of things that .NET is supposed to support.  This page may fall out of date, and the authoritative answer for this will come from the Couchbase support and/or management team.  Couchbase Lite .NET will be a .NET Standard 2.0 library as of the Couchbase Lite .NET 2.0 GA release (and hopefully, its beta release of 2.0).  
+Couchbase Lite .NET will be a .NET Standard 2.0 library as of the Couchbase Lite .NET 2.0 GA release (and hopefully, its beta release of 2.0).
 
 | .NET Runtime     | Minimum Runtime Version | Minimum OS version |
 | ---------------- | ----------------------- | ------------------ |
