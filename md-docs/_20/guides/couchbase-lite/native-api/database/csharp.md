@@ -79,7 +79,7 @@ To use a prebuilt database, you need to set up the database, build the database 
 ```c#
 // assetPath is the path on the filesystem to the cblite2 folder
 // On Android this means extracting from the APK into a temp directory first
-if !Database.Exists("travel-sample") {
+if !(Database.Exists("travel-sample")) {
     Database.Copy(assetPath, "travel-sample", null);
 }
 ```
