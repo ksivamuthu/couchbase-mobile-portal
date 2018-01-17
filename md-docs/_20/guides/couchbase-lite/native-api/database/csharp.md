@@ -74,15 +74,12 @@ The database instance can then be access throughout the codebase using the class
 
 If your app needs to sync a lot of data initially, but that data is fairly static and won't change much, it can be a lot more efficient to bundle a database in your application and install it on the first launch. Even if some of the content changes on the server after you create the app, the app's first pull replication will bring the database up to date.
 
-To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`copy(fromPath:toDatabase:withConfig:)`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Classes/Database.html#/s:18CouchbaseLiteSwift8DatabaseC4copyySS8fromPath_SS02toD0AA0D13ConfigurationVSg10withConfigtKFZ) method as shown below.
+To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`Copy(string, DatabaseConfiguration)`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/M_Couchbase_Lite_Database_Copy.htm) method as shown below.
 
-```swift
-let assetPath = Bundle.main.path(forResource: "travel-sample", ofType: "cblite2")!
-if !Database.exists(withName: "travel-sample") {
-	do {
-		try Database.copy(fromPath: assetPath, toDatabase: "travel-sample", withConfig: nil)
-	} catch {
-		fatalError("Could not load pre-built database")
-	}
+```c#
+// assetPath is the path on the filesystem to the cblite2 folder
+// On Android this means extracting from the APK into a temp directory first
+if !Database.Exists("travel-sample") {
+    Database.Copy(assetPath, "travel-sample", null);
 }
 ```
