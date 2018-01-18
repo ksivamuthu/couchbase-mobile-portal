@@ -723,3 +723,25 @@ self.replication.addChangeListener { (change) in
 }
 self.replication.start()
 ```
+
+### Certificate Pinning
+
+Couchbase Lite supports certificate pinning. Certificate pinning is a technique that can be used by applications to "pin" a host to it's certificate. The certificate is typically delivered to the client by an out-of-band channel and bundled with the client. In this case, Couchbase Lite uses this embedded certificate to verify the trustworthiness of the server and no longer needs to rely on a trusted third party for that (commonly referred to as the Certificate Authority).
+
+The `openssl` command can be used to create a new self-signed certificate and convert the `.pem` file to a `.cert` file (see [creating your own self-signed certificate](https://developer.couchbase.com/documentation/mobile/1.5/guides/sync-gateway/configuring-ssl/index.html#creating-your-own-self-signed-certificate)). You should then have 3 files: `cert.pem`, `cert.cer` and `key.pem`.
+
+The `cert.pem` and `key.pem` can be used in the Sync Gateway configuration (see [installing the certificate](https://developer.couchbase.com/documentation/mobile/1.5/guides/sync-gateway/configuring-ssl/index.html#installing-the-certificate)).
+
+On the Couchbase Lite side, the replication must be configured with the `cert.cer` file.
+
+```swift
+let sslCert = Bundle.main.path(forResource: "cert", ofType: "cer")
+if let path = sslCert {
+	if let data = NSData(contentsOfFile: path) {
+		let certificate = SecCertificateCreateWithData(nil, data)
+		replConfig.pinnedServerCertificate = certificate
+	}
+}
+```
+
+This example loads the certificate from the application sandbox, then converts it to the appropriate type to configure the replication object.
