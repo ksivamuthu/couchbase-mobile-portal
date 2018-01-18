@@ -20,7 +20,7 @@ Couchbase Lite .NET will be a .NET Standard 2.0 library as of the Couchbase Lite
 | .NET Framework   | 4.6.1                   | 10 (any supported) |
 | UWP              | 6.0.1                   | 10.0.16299         |
 | Xamarin iOS      | 10.14                   | 9.0                |
-| Xamarin Android  | 8.0                     | 4.1 (API 16)       |
+| Xamarin Android  | 8.0                     | 4.4 (API 19)       |
 
 * There are many different variants of Linux, and we don't have the resources to test all of them.  They are tested on Ubuntu 16.04, but have been shown to work on CentOS, and in theory work on any distro supported by .NET Core.
 
