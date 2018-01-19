@@ -5,6 +5,13 @@ GIT
     couchbase-theme (0.1.0)
       jekyll (~> 3.3)
 
+GIT
+  remote: git://github.com/jamiltz/jekyll-redirect-from.git
+  revision: 6e1eaf7229b0237256ccb3b01496df19831ad452
+  specs:
+    jekyll-redirect-from (0.13.0)
+      jekyll (~> 3.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -33,8 +40,6 @@ GEM
     jekyll-livereload (0.2.2)
       em-websocket (~> 0.5)
       jekyll (~> 3.0)
-    jekyll-redirect-from (0.11.0)
-      jekyll (>= 2.0)
     jekyll-sass-converter (1.5.1)
       sass (~> 3.4)
     jekyll-watch (1.5.1)
@@ -78,7 +83,7 @@ DEPENDENCIES
   couchbase-theme!
   jekyll
   jekyll-livereload
-  jekyll-redirect-from
+  jekyll-redirect-from!
   redcarpet
   sanitize
 
