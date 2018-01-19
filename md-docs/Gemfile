@@ -9,4 +9,5 @@ gem "couchbase-theme", :git => "git://github.com/couchbaselabs/docs-style-guide.
 
 group :jekyll_plugins do
     gem 'jekyll-livereload'
+    gem 'jekyll-redirect-from'
 end
