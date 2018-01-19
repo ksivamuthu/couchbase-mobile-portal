@@ -1,5 +1,4 @@
 ---
-permalink: guides/couchbase-lite/java/index.html
 ---
 
 <br />

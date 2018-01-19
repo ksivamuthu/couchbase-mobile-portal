@@ -1,5 +1,4 @@
 ---
-permalink: guides/couchbase-lite/objc/index.html
 ---
 
 ## Getting Started

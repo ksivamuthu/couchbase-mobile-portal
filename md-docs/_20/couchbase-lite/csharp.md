@@ -1,5 +1,4 @@
 ---
-permalink: guides/couchbase-lite/csharp/index.html
 ---
 
 ## Getting Started

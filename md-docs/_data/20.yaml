@@ -1,36 +1,33 @@
-- title: Developer Builds
+- title: What's New
   path: whatsnew.html
-- title: Java
-  path: guides/couchbase-lite/java/index.html
-  ishidden: true
-- title: Swift
-  path: guides/couchbase-lite/swift/index.html
-  ishidden: true
-- title: Objective-C
-  path: guides/couchbase-lite/objc/index.html
-  ishidden: true
-- title: C#
-  path: guides/couchbase-lite/csharp/index.html
-  ishidden: true
+#- title: Hidden Files For Redirects
+#  ishidden: true
+#  items:
+#    - title: Getting Started
+#      path: guides/couchbase-lite/index.html
+#    - title: Database
+#      path: guides/couchbase-lite/native-api/database/index.html
+#    - title: Document
+#      path: guides/couchbase-lite/native-api/document/index.html
+#    - title: Blob
+#      path: guides/couchbase-lite/native-api/attachment/index.html
+#    - title: Query
+#      path: guides/couchbase-lite/native-api/query/index.html
+#    - title: Full-Text Search
+#      path: guides/couchbase-lite/native-api/full-text-search/index.html
+#    - title: Replication
+#      path: guides/couchbase-lite/native-api/replication/index.html
+#    - title: Release notes
+#      path: references/couchbase-lite/release-notes/index.html
+#    - title: Technical notes
+#      path: guides/couchbase-lite/tech-notes/index.html
 - title: Couchbase Lite
-  path: installation/index.html
+  path: couchbase-lite/index.html
   open: true
   items:
-    - title: Getting Started
-      path: guides/couchbase-lite/index.html
-    - title: Database
-      path: guides/couchbase-lite/native-api/database/index.html
-    - title: Document
-      path: guides/couchbase-lite/native-api/document/index.html
-    - title: Blob
-      path: guides/couchbase-lite/native-api/attachment/index.html
-    - title: Query
-      path: guides/couchbase-lite/native-api/query/index.html
-    - title: Full-Text Search
-      path: guides/couchbase-lite/native-api/full-text-search/index.html
-    - title: Replication
-      path: guides/couchbase-lite/native-api/replication/index.html
-    - title: Release notes
-      path: references/couchbase-lite/release-notes/index.html
-    - title: Technical notes
-      path: guides/couchbase-lite/tech-notes/index.html
+    - title: Java
+      path: couchbase-lite/java.html
+    - title: Swift
+      path: couchbase-lite/swift.html
+    - title: C#
+      path: couchbase-lite/csharp.html

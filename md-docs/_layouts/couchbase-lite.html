@@ -1,0 +1,85 @@
+---
+layout: docs
+---
+
+<style>
+  h2 {
+    font-size: 24px !important;
+  }
+  .box-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .topics-container {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  @media screen and (max-width: 1000px){
+    .topics-container > div {
+      width: 50%;
+    }
+  }
+  @media screen and (min-width: 1000px){
+    .topics-container > div {
+      width: 33%;
+    }
+  }
+
+  .box-container > div {
+    margin: 10px 15px;
+    border-radius: 4px;
+    color: #f2f2f2;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 16px 10px;
+  }
+  .topics-container > div:first-child {
+    font-weight: 400;
+    font-size: 20px;
+  }
+  .topics-container > div {
+    color: black;
+    margin: 15px 0;
+  }
+  .topics-container > div a {
+    background-color: rgba(170, 170, 170, 0.22);
+    padding: 10px 10px;
+    border-radius: 3px;
+    font-size: 18px;
+    font-weight: 300;
+  }
+  hr {
+    margin: 10px 0 !important;
+  }
+</style>
+
+<section class="body">
+  <div class="box-container">
+    {% for language in page.languages %}
+      <div>
+        <div class="topics-container">
+            <div>{{ language | capitalize | replace: 'Csharp', 'C#' }}</div>
+            <div>
+              <a href="{{ language }}.html#{{ page.ids[0] }}">
+                {{ page.ids[0] | capitalize | replace: '-', ' ' }}
+              </a>
+            </div>
+          <hr />
+            {% for id in page.ids %}
+              {% if forloop.first == true %}
+              {% else %}
+                <div>
+                  <a href="{{ language }}.html#{{ id }}">
+                    {{ id | capitalize | replace: '-', ' ' }}
+                  </a>
+                </div>
+              {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
