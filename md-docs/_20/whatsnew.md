@@ -41,6 +41,13 @@ cbl_features:
         value: couchbase-lite/java.html#starting-a-replication
       - name: c#
         value: couchbase-lite/csharp.html#starting-a-replication
+sg_features:
+  - title: No Conflicts Mode
+    description: |
+      Sync Gateway 2.0 introduces a 'no conflicts mode'. When enabled, Sync Gateway will reject any revision that would create a conflict. This mode is specifically designed for scenarios where you do not wish to use the multi version concurrency control aspect of Couchbase Mobile.
+    links:
+      - name: Sync Gateway Configuration
+        value: 'guides/sync-gateway/config-properties/index.html#2.0/databases-foo_db-allow_conflicts'
 other:
   - title: Travel Sample
     description: |
