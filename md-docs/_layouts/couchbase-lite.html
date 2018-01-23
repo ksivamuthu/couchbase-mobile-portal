@@ -61,9 +61,9 @@ layout: docs
     {% for language in page.languages %}
       <div>
         <div class="topics-container">
-            <div>{{ language }}</div>
+            <div>{{ language.title }}</div>
             <div>
-              <a href="{{ language }}.html#{{ page.ids[0] }}">
+              <a href="{{ language.id }}.html#{{ page.ids[0] }}">
                 {{ page.ids[0] | capitalize | replace: '-', ' ' }}
               </a>
             </div>
@@ -72,7 +72,7 @@ layout: docs
               {% if forloop.first == true %}
               {% else %}
                 <div>
-                  <a href="{{ language }}.html#{{ id }}">
+                  <a href="{{ language.id }}.html#{{ id }}">
                     {{ id | capitalize | replace: '-', ' ' }}
                   </a>
                 </div>
