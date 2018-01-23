@@ -2,9 +2,9 @@
 layout: couchbase-lite
 noedit: true
 languages:
-  - swift
-  - java
-  - csharp
+  - Swift (iOS, macOS, tvOS)
+  - Java Android
+  - C# (UWP, Xamarin iOS/Android)
 ids:
   - getting-started
   - database

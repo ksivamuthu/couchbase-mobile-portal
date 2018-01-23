@@ -61,7 +61,7 @@ layout: docs
     {% for language in page.languages %}
       <div>
         <div class="topics-container">
-            <div>{{ language | capitalize | replace: 'Csharp', 'C#' }}</div>
+            <div>{{ language }}</div>
             <div>
               <a href="{{ language }}.html#{{ page.ids[0] }}">
                 {{ page.ids[0] | capitalize | replace: '-', ' ' }}
