@@ -671,7 +671,7 @@ In the configuration file above, the **replicator_2** property enables the new r
 ~/Downloads/couchbase-sync-gateway/bin/sync_gateway sync-gateway-config.json
 ```
 
-For platform specific installation instructions, refer to the Sync Gateway [installation guide](../../../../../current/installation/sync-gateway/index.html).
+For platform specific installation instructions, refer to the Sync Gateway [installation guide](https://developer.couchbase.com/documentation/mobile/1.5/installation/sync-gateway/index.html).
 
 ### Starting a Replication
 

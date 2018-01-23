@@ -5,7 +5,7 @@
 
 ### Frameworks
 
-- Download the latest [developer build](../../whatsnew.html).
+- Download the latest [developer build](https://www.couchbase.com/downloads).
 - Drag **CouchbaseLiteSwift.framework** from your Finder to the Xcode navigator.
 - Click on Project > General > Embedded Binary and add **CouchbaseLiteSwift.framework** to this section.
 - Import the framework and start using it in your project.
@@ -662,7 +662,7 @@ In the configuration file above, the **replicator_2** property enables the new r
 ~/Downloads/couchbase-sync-gateway/bin/sync_gateway sync-gateway-config.json
 ```
 
-For platform specific installation instructions, refer to the Sync Gateway [installation guide](../../../../../current/installation/sync-gateway/index.html).
+For platform specific installation instructions, refer to the Sync Gateway [installation guide](https://developer.couchbase.com/documentation/mobile/1.5/installation/sync-gateway/index.html).
 
 ### Starting a Replication
 
