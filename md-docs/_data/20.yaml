@@ -33,3 +33,11 @@
       path: couchbase-lite/csharp.html
     - title: Release notes
       path: references/couchbase-lite/release-notes/index.html
+- title: Sync Gateway
+  path: guides/sync-gateway/index.html
+  open: true
+  items:
+    - title: Guides
+      items:
+      - title: Configuration file
+        path: guides/sync-gateway/config-properties/index.html

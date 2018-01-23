@@ -1,10 +1,19 @@
 collections:
+  '1x':
+    output: true
+    permalink: /:path:output_ext
+  '14':
+    output: true
+    permalink: /:path:output_ext
+  '15':
+    output: true
+    permalink: /:path:output_ext
   '20':
     output: true
     permalink: /:path:output_ext
 version: '2.0'
 cbl_version: '2.0 DB21'
-sg_version: '1.5'
+sg_version: '2.0'
 ios_dev_build: '2.0DB021'
 android_dev_build: '2.0.0-DB021'
 dev_build_release_date: 'December 20, 2017'

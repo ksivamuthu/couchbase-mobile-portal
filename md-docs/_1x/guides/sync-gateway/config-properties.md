@@ -7,6 +7,7 @@ versions:
   - 1.3
   - 1.4
   - 1.5
+  - 2.0
 ---
 
 A configuration file determines the runtime behavior of Sync Gateway, including server configuration and the database or set of databases with which a Sync Gateway instance can interact.
