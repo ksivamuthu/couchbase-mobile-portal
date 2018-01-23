@@ -84,7 +84,6 @@
         - title: Accelerator
           path: guides/sync-gateway/accelerator.html
     - title: API References
-      path: references/sync-gateway/index.html
       items:
         - title: Public REST API
           path: references/sync-gateway/rest-api/index.html
