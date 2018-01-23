@@ -6,6 +6,25 @@ permalink: references/couchbase-lite/release-notes/index.html
 
 <block class="all" />
 
+## Deprecation notices
+
+⚠️ The new protocol based on WebSockets is **incompatible** with Couchbase Lite 1.x, and with CouchDB-based databases including PouchDB and Cloudant. Refer to the Couchbase Lite [Replication API](../../../couchbase-lite/index.html) on the platform of your choice to learn more.
+
+## Notable API Changes
+
+- The 1.x Manager class has been removed. Top level configuration is now performed on the Database class as static methods.
+- The 1.x Map/Reduce Query API has been replaced with a builder pattern Query API.
+- The 1.x Attachment API has been renamed to Blob but the functionality remains the same.
+- The 1.x `Database.inTransaction` method has been renamed to `Database.inBatch` to emphasize that Couchbase Lite does not offer transactional guarantees, and that the purpose of the method is to optimize batch operations rather than to enable ACID transactions.
+
+## Known Issues
+
+- Open ID Connect authentication with Couchbase Lite 2.0 is not yet supported.
+
+<block class="all" />
+
+## Incremental API Changes
+
 ### Developer build 21
 
 <block class="objc swift" />
