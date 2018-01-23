@@ -25,10 +25,10 @@
   path: couchbase-lite/index.html
   open: true
   items:
-    - title: Java
-      path: couchbase-lite/java.html
     - title: Swift
       path: couchbase-lite/swift.html
+    - title: Java
+      path: couchbase-lite/java.html
     - title: C#
       path: couchbase-lite/csharp.html
     - title: Release notes
