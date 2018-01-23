@@ -39,5 +39,54 @@
   items:
     - title: Guides
       items:
-      - title: Configuration file
-        path: guides/sync-gateway/config-properties/index.html
+        - title: Configuration file
+          path: guides/sync-gateway/config-properties/index.html
+        - title: Command line options
+          path: guides/sync-gateway/command-line-options/index.html
+        - title: Authorizing Users
+          path: guides/sync-gateway/authorizing-users/index.html
+        - title: Data Routing
+          path: guides/sync-gateway/channels/index.html
+        - title: Sync Function API
+          path: guides/sync-gateway/sync-function-api-guide/index.html
+        - title: Bucket Access
+          path: guides/sync-gateway/shared-bucket-access.html
+        - title: Webhooks and changes feed
+          path: guides/sync-gateway/server-integration/index.html
+        - title: Deployment considerations
+          path: guides/sync-gateway/deployment/index.html
+        - title: Upgrade
+          path: guides/sync-gateway/upgrade/index.html
+        - title: Load Balancer
+          path: guides/sync-gateway/nginx/index.html
+        - title: Taking databases offline and online
+          path: guides/sync-gateway/database-offline/index.html
+        - title: Creating and querying a View
+          path: guides/sync-gateway/views/index.html
+        - title: OS Level Tuning
+          path: guides/sync-gateway/os-level-tuning/index.html
+        - title: Resolving Conflicts
+          path: guides/sync-gateway/resolving-conflicts/index.html
+        - title: Integrating External Stores
+          path: guides/sync-gateway/integrating-external-stores/index.html
+        - title: Running replications
+          path: guides/sync-gateway/running-replications/index.html
+        - title: REST API Client
+          path: guides/sync-gateway/rest-api-client/index.html
+        - title: SGCollect Info
+          path: guides/sync-gateway/sgcollect-info/index.html
+        - title: Configuring SSL
+          path: guides/sync-gateway/configuring-ssl/index.html
+        - title: Bucket Shadowing
+          path: guides/sync-gateway/bucket-shadowing/index.html
+        - title: Accelerator
+          path: guides/sync-gateway/accelerator.html
+    - title: API References
+      path: references/sync-gateway/index.html
+      items:
+        - title: Public REST API
+          path: references/sync-gateway/rest-api/index.html
+        - title: Admin REST API
+          path: references/sync-gateway/admin-rest-api/index.html
+    - title: Release notes
+      path: references/sync-gateway/release-notes/index.html
