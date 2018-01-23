@@ -64,16 +64,16 @@ layout: docs
             <div>{{ language | capitalize | replace: 'Csharp', 'C#' }}</div>
             <div>
               <a href="{{ language }}.html#{{ page.ids[0] }}">
-                {{ page.ids[0] | capitalize | replace: '-', ' ' }}
+                {{ page.topics[0].title }}
               </a>
             </div>
           <hr />
-            {% for id in page.ids %}
+            {% for topic in page.topics %}
               {% if forloop.first == true %}
               {% else %}
                 <div>
-                  <a href="{{ language }}.html#{{ id }}">
-                    {{ id | capitalize | replace: '-', ' ' }}
+                  <a href="{{ language }}.html#{{ topic.id }}">
+                    {{ topic.title }}
                   </a>
                 </div>
               {% endif %}

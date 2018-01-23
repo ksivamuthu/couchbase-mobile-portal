@@ -5,14 +5,21 @@ languages:
   - swift
   - java
   - csharp
-ids:
-  - getting-started
-  - database
-  - document
-  - blobs
-  - query
-  - full-text-search
-  - replication
+topics:
+  - title: Getting Started
+    id: getting-started
+  - title: Create a Database
+    id: database
+  - title: CRUD Operations
+    id: document
+  - title: Using Blobs
+    id: blobs
+  - title: Query Syntax
+    id: query
+  - title: FTS Queries
+    id: full-text-search
+  - title: Enable Sync
+    id: replication
 redirect_from:
   - guides/couchbase-lite/native-api/database/index.html
   - guides/couchbase-lite/native-api/document/index.html
