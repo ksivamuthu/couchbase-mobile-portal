@@ -41,9 +41,9 @@
     pod install
     ```
 
-### Resources
+## API References
 
-The API references for the Objective-C SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021).
+[Objective-C SDK API References](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021)
 
 ## Database
 

@@ -41,9 +41,9 @@
     pod install
     ```
 
-### Resources
+## API References
 
-The API references for the Swift SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021).
+[Swift SDK API References](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021)
 
 ## Database
 

@@ -27,9 +27,9 @@
 	}
 	```
 
-### Resources
+## API References
 
-The API references for the Java SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021).
+[Java SDK API References](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021)
 
 ## Database
 

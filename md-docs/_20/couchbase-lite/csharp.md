@@ -37,9 +37,9 @@ Comparing this to 1.x you can see we've traded some lower obsolete versions for 
 
 ** See above note about Linux
 
-### Resources
+## API References
 
-The API references for the .NET SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021).
+[`.NET SDK API References`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021)
 
 ## Database
 
