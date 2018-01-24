@@ -2,7 +2,7 @@
 ---
 
 <br />
-⚠ Support in the current Developer Build is for Android only. The SDK cannot be used in Java applications.
+⚠ Currently, Couchbase Lite 2.0 is available for Android only. The SDK cannot be used in Java applications.
 
 ## Getting Started
 
