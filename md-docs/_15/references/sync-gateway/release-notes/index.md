@@ -3,6 +3,16 @@ id: sg-release-notes
 title: SG release notes
 ---
 
+## New Features
+
+- **Shared bucket access**
+- **SSL and Multi-URL support**
+
+## Notable Changes
+
+- **Revs Limit lower limit:** The [databases.foo\_db.revs\_limit](../../../guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-revs_limit) property now has a minimal value. See the API reference for more detail.
+- **Rev Tree endpoint:** The [/{db}/\_revtree/{doc}](../admin-rest-api/index.html?v=1.5#/document/get__db___revtree__doc_) endpoint returns the revision tree in dot syntax for the specified document. This endpoint is not officially supported and should only be used for troubleshooting and debugging purposes.
+
 ## 1.5.1
 
 __Bugs__
@@ -43,13 +53,3 @@ __Known issues__
 - [__#149__](https://github.com/couchbaselabs/sync-gateway-accel/issues/149) Changes missing on Sync Gateway Accelerator re-shard
 - [__#2068__](https://github.com/couchbase/sync_gateway/issues/2068) Update user doc sequence for access-based channel grants
 - [__#160__](https://github.com/couchbaselabs/sync-gateway-accel/issues/160) The `_doc_ids` changes feed filter doesn't work with Accelerator
-
-## New Features
-
-- **Shared bucket access**
-- **SSL and Multi-URL support**
-
-## Notable Changes
-
-- **Revs Limit lower limit:** The [databases.foo\_db.revs\_limit](../../../guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-revs_limit) property now has a minimal value. See the API reference for more detail.
-- **Rev Tree endpoint:** The [/{db}/\_revtree/{doc}](../admin-rest-api/index.html?v=1.5#/document/get__db___revtree__doc_) endpoint returns the revision tree in dot syntax for the specified document. This endpoint is not officially supported and should only be used for troubleshooting and debugging purposes.

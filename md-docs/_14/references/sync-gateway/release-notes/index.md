@@ -3,12 +3,12 @@ id: sg-release-notes
 title: SG release notes
 ---
 
-__New features__
+## New features
 
 - [Sync Gateway Accelerator](../../../guides/sync-gateway/accelerator.html)
 - [Log rotation](../../../guides/sync-gateway/deployment/index.html#built-in-log-rotation)
 
-__Deprecation notices__
+## Deprecation notices
 
 The following features are being deprecated in 1.4 and will be unsupported in an upcoming version (2.x) of Couchbase 
 Mobile.
