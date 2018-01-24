@@ -11,7 +11,7 @@ In each of the scenarios described below, the upgrade process will trigger views
 - A user requests data that doesn't reside in the [channel cache](../config-properties/index.html#1.5/databases-foo_db-cache-channel_cache_max_length).
 - A new channel or role is granted to a user in the [Sync Function](../sync-function-api-guide/index.html).
 
-The unavailability of those operations may result in some requests not being process. The duration of the downtime will depend on the data set and frequency of replications with mobile clients.
+The unavailability of those operations may result in some requests not being processed. The duration of the downtime will depend on the data set and frequency of replications with mobile clients. To avoid this downtime, it is possible to pre-build the view index before directing traffic to the upgraded node (see the [view indexing](index.html#view-indexing) section).
 
 | From       | To | Steps 
 | ------------- | -- | ------
@@ -31,3 +31,52 @@ All of the different upgrade paths mentioned above assume that Couchbase Server 
 | Rolling Online Upgrade  | None  | Low | <ul><li>**Potential transient connection errors:** The Couchbase Server re-balance operations can result in transient connection errors between Couchbase Server and Sync Gateway, which could result in Sync Gateway performance degradation.</li><li>**Potential for unexpected server errors during re-balance:** There is an increased potential to lose in-flight ops during a fail-over.</li></ul>
 | Upgrade Using Inter-cluster Replication  | Small amount during switchover  | High - duplicate entire cluster | Using an XDCR (Cross Data Center Replication) approach will have incur some Sync Gateway downtime, but less downtime than other approaches where Sync Gateway is shutdown during the entire Couchbase Server upgrade. <br/><br/> It's important to note that the XDCR replication must be a **one way** replication from the existing (source) Couchbase Server cluster to the new (target) Couchbase Server cluster, and that no other writes can happen on the new (target) Couchbase Server cluster other than the writes from the XDCR replication, and no Sync Gateway instances should be configured to use the new (target) Couchbase Server cluster until the last step in the process. <ol><li>Start XDCR to do a one way replication from the existing (source) Couchbase Server cluster to the new (target) Couchbase Server cluster running the newer version.</li><li>Wait until the target Couchbase Server has caught up to all the writes in the source Couchbase Server cluster.</li><li>Shutdown Sync Gateway to prevent any new writes from coming in.</li><li>Wait until the target Couchbase Server has caught up to all the writes in the source Couchbase Server cluster -- this should happen very quickly, since it will only be the residual writes in transit before the Sync Gateway shutdown.</li><li>Reconfigure Sync Gateway to point to the target cluster.</li><li>Restart Sync Gateway.</li></ol>Caveats:<br/><ul><li>**Small amount of downtime during switchover:** Since there may be writes still in transit after Sync Gateway has been shutdown, there will need to be some downtime until the target Couchbase Server cluster is completely caught up.</li><li>**XDCR should be monitored:** </li>Make sure to monitor the XDCR relationship as per [XDCR docs](https://developer.couchbase.com/documentation/server/current/xdcr/xdcr-intro.html)</ul>
 | Offline Upgrade  | During entire upgrade  | None  | <ul><li>Take Sync Gateway offline</li><li>Upgrade Couchbase Server using any of the options mentioned in the [Upgrading Couchbase Server](https://developer.couchbase.com/documentation/server/current/install/upgrading.html) documentation.</li><li>Bring Sync Gateway online</li></ul> |
+
+### View Indexing
+
+Sync Gateway uses Couchbase Server views to index and query documents. When Sync Gateway starts, it will publish a Design Document which contains the View definitions (map/reduce functions). For example, the Design Document for Sync Gateway is the following:
+
+```json
+{
+   "views":{
+      "access":{
+         "map":"function (doc, meta) { ... }"
+      },
+      "channels":{
+         "map":"function (doc, meta) { ... }"
+      },
+      ...
+   },
+   "index_xattr_on_deleted_docs":true
+}
+```
+
+Following the Design Document creation, it must run against all the documents in the Couchbase Server bucket to build the index which may result in downtime. During a Sync Gateway upgrade, the index may also have to be re-built if the Design Document definition has changed. To avoid this downtime, you can publish the Design Document and build the index before starting Sync Gateway by using the Couchbase Server REST API. The following curl commands refer to a Sync Gateway 1.3 -> Sync Gateway 1.4 upgrade but they apply to any upgrade of Sync Gateway or Accelerator.
+
+1. Start Sync Gateway 1.4 with Couchbase Server instance that **isn't** your production environment. Then, copy the Design Document to a file with the following.
+
+	```bash
+	$ curl localhost:8092/<BUCKET_NAME>/_design/sync_gateway/ > ddoc.json
+	```
+
+2. Create a Development Design Document on the cluster where Sync Gateway is going to be upgraded from 1.3:
+
+	```bash
+	$ curl -X PUT http://localhost:8092/<BUCKET_NAME>/_design/dev_sync_gateway/ -d @ddoc.json -H "Content-Type: application/json"
+	```
+	
+	This should return:
+	
+	```bash
+	{"ok":true,"id":"_design/dev_sync_gateway"}
+	```
+
+3. Run a View Query against the Development Design Document. By default, a Development Design Document will index one vBucket per node, however we can force it to index the whole bucket using the `full_set` parameter:
+
+	```bash
+	$ curl "http://localhost:8092/sync_gateway/_design/dev_sync_gateway/_view/role_access_vbseq?full_set=true&stale=false&limit=1"
+	```
+
+	This may take some time to return, and you can track the index's progress in the Couchbase Server UI. Note that this will consume disk space to build an almost duplicate index until the switch is made.
+
+4. Upgrade Sync Gateway. When Sync Gateway 1.4 starts, it will publish the new Design Document to Couchbase Server. This will match the Development Design Document we just indexed, so will be available immediately.

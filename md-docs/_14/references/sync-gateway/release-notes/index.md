@@ -8,10 +8,13 @@ title: SG release notes
 - [Sync Gateway Accelerator](../../../guides/sync-gateway/accelerator.html)
 - [Log rotation](../../../guides/sync-gateway/deployment/index.html#built-in-log-rotation)
 
+## Notable Changes
+
+- The Design Document definition used internally by Sync Gateway Accelerator has changed which may incur some application downtime during the upgrade. See [view indexing](../../../guides/sync-gateway/upgrade/index.html#view-indexing).
+
 ## Deprecation notices
 
-The following features are being deprecated in 1.4 and will be unsupported in an upcoming version (2.x) of Couchbase 
-Mobile.
+The following features are being deprecated in 1.4 and will be unsupported in an upcoming version (2.x) of Couchbase Mobile.
 
 - **Bucket shadowing** is being deprecated in 1.4 and will be unsupported in an upcoming version (2.x) of Couchbase Mobile. The recommended approach to perform operations on the bucket dedicated to Couchbase Mobile is to use the Sync Gateway REST API.
 
