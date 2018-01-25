@@ -10,7 +10,7 @@ title: SG release notes
 
 ## Notable Changes
 
-- **Revs Limit lower limit:** The [databases.foo\_db.revs\_limit](../../../guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-revs_limit) property now has a minimal value. See the API reference for more detail.
+- **Revs Limit lower limit:** The [databases.foo\_db.revs\_limit](../../../guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-revs_limit) property now has a minimum value. See the API reference for more detail.
 - **Rev Tree endpoint:** The [/{db}/\_revtree/{doc}](../admin-rest-api/index.html?v=1.5#/document/get__db___revtree__doc_) endpoint returns the revision tree in dot syntax for the specified document. This endpoint is not officially supported and should only be used for troubleshooting and debugging purposes.
 
 ## 1.5.1
