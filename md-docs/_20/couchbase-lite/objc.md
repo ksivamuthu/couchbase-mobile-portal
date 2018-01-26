@@ -53,9 +53,9 @@ As the top-level entity in the API, new databases can be created using the `Data
 
 ```objectivec
 NSError *error;
-CBLDatabase* database = [[CBLDatabase alloc] initWithName:@"my-database" error:&error];
+CBLDatabase *database = [[CBLDatabase alloc] initWithName:@"my-database" error:&error];
 if (!database) {
-    NSLog(@"Cannot open the database: %@", error);
+	NSLog(@"Cannot open the database: %@", error);
 }
 ```
 
@@ -65,10 +65,16 @@ Just as before, the database will be created in a default location. Alternativel
 
 The following example demonstrates how to create a database with an encryption key (or open an existing one).
 
-```java
-DatabaseConfiguration config = new DatabaseConfiguration(/* Android Context*/ context);
-config.setEncryptionKey(new EncryptionKey("secretpassword"));
-Just as before, the database will be created in a default location. Alternatively, the `Database(name: Strings, config: DatabaseConfiguration?)` method can be used to provide specific options (the directory to create the database in, encryption key, etc.)
+```objectivec
+CBLDatabaseConfiguration *config = [[CBLDatabaseConfiguration alloc] initWithBlock:^(CBLDatabaseConfigurationBuilder *builder) {
+	[builder setEncryptionKey:[[CBLEncryptionKey alloc] initWithPassword:@"secretpassword"]];
+}];
+
+NSError *error;
+CBLDatabase *database = [[CBLDatabase alloc] initWithName:@"my-database" config: config error:&error];
+if (!database) {
+	NSLog(@"Cannot open the database: %@", error);
+}
 ```
 
 ### Migrating from 1.x Databases
@@ -87,9 +93,9 @@ The Couchbase Lite `.zip` file available from the [downloads page](https://www.c
 
 The log messages are split into different domains (`LogDomains`) which can be tuned to different log levels. The following example enables `verbose` logging for the `replicator` and `query` domains.
 
-```swift
-Database.setLogLevel(.verbose, domain: .replicator)
-Database.setLogLevel(.verbose, domain: .query)
+```objectivec
+[CBLDatabase setLogLevel: kCBLLogLevelVerbose domain: kCBLLogDomainReplicator];
+[CBLDatabase setLogLevel: kCBLLogLevelVerbose domain: kCBLLogDomainQuery];
 ```
 
 ### Loading a pre-built database
@@ -98,13 +104,13 @@ If your app needs to sync a lot of data initially, but that data is fairly stati
 
 To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`[CBLDatabase copyFromPath:toDatabase:withConfig:error:]`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/CBLDatabase.html#/c:objc(cs)CBLDatabase(cm)copyFromPath:toDatabase:withConfig:error:) method as shown below.
 
-```swift
-let assetPath = Bundle.main.path(forResource: "travel-sample", ofType: "cblite2")!
-if !Database.exists(withName: "travel-sample") {
-	do {
-		try Database.copy(fromPath: assetPath, toDatabase: "travel-sample", withConfig: nil)
-	} catch {
-		fatalError("Could not load pre-built database")
+```objectivec
+if (![CBLDatabase databaseExists:@"travel-sample" inDirectory:nil]) {
+	NSError*error;
+	NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:@"travel-sample" ofType:@"cblite2"];
+	if (![CBLDatabase copyFromPath:path toDatabase:@"travel-sample" withConfig:nil error:&error]) {
+		[NSException raise:NSInternalInconsistencyException
+								format:@"Could not load pre-built database: %@", error];
 	}
 }
 ```
@@ -124,11 +130,11 @@ The following methods/initializers can be used:
 The following code example creates a document and persists it to the database.
 
 ```objectivec
-let dict: [String: Any] = ["type": "task",
-                           "owner": "todo",
-                           "createdAt": Date()]
-let newTask = MutableDocument(withData: dict)
-try? database.saveDocument(newTask)
+NSDictionary *dict = @{@"type": @"task",
+                      @"owner": @"todo",
+                      @"createdAt": [NSDate date]};
+CBLMutableDocument *newTask = [[CBLMutableDocument alloc] initWithData:dict];
+CBLDocument *saved = [database saveDocument:newTask error:&error];
 ```
 
 ### Mutability
@@ -137,8 +143,8 @@ By default, when a document is read from the database it is immutable. The `docu
 
 ```objectivec
 // newTask is a MutableDocument
-newTask.setString("apples", forKey: "name")
-try? database.saveDocument(newTask)
+[newTask setString:@"apples" forKey:@"name"];
+[database saveDocument:newTask error:&error];
 ```
 
 Changes to the document are persisted to the database when the `saveDocument` method is called.
@@ -150,8 +156,8 @@ The `Document` class now offers a set of [`property accessors`](http://docs.couc
 In addition, as a convenience we offer `Date` accessors. Dates are a common data type, but JSON doesn't natively support them, so the convention is to store them as strings in ISO-8601 format. The following example sets the date on the `createdAt` property and reads it back using the `document.date(forKey: String)` accessor method.
 
 ```objectivec
-newTask.setValue(Date(), forKey: "createdAt")
-let date = newTask.date(forKey: "createdAt")
+[newTask setValue:[NSDate date] forKey:@"createdAt"];
+NSDate *date = [newTask dateForKey:@"createdAt"];
 ```
 
 ### Batch operations
@@ -159,20 +165,15 @@ let date = newTask.date(forKey: "createdAt")
 If you're making multiple changes to a database at once, it's faster to group them together. The following example persists a few documents in batch.
 
 ```objectivec
-do {
-    try database.inBatch {
-        for i in 0...10 {
-            let doc = MutableDocument()
-            doc.setValue("user", forKey: "type")
-            doc.setValue("user \(i)", forKey: "name")
-            doc.setBoolean(false, forKey: "admin")
-            try database.saveDocument(doc)
-            print("saved user document \(doc.string(forKey: "name"))")
-        }
-    }
-} catch let error {
-    print(error.localizedDescription)
-}
+[database inBatch:&error usingBlock:^{
+	for (int i = 0; i < 10; i++) {
+		CBLMutableDocument *doc = [[CBLMutableDocument alloc] init];
+		[doc setValue:@"user" forKey:@"type"];
+		[doc setValue:[NSString stringWithFormat:@"user %d", i] forKey:@"name"];
+		[doc setBoolean:NO forKey:@"admin"];
+		[database saveDocument:doc error:nil];
+	}
+}];
 ```
 
 At the **local** level this operation is still transactional: no other `Database` instances, including ones managed by the replicator can make changes during the execution of the block, and other instances will not see partial changes. But Couchbase Mobile is a distributed system, and due to the way replication works, there's no guarantee that Sync Gateway or other devices will receive your changes all at once.
@@ -182,16 +183,15 @@ At the **local** level this operation is still transactional: no other `Database
 We've renamed "attachments" to "blobs", for clarity. The new behavior should be clearer too: a `Blob` is now a normal object that can appear in a document as a property value. In other words, there's no special API for creating or accessing attachments; you just instantiate an `Blob` and set it as the value of a property, and then later you can get the property value, which will be a `Blob` object. The following code example adds a blob to the document under the `avatar` property.
 
 ```objectivec
-let appleImage = UIImage(named: "avatar.jpg")!
-let imageData = UIImageJPEGRepresentation(appleImage, 1)!
+UIImage *appleImage = [UIImage imageNamed:@"avatar.jpg"];
+NSData *imageData = UIImageJPEGRepresentation(appleImage, 1.0);
 
-let blob = Blob(contentType: "image/jpg", data: imageData)
-newTask.setBlob(blob, forKey: "avatar")
-try? database.save(newTask)
+CBLBlob *blob = [[CBLBlob alloc] initWithContentType:@"image/jpeg" data:imageData];
+[newTask setBlob:blob forKey:@"avatar"];
+CBLDocument *savedDoc = [database saveDocument:newTask error:&error];
 
-if let taskBlob = newTask.blob(forKey: "image") {
-	UIImage(data: taskBlob.content!)
-}
+CBLBlob *taskBlob = [savedDoc blobForKey:@"avatar"];
+UIImage *taskImage = [UIImage imageWithData:taskBlob.content];
 ```
 
 `Blob` itself has a simple API that lets you access the contents as in-memory data (a `Data` object) or as a `InputStream`. It also supports an optional `type` property that by convention stores the MIME type of the contents. Unlike attachments, blobs don't have names; if you need to associate a name you can put it in another document property, or make the filename be the property name (e.g. `document.set(imageBlob, forKey: "thumbnail.jpg")`)
@@ -225,11 +225,11 @@ The following example creates a new index for the `type` and `name` properties.
 }
 ```
 
-```swift
-database.createIndex(Index.valueIndex().on(
-                ValueIndexItem.expression(Expression.property("type")),
-                ValueIndexItem.expression(Expression.property("name"))),
-         withName: "TypeNameIndex")
+```objectivec
+CBLValueIndexItem *type = [CBLValueIndexItem property:@"type"];
+CBLValueIndexItem *name = [CBLValueIndexItem property:@"name"];
+CBLIndex *index = [CBLIndex valueIndexWithItems:@[type, name]];
+[database createIndex:index withName:@"TypeNameIndex" error:&error];
 ```
 
 If there are multiple expressions, the first one will be the primary key, the second the secondary key, etc.
@@ -258,24 +258,23 @@ You can specify a comma separated list of `SelectResult` expressions in the sele
 ```
 
 ```objectivec
-CBLQuery* query = [CBLQuery select:@[[CBLQueryExpression property:@"name"]]
+CBLQuerySelectResult *name = [CBLQuerySelectResult property:@"name"];
+CBLQuery *query = [CBLQuery select:@[name]
                               from:[CBLQueryDataSource database:database]
-                             where:[
-                                    [[CBLQueryExpression property:@"type"] equalTo:@"user"]
-                                    and: [[CBLQueryExpression property:@"admin"] equalTo:@FALSE]]];
+                             where:[[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"user"]] andExpression:
+                                    [[CBLQueryExpression property:@"admin"] equalTo:[CBLQueryExpression boolean:NO]]]];
 
-NSEnumerator* rows = [query run:&error];
-for (CBLQueryRow *row in rows) {
-    NSLog(@"user name :: %@", [row stringAtIndex:0]);
+NSEnumerator* rs = [query execute:&error];
+for (CBLQueryResult *result in rs) {
+    NSLog(@"user name :: %@", [result stringAtIndex:0]);
 }
 ```
 
 The `SelectResult.all()` method can be used to query all the properties of a document. In this case, the document in the result is embedded in a dictionary where the key is the database name. The following snippet shows the same query using `SelectResult.all()` and the result in JSON.
 
 ```objectivec
-let query = Query
-	.select(SelectResult.all())
-	.from(DataSource.database(database))
+CBLQuery *query = [CBLQuery select:@[[CBLQuerySelectResult all]]
+                              from:[CBLQueryDataSource database:database]];
 ```
 
 ```json
@@ -322,20 +321,16 @@ The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/c
 ```
 
 ```objectivec
-let query = Query
-	.select(SelectResult.all())
-	.from(DataSource.database(database))
-	.where(Expression.property("type").equalTo("hotel"))
-	.limit(10)
+CBLQuery *query = [CBLQuery select:@[[CBLQuerySelectResult all]]
+                              from:[CBLQueryDataSource database:database]
+                             where:[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression string:@"hotel"]]
+                           groupBy:nil having:nil orderBy:nil
+                             limit:[CBLQueryLimit limit:[CBLQueryExpression integer:10]]];
 
-do {
-	for row in try query.run() {
-		if let dict = row.dictionary(forKey: "travel-sample") {
-			print("document name :: \(dict.string(forKey: "name"))")
-		}
-	}
-} catch {
-	print(error)
+NSEnumerator* rs = [query execute:&error];
+for (CBLQueryResult *result in rs) {
+    CBLDictionary *dict = [result valueForKey:@"travel-sample"];
+    NSLog(@"document name :: %@", [dict stringForKey:@"name"]);
 }
 ```
 
@@ -354,21 +349,21 @@ The list of supported comparison operators include, among others, `lessThan`, `l
 ```
 
 ```objectivec
-let query = Query
-	.select(
-		SelectResult.expression(Expression.meta().id),
-		SelectResult.expression(Expression.property("name")),
-		SelectResult.expression(Expression.property("public_likes"))
-	)
-	.from(DataSource.database(database))
-	.where(Expression.property("type").equalTo("hotel")
-		.and(Function.arrayContains(Expression.property("public_likes"), value: "Armani Langworth"))
-	)
+CBLQuerySelectResult *id = [CBLQuerySelectResult expression:[CBLQueryMeta id]];
+CBLQuerySelectResult *name = [CBLQuerySelectResult property:@"name"];
+CBLQuerySelectResult *likes = [CBLQuerySelectResult property:@"public_likes"];
 
-do {
-	for row in try query.run() {
-		print("public_likes :: \(row.array(forKey: "public_likes")?.toArray())")
-	}
+CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"hotel"]];
+CBLQueryExpression *contains = [CBLQueryArrayFunction contains:[CBLQueryExpression property:@"public_likes"]
+                                                         value:[CBLQueryExpression string:@"Armani Langworth"]];
+
+CBLQuery *query = [CBLQuery select:@[id, name, likes]
+                              from:[CBLQueryDataSource database:database]
+                             where:[type andExpression: contains]];
+
+NSEnumerator* rs = [query execute:&error];
+for (CBLQueryResult *result in rs) {
+    NSLog(@"public_likes :: %@", [[result arrayForKey:@"public_likes"] toArray]);
 }
 ```
 
@@ -379,22 +374,20 @@ The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Clas
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
 ```objectivec
-let query = Query
-	.select(
-		SelectResult.expression(Expression.meta().id),
-		SelectResult.expression(Expression.property("country")),
-		SelectResult.expression(Expression.property("name"))
-	)
-	.from(DataSource.database(db))
-	.where(Expression.property("type").equalTo("landmark")
-		.and( Expression.property("name").like("Royal engineers museum"))
-	)
-	.limit(10)
+CBLQuerySelectResult *id = [CBLQuerySelectResult expression:[CBLQueryMeta id]];
+CBLQuerySelectResult *country = [CBLQuerySelectResult property:@"country"];
+CBLQuerySelectResult *name = [CBLQuerySelectResult property:@"name"];
 
-do {
-	for row in try query.run() {
-		print("name property :: \(row.string(forKey: "name")!)")
-	}
+CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"landmark"]];
+CBLQueryExpression *like = [[CBLQueryExpression property:@"name"] like:[CBLQueryExpression value:@"Royal engineers museum"]];
+
+CBLQuery *query = [CBLQuery select:@[id, country, name]
+                              from:[CBLQueryDataSource database:database]
+                             where:[type andExpression: like]];
+
+NSEnumerator* rs = [query execute:&error];
+for (CBLQueryResult *result in rs) {
+    NSLog(@"name property :: %@", [result stringForKey:@"name"]);
 }
 ```
 
@@ -405,16 +398,20 @@ We can use `%` sign within a `like` expression to do a wildcard match against ze
 In the example below, we are looking for documents of `type` "landmark" where the name property matches any string that begins with "eng" followed by zero or more characters, the letter "e", followed by zero or more characters. The following query will return "landmark" type documents with name matching "Engineers", "engine", "english egg" , "England Eagle" and so on. Notice that the matches may span word boundaries.
 
 ```objectivec
-let query = Query
-	.select(
-		SelectResult.expression(Expression.meta().id),
-		SelectResult.expression(Expression.property("country")),
-		SelectResult.expression(Expression.property("name"))
-	)
-	.from(DataSource.database(db))
-	.where(Expression.property("type").equalTo("landmark")
-		.and( Expression.property("name").like("eng%e%")))
-	.limit(limit)
+CBLQuerySelectResult *id = [CBLQuerySelectResult expression:[CBLQueryMeta id]];
+CBLQuerySelectResult *country = [CBLQuerySelectResult property:@"country"];
+CBLQuerySelectResult *name = [CBLQuerySelectResult property:@"name"];
+
+CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"landmark"]];
+CBLQueryExpression *like = [[CBLQueryExpression property:@"name"] like:[CBLQueryExpression value:@"eng%e%"]];
+
+CBLQueryLimit *limit = [CBLQueryLimit limit:[CBLQueryExpression integer:10]];
+
+CBLQuery *query = [CBLQuery select:@[id, country, name]
+                              from:[CBLQueryDataSource database:database]
+                             where:[type andExpression: like]
+                           groupBy:nil having:nil orderBy:nil
+                             limit:limit];
 ```
 
 ##### Wildcard Character Match
@@ -425,14 +422,20 @@ In the example below, we are looking for documents of type "landmark" where the 
 The following query will return "landmark" `type` documents with the `name` matching "Engineer", "engineer" and so on.
 
 ```objectivec
-let query = Query
-	.select(SelectResult.expression(Expression.meta().id),
-		SelectResult.expression(Expression.property("country")),
-		SelectResult.expression(Expression.property("name")))
-	.from(DataSource.database(db))
-	.where(Expression.property("type").equalTo("landmark")
-		.and(Expression.property("name").like("eng____r")))
-	.limit(limit)
+CBLQuerySelectResult *id = [CBLQuerySelectResult expression:[CBLQueryMeta id]];
+CBLQuerySelectResult *country = [CBLQuerySelectResult property:@"country"];
+CBLQuerySelectResult *name = [CBLQuerySelectResult property:@"name"];
+
+CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"landmark"]];
+CBLQueryExpression *like = [[CBLQueryExpression property:@"name"] like:[CBLQueryExpression value:@"eng____r"]];
+
+CBLQueryLimit *limit = [CBLQueryLimit limit:[CBLQueryExpression integer:10]];
+
+CBLQuery *query = [CBLQuery select:@[id, country, name]
+                              from:[CBLQueryDataSource database:database]
+                             where:[type andExpression: like]
+                           groupBy:nil having:nil orderBy:nil
+                             limit:limit];
 ```
 
 #### Regex Match
@@ -443,15 +446,19 @@ In the example below, we are looking for documents of `type` "landmark" where th
 The following query will return "landmark" type documents with name matching "Engine", "engine" and so on. Note that the `\b` specifies that the match must occur on word boundaries.
 
 ```objectivec
-let query = Query
-	.select(
-		SelectResult.expression(Expression.meta().id),
-		SelectResult.expression(Expression.property("name"))
-	)
-	.from(DataSource.database(db))
-	.where(Expression.property("type").equalTo("landmark")
-		.and(Expression.property("name").regex("\\bEng.*e\\b")))
-	.limit(limit)
+CBLQuerySelectResult *id = [CBLQuerySelectResult expression:[CBLQueryMeta id]];
+CBLQuerySelectResult *name = [CBLQuerySelectResult property:@"name"];
+
+CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"landmark"]];
+CBLQueryExpression *regex = [[CBLQueryExpression property:@"name"] regex:[CBLQueryExpression value:@"\\bEng.*e\\b"]];
+
+CBLQueryLimit *limit = [CBLQueryLimit limit:[CBLQueryExpression integer:10]];
+
+CBLQuery *query = [CBLQuery select:@[id, name]
+                              from:[CBLQueryDataSource database:database]
+                             where:[type andExpression: regex]
+                           groupBy:nil having:nil orderBy:nil
+                             limit:limit];
 ```
 
 ### JOIN statement
@@ -461,28 +468,23 @@ The JOIN clause enables you to create new input objects by combining two or more
 The following example uses a JOIN clause to find the airline details which have routes that start from RIX. This example JOINS the document of type "route" with documents of type "airline" using the document ID (`_id`) on the "airline" document and  `airlineid` on the "route" document.
 
 ```objectivec
-let query = Query.select(
-	SelectResult.expression(Expression.property("name").from("airline")),
-	SelectResult.expression(Expression.property("callsign").from("airline")),
-	SelectResult.expression(Expression.property("destinationairport").from("route")),
-	SelectResult.expression(Expression.property("stops").from("route")),
-	SelectResult.expression(Expression.property("airline").from("route"))
-)
-.from(
-	DataSource.database(database!).as("airline")
-)
-.join(
-	Join.join(DataSource.database(database!).as("route"))
-	.on(
-		Expression.meta().id.from("airline")
-		.equalTo(Expression.property("airlineid").from("route"))
-	)
-)
-.where(
-	Expression.property("type").from("route").equalTo("route")
-	.and(Expression.property("type").from("airline").equalTo("airline"))
-	.and(Expression.property("sourceairport").from("route").equalTo("RIX"))
-)
+CBLQuerySelectResult *name = [CBLQuerySelectResult expression:[CBLQueryExpression property:@"name" from:@"airline"]];
+CBLQuerySelectResult *callsign = [CBLQuerySelectResult expression:[CBLQueryExpression property:@"callsign" from:@"airline"]];
+CBLQuerySelectResult *dest = [CBLQuerySelectResult expression:[CBLQueryExpression property:@"destinationairport" from:@"route"]];
+CBLQuerySelectResult *stops = [CBLQuerySelectResult expression:[CBLQueryExpression property:@"stops" from:@"route"]];
+CBLQuerySelectResult *airline = [CBLQuerySelectResult expression:[CBLQueryExpression property:@"airline" from:@"route"]];
+
+CBLQueryJoin *join = [CBLQueryJoin join:[CBLQueryDataSource database:database as:@"route"]
+                                     on:[[CBLQueryMeta idFrom:@"airline"] equalTo:[CBLQueryExpression property:@"airlineid" from:@"route"]]];
+
+CBLQueryExpression *typeRoute = [[CBLQueryExpression property:@"type" from:@"route"] equalTo:[CBLQueryExpression value:@"route"]];
+CBLQueryExpression *typeAirline = [[CBLQueryExpression property:@"type" from:@"airline"] equalTo:[CBLQueryExpression value:@"airline"]];
+CBLQueryExpression *sourceRIX = [[CBLQueryExpression property:@"sourceairport" from:@"route"] equalTo:[CBLQueryExpression value:@"RIX"]];
+
+CBLQuery *query = [CBLQuery select:@[name, callsign, dest, stops, airline]
+                              from:[CBLQueryDataSource database:database as:@"airline"]
+                              join:@[join]
+                             where:[[typeRoute andExpression:typeAirline] andExpression:sourceRIX]];
 ```
 
 ### GROUP BY statement
@@ -500,26 +502,18 @@ You can perform further processing on the data in your result set before the fin
 ```
 
 ```objectivec
-let query = Query.select(
-	SelectResult.expression(Function.count("*")),
-	SelectResult.expression(Expression.property("country")),
-	SelectResult.expression(Expression.property("tz"))
-	)
-	.from(DataSource.database(database))
-	.where(
-		Expression.property("type").equalTo("airport")
-				.and(Expression.property("geo.alt").greaterThanOrEqualTo(300))
-	)
-	.groupBy(
-		Expression.property("country"),
-		Expression.property("tz")
-	)
+CBLQuerySelectResult *count = [CBLQuerySelectResult expression:[CBLQueryFunction count:[CBLQueryExpression all]]];
+CBLQuerySelectResult *country = [CBLQuerySelectResult property:@"country"];
+CBLQuerySelectResult *tz = [CBLQuerySelectResult property:@"tz"];
 
-do {
-	for row in try query.run() {
-		print("There are \(row.int(forKey: "$1")) airports on the \(row.string(forKey: "tz")!) timezone located in \(row.string(forKey: "country")!) and above 300 ft")
-	}
-}
+CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"airport"]];
+CBLQueryExpression *geoAlt = [[CBLQueryExpression property:@"geo.alt"] greaterThanOrEqualTo:[CBLQueryExpression integer:300]];
+
+CBLQuery *query = [CBLQuery select:@[count, country, tz]
+                              from:[CBLQueryDataSource database:database]
+                             where:[type andExpression: geoAlt]
+                           groupBy:@[[CBLQueryExpression property:@"country"],
+                                     [CBLQueryExpression property:@"tz"]]];
 ```
 
 ```text
@@ -535,14 +529,13 @@ There are 123 airports on the America/Denver timezone located in United States a
 It is possible to sort the results of a query based on a given expression result. The example below returns documents of type equal to "hotel" sorted in ascending order by the value of the title property.
 
 ```objectivec
-let query = Query
-	.select(
-		SelectResult.expression(Expression.meta().id),
-		SelectResult.expression(Expression.property("title")))
-	.from(DataSource.database(database))
-	.where(Expression.property("type").equalTo("hotel"))
-	.orderBy(Ordering.property("title").ascending())
-	.limit(limit)
+CBLQuerySelectResult *id = [CBLQuerySelectResult expression:[CBLQueryMeta id]];
+CBLQuerySelectResult *title = [CBLQuerySelectResult property:@"title"];
+
+CBLQuery *query = [CBLQuery select:@[id, title]
+                              from:[CBLQueryDataSource database:database]
+                             where:[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"hotel"]]
+                           orderBy:@[[[CBLQueryOrdering property:@"title"] descending]]];
 ```
 
 ```text
@@ -560,41 +553,36 @@ Avignon
 
 To run a full-text search (FTS) query, you must have created a full-text index on the expression being matched. Unlike regular queries, the index is not optional. The following example inserts documents and creates an FTS index on the `name` property.
 
-```swift
-// Insert documents
-let tasks = ["buy groceries", "play chess", "book travels", "buy museum tickets"]
-for task in tasks {
-	let doc = MutableDocument()
-	doc.setString("task", forKey: "type")
-	doc.setString(task, forKey: "name")
-	try? database.saveDocument(doc)
+```objectivec
+NSArray *tasks = @[@"buy groceries", @"play chess", @"book travels", @"buy museum tickets"];
+for (NSString *task in tasks) {
+    CBLMutableDocument *doc = [[CBLMutableDocument alloc] init];
+    [doc setString:@"task" forKey:@"type"];
+    [doc setString:task forKey:@"name"];
+    [database saveDocument:doc error:&error];
 }
 
 // Create index
-do {
-	try database.createIndex(Index.fullTextIndex(withItems: FullTextIndexItem.property("name")).ignoreAccents(false), withName: "nameFTSIndex")
-} catch let error {
-	print(error.localizedDescription)
-}
+CBLFullTextIndexOptions *options = [[CBLFullTextIndexOptions alloc] init];
+options.ignoreAccents = NO;
+CBLIndex *index = [CBLIndex fullTextIndexWithItems:@[[CBLFullTextIndexItem property:@"name"]]
+                                           options:options];
+[database createIndex:index withName:@"nameFTSIndex" error:&error];
 ```
 
 Multiple properties to index can be specified in the `Index.fullTextIndex(withItems: [FullTextIndexItem])` method.
 
 With the index created, an FTS query on the property that is being indexed can be constructed and ran. The full-text search criteria is defined as a `FullTextExpression`. The left-hand side is the full-text index to use and the right-hand side is the pattern to match.
 
-```swift
-let whereClause = FullTextExpression.index("nameFTSIndex").match("'buy'")
-let ftsQuery = Query.select(SelectResult.expression(Meta.id))
-                  .from(DataSource.database(database))
-                  .where(whereClause)
+```objectivec
+CBLQueryExpression *where = [[CBLQueryFullTextExpression indexWithName:@"nameFTSIndex"] match:@"'buy'"];
+CBLQuery *query = [CBLQuery select:@[[CBLQuerySelectResult expression:[CBLQueryMeta id]]]
+                              from:[CBLQueryDataSource database:database]
+                             where:where];
 
-do {
-	let ftsQueryResult = try ftsQuery.execute()
-	for row in ftsQueryResult {
-		print("document properties \(row.string(at: 0))")
-	}
-} catch let error {
-	print(error.localizedDescription)
+NSEnumerator* rs = [query execute:&error];
+for (CBLQueryResult *result in rs) {
+    NSLog(@"document id %@", [result stringAtIndex:0]);
 }
 ```
 
@@ -702,11 +690,15 @@ For platform specific installation instructions, refer to the Sync Gateway [inst
 Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021/Classes/CBLReplicatorConfiguration.html) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
 
 ```objectivec
-let url = URL(string: "ws://localhost:4984/db")!
-var replConfig = ReplicatorConfiguration(withDatabase: database, targetURL: url)
-replConfig.replicatorType = .pull
-let replication = Replicator(withConfig: replConfig)
-replication.start()
+NSURL *url = [NSURL URLWithString:@"ws://localhost:4984/db"];
+CBLURLEndpoint *target = [[CBLURLEndpoint alloc] initWithURL: url];
+CBLReplicatorConfiguration *config = [[CBLReplicatorConfiguration alloc] initWithDatabase:database
+                                                                                   target:target
+                                                                                    block:^(CBLReplicatorConfigurationBuilder *builder) {
+    builder.replicatorType = kCBLReplicatorPull;
+}];
+CBLReplicator *replicator = [[CBLReplicator alloc] initWithConfig:config];
+[replicator start];
 ```
 
 As shown in the code snippet above, the URL scheme for remote database URLs has changed in Couchbase Lite 2.0. You should now use `ws:`, or `wss:` for SSL/TLS connections. You can access the Sync Gateway `_all_docs` endpoint [http://localhost:4984/db/\_all\_docs?include_docs=true](http://localhost:4984/db/_all_docs?include_docs=true) to check that the documents are successfully replicated.
@@ -719,20 +711,21 @@ Starting in Couchbase Lite 2.0, replication between two local databases is now s
 
 As always, when there is a problem with replication, logging is your friend. The following example increases the log output for activity related to replication with Sync Gateway.
 
-```swift
-Database.setLogLevel(.verbose, domain: .replicator)
+```objectivec
+[CBLDatabase setLogLevel:kCBLLogLevelVerbose domain:kCBLLogDomainReplicator];
+[CBLDatabase setLogLevel:kCBLLogLevelVerbose domain:kCBLLogDomainNetwork];
 ```
 
 ### Replication Status
 
 The `replication.status.activity` property can be used to check the status of a replication. For example, when the replication is actively transferring data and when it has stopped.
 
-```swift
-self.replication.addChangeListener { (change) in
-    if change.status.activity == .stopped {
-        print("Replication stopped")
-    }
-}
+```objectivec
+[replicator addChangeListener:^(CBLReplicatorChange *change) {
+		if (change.status.activity == kCBLReplicatorStopped) {
+				NSLog(@"Replication stopped");
+		}
+}];
 ```
 
 The following table lists the different activity levels in the API and the meaning of each one.
@@ -749,13 +742,12 @@ The following table lists the different activity levels in the API and the meani
 
 A running replication can be interrupted for a variety of reasons such as network errors or unauthorized access. In this case, the replication status will be updated with an `Error` which follows the standard HTTP error codes. The replication change event can be used to monitor the status of the replication. The following example monitors the replication for errors and logs the error code to the console.
 
-```swift
-self.replication.addChangeListener { (change) in
-    if let error = change.status.error as NSError? {
-        print("Error code :: \(error.code)")
+```objectivec
+[replicator addChangeListener:^(CBLReplicatorChange *change) {
+    if (change.status.error) {
+        NSLog(@"Error code: %ld", change.status.error.code);
     }
-}
-self.replication.start()
+}];
 ```
 
 ### Certificate Pinning
@@ -769,13 +761,13 @@ The `cert.pem` and `key.pem` can be used in the Sync Gateway configuration (see 
 On the Couchbase Lite side, the replication must be configured with the `cert.cer` file.
 
 ```objectivec
-let sslCert = Bundle.main.path(forResource: "cert", ofType: "cer")
-if let path = sslCert {
-	if let data = NSData(contentsOfFile: path) {
-		let certificate = SecCertificateCreateWithData(nil, data)
-		replConfig.pinnedServerCertificate = certificate
-	}
-}
+NSData *data = [self dataFromResource: @"cert" ofType: @"cer"];
+SecCertificateRef certificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)data);
+CBLReplicatorConfiguration *config = [[CBLReplicatorConfiguration alloc] initWithDatabase:database
+                                                                                   target:target
+                                                                                    block:^(CBLReplicatorConfigurationBuilder *builder) {
+                                                                                        builder.pinnedServerCertificate = certificate;
+                                                                                    }];
 ```
 
 This example loads the certificate from the application sandbox, then converts it to the appropriate type to configure the replication object.
