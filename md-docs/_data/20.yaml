@@ -31,6 +31,8 @@
       path: couchbase-lite/java.html
     - title: C#
       path: couchbase-lite/csharp.html
+    - title: Objective-C
+      path: couchbase-lite/objc.html
     - title: Release notes
       path: references/couchbase-lite/release-notes/index.html
 - title: Sync Gateway
