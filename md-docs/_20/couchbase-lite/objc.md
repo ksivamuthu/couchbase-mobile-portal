@@ -153,7 +153,7 @@ try? database.saveDocument(newTask)
 
 ### Mutability
 
-The biggest change is that `MutableDocument` properties are now directly mutable. Instead of having to make a mutable copy of the properties dictionary, update it, and then save it back to the document, you can now modify individual properties in place and then save.
+By default, when a document is read from the database it is immutable. The `document.toMutable()` method should be used to create an instance of the document which can be updated.
 
 ```objectivec
 // newTask is a MutableDocument
@@ -161,7 +161,7 @@ newTask.setString("apples", forKey: "name")
 try? database.saveDocument(newTask)
 ```
 
-This does create the possibility of confusion, since the document's in-memory state may not match what's in the database. Unsaved changes are not visible to other `Database` instances (i.e. other threads that may have other instances), or to queries.
+Changes to the document are persisted to the database when the `saveDocument` method is called.
 
 ### Typed Accessors
 
