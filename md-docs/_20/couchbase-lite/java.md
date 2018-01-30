@@ -185,7 +185,7 @@ Date date = newTask.getDate("createdAt");
 
 ### Batch operations
 
-If you're making multiple changes to a database at once, it's *much* faster to group them together, otherwise each individual change incurs overhead, from flushing writes to the filesystem to ensure durability. In 2.0 we've renamed the method from `inTransaction()` to `inBatch()` to emphasize that Couchbase Lite does not offer transactional guarantees, and that the purpose of the method is to optimize batch operations rather than to enable ACID transactions. The following example persists a few documents in batch.
+If you're making multiple changes to a database at once, it's faster to group them together. The following example persists a few documents in batch.
 
 ```java
 try {
