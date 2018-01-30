@@ -144,10 +144,10 @@ The following methods/initializers can be used:
 The following code example creates a document and persists it to the database.
 
 ```swift
-let dict: [String: Any] = ["type": "task",
-                           "owner": "todo",
-                           "createdAt": Date()]
-let newTask = MutableDocument(withData: dict)
+let newTask = MutableDocument()
+		.setString("task", forKey: "type")
+		.setString("todo", forKey: "owner")
+		.setDate(Date(), forKey: "createdAt")
 try? database.saveDocument(newTask)
 ```
 
