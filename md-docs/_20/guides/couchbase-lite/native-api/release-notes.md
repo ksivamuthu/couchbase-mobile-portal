@@ -8,7 +8,7 @@ permalink: references/couchbase-lite/release-notes/index.html
 
 ## Deprecation notices
 
-⚠️ The new protocol based on WebSockets is **incompatible** with Couchbase Lite 1.x, and with CouchDB-based databases including PouchDB and Cloudant. Refer to the Couchbase Lite [Replication API](../../../couchbase-lite/index.html) on the platform of your choice to learn more.
+⚠️ The new protocol is **incompatible** with CouchDB-based databases. And since Couchbase Lite 2 only supports the new protocol, you will need to run a version of Sync Gateway that supports it. Refer to the Couchbase Lite [Replication API](../../../couchbase-lite/index.html) on the platform of your choice to learn more.
 
 ## Notable API Changes
 
