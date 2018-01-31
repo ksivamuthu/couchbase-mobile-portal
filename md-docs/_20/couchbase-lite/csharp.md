@@ -87,26 +87,6 @@ Database.SetLogLevel(LogDomain.Replicator, LogLevel.Verbose);
 Database.SetLogLevel(LogDomain.Query, LogLevel.Verbose);
 ```
 
-### Singleton Pattern
-
-The database instance must be used throughout the Couchbase Lite API to Create, Update, Delete and Query documents. Hence, the singleton pattern is useful to create a single instance of the `Database` object. The following example follows the Singleton Pattern in C#.
-
-```c#
-class DataManager {
-  static DataManager SharedInstance = new DataManager()
-	
-  private DataManager() {
-    try {
-  	  Database = new Database("dbname")
-    } catch(Exception) {
-  	  Console.Error.WriteLine("Could not initialize database")
-    }
-  }
-}
-```
-
-The database instance can then be access throughout the codebase using the class property: `DataManager.SharedInstance.Database`.
-
 ### Loading a pre-built database
 
 If your app needs to sync a lot of data initially, but that data is fairly static and won't change much, it can be a lot more efficient to bundle a database in your application and install it on the first launch. Even if some of the content changes on the server after you create the app, the app's first pull replication will bring the database up to date.

@@ -92,26 +92,6 @@ Database.setLogLevel(.verbose, domain: .replicator)
 Database.setLogLevel(.verbose, domain: .query)
 ```
 
-### Singleton Pattern
-
-The database instance must be used throughout the Couchbase Lite API to Create, Update, Delete and Query documents. Hence, the singleton pattern is useful to create a single instance of the `Database` object. The following example follows the Singleton Pattern in `Swift`.
-
-```swift
-class DataManager {
-  static let sharedInstance: DataManager = DataManager()
-	
-  private init() {
-    do {
-  	  self.database = try Database(name: "dbname")
-    } catch {
-  	  fatalError("Could not initialize database")
-    }
-  }
-}
-```
-
-The database instance can then be access throughout the codebase using the class property: `DataManager.sharedInstance.database`.
-
 ### Loading a pre-built database
 
 If your app needs to sync a lot of data initially, but that data is fairly static and won't change much, it can be a lot more efficient to bundle a database in your application and install it on the first launch. Even if some of the content changes on the server after you create the app, the app's first pull replication will bring the database up to date.
