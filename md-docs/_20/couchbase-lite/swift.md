@@ -136,9 +136,10 @@ try? database.saveDocument(newTask)
 By default, when a document is read from the database it is immutable. The `document.toMutable()` method should be used to create an instance of the document which can be updated.
 
 ```swift
-guard let task = database.document(withID: "xyz")?.toMutable() else { return }
-task.setString("apples", forKey: "name")
-try? database.saveDocument(task)
+guard let document = database.document(withID: "xyz") else { return }
+let mutableDocument = document.toMutable()
+mutableDocument.setString("apples", forKey: "name")
+try? database.saveDocument(mutableDocument)
 ```
 
 Changes to the document are persisted to the database when the `saveDocument` method is called.
