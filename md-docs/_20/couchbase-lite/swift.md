@@ -151,7 +151,7 @@ The `Document` class now offers a set of [`property accessors`](http://docs.couc
 In addition, as a convenience we offer `Date` accessors. Dates are a common data type, but JSON doesn't natively support them, so the convention is to store them as strings in ISO-8601 format. The following example sets the date on the `createdAt` property and reads it back using the `document.date(forKey: String)` accessor method.
 
 ```swift
-newTask.setValue(Date(), forKey: "createdAt")
+newTask.setDate(Date(), forKey: "createdAt")
 let date = newTask.date(forKey: "createdAt")
 ```
 
