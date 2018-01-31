@@ -49,8 +49,8 @@ Just as before, the database will be created in a default location. Alternativel
 The following example demonstrates how to create a database with an encryption key (or open an existing one).
 
 ```java
-DatabaseConfiguration config = new DatabaseConfiguration(/* Android Context*/ context);
-config.setEncryptionKey(new EncryptionKey("secretpassword"));
+DatabaseConfiguration config = new DatabaseConfiguration(/* Android Context*/ context)
+    .setEncryptionKey(new EncryptionKey("secretpassword"));
 Database database = new Database("my-database", config);
 ```
 
@@ -92,13 +92,13 @@ If your app needs to sync a lot of data initially, but that data is fairly stati
 To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`Database.copy(File path, String name, DatabaseConfiguration config)`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/com/couchbase/lite/Database.html#copy-java.io.File-java.lang.String-com.couchbase.lite.DatabaseConfiguration-) method as shown below.
 
 ```swift
-let assetPath = Bundle.main.path(forResource: "travel-sample", ofType: "cblite2")!
-if !Database.exists(withName: "travel-sample") {
-	do {
-		try Database.copy(fromPath: assetPath, toDatabase: "travel-sample", withConfig: nil)
-	} catch {
-		fatalError("Could not load pre-built database")
-	}
+DatabaseConfiguration config = new DatabaseConfiguration(/* Android Context*/ context);
+ZipUtils.unzip(getAsset("replacedb/android200-sqlite.cblite2.zip"), context.getFilesDir());
+File path = new File(context.getFilesDir(), "android-sqlite");
+try {
+    Database.copy(path, "travel-sample", config);
+} catch (CouchbaseLiteException e) {
+    Log.e(TAG, "Could not load pre-built database");
 }
 ```
 
@@ -125,7 +125,7 @@ MutableDocument newTask = new MutableDocument(dict);
 try {
     database.save(newTask);
 } catch (CouchbaseLiteException e) {
-    Log.e(TAG, "Failed to save the document", e);
+    Log.e(TAG, e.toString());
 }
 ```
 
@@ -139,7 +139,7 @@ newTask.setString("name", "apples");
 try {
     database.save(newTask);
 } catch (CouchbaseLiteException e) {
-    Log.e(TAG, "Failed to save the document", e);
+    Log.e(TAG, e.toString());
 }
 ```
 
@@ -191,15 +191,22 @@ At the **local** level this operation is still transactional: no other `Database
 We've renamed "attachments" to "blobs", for clarity. The new behavior should be clearer too: a `Blob` is now a normal object that can appear in a document as a property value. In other words, there's no special API for creating or accessing attachments; you just instantiate an `Blob` and set it as the value of a property, and then later you can get the property value, which will be a `Blob` object. The following code example adds a blob to the document under the `avatar` property.
 
 ```java
-let appleImage = UIImage(named: "avatar.jpg")!
-let imageData = UIImageJPEGRepresentation(appleImage, 1)!
+InputStream is = getAsset("attachment.png");
+try {
+    MutableDocument newTask = new MutableDocument();
+    Blob blob = new Blob("image/png", is);
+    newTask.setBlob("attachment", blob);
+    Document doc = database.save(newTask);
 
-let blob = Blob(contentType: "image/jpg", data: imageData)
-newTask.setBlob(blob, forKey: "avatar")
-try? database.save(newTask)
-
-if let taskBlob = newTask.blob(forKey: "image") {
-	UIImage(data: taskBlob.content!)
+    Blob taskBlob = doc.getBlob("attachment");
+    byte[] bytes = taskBlob.getContent();
+} catch (CouchbaseLiteException e) {
+    Log.e(TAG, e.toString());
+} finally {
+    try {
+        is.close();
+    } catch (IOException e) {
+    }
 }
 ```
 
@@ -236,7 +243,7 @@ The following example creates a new index for the `type` and `name` properties.
 
 ```java
 database.createIndex("TypeNameIndex",
-        Index.valueIndex(ValueIndexItem.property("type"),
+        IndexBuilder.valueIndex(ValueIndexItem.property("type"),
                 ValueIndexItem.property("name")));
 ```
 
@@ -266,21 +273,19 @@ You can specify a comma separated list of `SelectResult` expressions in the sele
 ```
 
 ```java
-Query query = Query
-        .select(
-          SelectResult.expression(Meta.id),
-          SelectResult.property("name"),
-          SelectResult.property("type")
-        )
+Query query = QueryBuilder
+        .select(SelectResult.expression(Meta.id),
+                SelectResult.property("name"),
+                SelectResult.property("type"))
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("hotel"))
+        .where(Expression.property("type").equalTo(Expression.string("hotel")))
         .orderBy(Ordering.expression(Meta.id));
-        
+
 try {
     ResultSet rs = query.execute();
     for (Result result : rs) {
-        Log.i("Sample", String.format("hotel id :: %s", result.getString("_id")));
-        Log.i("Sample", String.format("hotel name :: %s", result.getString("name")));
+        Log.i("Sample", String.format("hotel id -> %s", result.getString("id")));
+        Log.i("Sample", String.format("hotel name -> %s", result.getString("name")));
     }
 } catch (CouchbaseLiteException e) {
     Log.e("Sample", e.getLocalizedMessage());
@@ -290,14 +295,13 @@ try {
 The `SelectResult.all()` method can be used to query all the properties of a document. In this case, the document in the result is embedded in a dictionary where the key is the database name. The following snippet shows the same query using `SelectResult.all()` and the result in JSON.
 
 ```java
-Query query = Query
+Query query = QueryBuilder
         .select(SelectResult.all())
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("hotel"));
-
+        .where(Expression.property("type").equalTo(Expression.string("hotel")));
 ResultSet rs = query.execute();
 for (Result result : rs)
-		Log.i("Sample", String.format("hotel -> %s", result.getDictionary(DATABASE_NAME).toMap()));
+    Log.i("Sample", String.format("hotel -> %s", result.getDictionary(DATABASE_NAME).toMap()));
 ```
 
 ```json
@@ -344,12 +348,11 @@ The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/c
 ```
 
 ```java
-Query query = Query
+Query query = QueryBuilder
         .select(SelectResult.all())
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("hotel"))
-        .limit(10);
-
+        .where(Expression.property("type").equalTo(Expression.string("hotel")))
+        .limit(Expression.intValue(10));
 ResultSet rs = query.execute();
 for (Result result : rs) {
     Dictionary all = result.getDictionary(DATABASE_NAME);
@@ -371,14 +374,13 @@ for (Result result : rs) {
 ```
 
 ```java
-Query query = Query
+Query query = QueryBuilder
         .select(SelectResult.expression(Meta.id),
                 SelectResult.property("name"),
                 SelectResult.property("public_likes"))
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("hotel")
-                .and(ArrayFunction.contains(Expression.property("public_likes"), "Armani Langworth")));
-
+        .where(Expression.property("type").equalTo(Expression.string("hotel"))
+                .and(ArrayFunction.contains(Expression.property("public_likes"), Expression.string("Armani Langworth"))));
 ResultSet rs = query.execute();
 for (Result result : rs)
     Log.i("Sample", String.format("public_likes -> %s", result.getArray("public_likes").toList()));
@@ -391,14 +393,13 @@ The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021/com/
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
 ```java
-Query query = Query
+Query query = QueryBuilder
         .select(SelectResult.expression(Meta.id),
                 SelectResult.property("country"),
                 SelectResult.property("name"))
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("landmark")
-                .and(Expression.property("name").like("Royal engineers museum")));
-
+        .where(Expression.property("type").equalTo(Expression.string("landmark"))
+                .and(Expression.property("name").like(Expression.string("Royal Engineers Museum"))));
 ResultSet rs = query.execute();
 for (Result result : rs)
     Log.i("Sample", String.format("name -> %s", result.getString("name")));
@@ -411,14 +412,13 @@ We can use `%` sign within a `like` expression to do a wildcard match against ze
 In the example below, we are looking for documents of `type` "landmark" where the name property matches any string that begins with "eng" followed by zero or more characters, the letter "e", followed by zero or more characters. The following query will return "landmark" type documents with name matching "Engineers", "engine", "english egg" , "England Eagle" and so on. Notice that the matches may span word boundaries.
 
 ```java
-Query query = Query
+Query query = QueryBuilder
         .select(SelectResult.expression(Meta.id),
                 SelectResult.property("country"),
                 SelectResult.property("name"))
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("landmark")
-                .and(Expression.property("name").like("%eng%e%")));
-
+        .where(Expression.property("type").equalTo(Expression.string("landmark"))
+                .and(Expression.property("name").like(Expression.string("Eng%e%"))));
 ResultSet rs = query.execute();
 for (Result result : rs)
     Log.i("Sample", String.format("name -> %s", result.getString("name")));
@@ -432,14 +432,13 @@ In the example below, we are looking for documents of type "landmark" where the 
 The following query will return "landmark" `type` documents with the `name` matching "Engineer", "engineer" and so on.
 
 ```java
-Query query = Query
+Query query = QueryBuilder
         .select(SelectResult.expression(Meta.id),
                 SelectResult.property("country"),
                 SelectResult.property("name"))
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("landmark")
-                .and(Expression.property("name").like("eng____r")));
-
+        .where(Expression.property("type").equalTo(Expression.string("landmark"))
+                .and(Expression.property("name").like(Expression.string("Eng____r"))));
 ResultSet rs = query.execute();
 for (Result result : rs)
     Log.i("Sample", String.format("name -> %s", result.getString("name")));
@@ -453,14 +452,13 @@ In the example below, we are looking for documents of `type` "landmark" where th
 The following query will return "landmark" type documents with name matching "Engine", "engine" and so on. Note that the `\b` specifies that the match must occur on word boundaries.
 
 ```java
-Query query = Query
+Query query = QueryBuilder
         .select(SelectResult.expression(Meta.id),
                 SelectResult.property("country"),
                 SelectResult.property("name"))
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("landmark")
-                .and(Expression.property("name").regex("\\bEng.*r\\b")));
-
+        .where(Expression.property("type").equalTo(Expression.string("landmark"))
+                .and(Expression.property("name").regex(Expression.string("\\bEng.*r\\b"))));
 ResultSet rs = query.execute();
 for (Result result : rs)
     Log.i("Sample", String.format("name -> %s", result.getString("name")));
@@ -473,28 +471,21 @@ The JOIN clause enables you to create new input objects by combining two or more
 The following example uses a JOIN clause to find the airline details which have routes that start from RIX. This example JOINS the document of type "route" with documents of type "airline" using the document ID (`_id`) on the "airline" document and  `airlineid` on the "route" document.
 
 ```java
-Query query = Query        
-        .select(
-        	SelectResult.expression(Expression.property("name").from("airline")),
-        	SelectResult.expression(Expression.property("callsign").from("airline")),
-        	SelectResult.expression(Expression.property("destinationairport").from("route")),
-        	SelectResult.expression(Expression.property("stops").from("route")),
-        	SelectResult.expression(Expression.property("airline").from("route"))
-        )
+Query query = QueryBuilder.select(
+        SelectResult.expression(Expression.property("name").from("airline")),
+        SelectResult.expression(Expression.property("callsign").from("airline")),
+        SelectResult.expression(Expression.property("destinationairport").from("route")),
+        SelectResult.expression(Expression.property("stops").from("route")),
+        SelectResult.expression(Expression.property("airline").from("route")))
         .from(DataSource.database(database).as("airline"))
-        .join(
-        	Join.join(DataSource.database(database).as("route"))
-        	.on(Meta.id.from("airline").equalTo(Expression.property("airlineid").from("route")))
-        )
-        .where(
-        	Expression.property("type").from("route").equalTo("route")
-        	.and(Expression.property("type").from("airline").equalTo("airline"))
-        	.and(Expression.property("sourceairport").from("route").equalTo("RIX"))
-        );
-								
+        .join(Join.join(DataSource.database(database).as("route"))
+                .on(Meta.id.from("airline").equalTo(Expression.property("airlineid").from("route"))))
+        .where(Expression.property("type").from("route").equalTo(Expression.string("route"))
+                .and(Expression.property("type").from("airline").equalTo(Expression.string("airline")))
+                .and(Expression.property("sourceairport").from("route").equalTo(Expression.string("RIX"))));
 ResultSet rs = query.execute();
 for (Result result : rs)
-		Log.w("Sample", String.format("%s", result.toMap().toString()));
+    Log.w("Sample", String.format("%s", result.toMap().toString()));
 ```
 
 ### GROUP BY statement
@@ -512,20 +503,16 @@ You can perform further processing on the data in your result set before the fin
 ```
 
 ```java
-Query query = Query
-        .select(
-          SelectResult.expression(Function.count("*")),
-          SelectResult.property("country"),
-          SelectResult.property("tz")
-        )
+Query query = QueryBuilder.select(
+        SelectResult.expression(Function.count(Expression.string("*"))),
+        SelectResult.property("country"),
+        SelectResult.property("tz"))
         .from(DataSource.database(database))
-        .where(
-          Expression.property("type").equalTo("airport")
-          .and(Expression.property("geo.alt").greaterThanOrEqualTo(300))
-        )
-        .groupBy(Expression.property("country"), Expression.property("tz"))
-        .orderBy(Ordering.expression(Function.count("*")).descending());
-
+        .where(Expression.property("type").equalTo(Expression.string("airport"))
+                .and(Expression.property("geo.alt").greaterThanOrEqualTo(Expression.intValue(300))))
+        .groupBy(Expression.property("country"),
+                Expression.property("tz"))
+        .orderBy(Ordering.expression(Function.count(Expression.string("*"))).descending());
 ResultSet rs = query.execute();
 for (Result result : rs)
     Log.i("Sample",
@@ -548,14 +535,13 @@ There are 123 airports on the America/Denver timezone located in United States a
 It is possible to sort the results of a query based on a given expression result. The example below returns documents of type equal to "hotel" sorted in ascending order by the value of the title property.
 
 ```java
-Query query = Query
+Query query = QueryBuilder
         .select(SelectResult.expression(Meta.id),
                 SelectResult.property("name"))
         .from(DataSource.database(database))
-        .where(Expression.property("type").equalTo("hotel"))
+        .where(Expression.property("type").equalTo(Expression.string("hotel")))
         .orderBy(Ordering.property("name").ascending())
-        .limit(10);
-
+        .limit(Expression.intValue(10));
 ResultSet rs = query.execute();
 for (Result result : rs)
     Log.i("Sample", String.format("%s", result.toMap()));
@@ -587,7 +573,8 @@ for (String task : tasks) {
 }
 
 // Create index
-database.createIndex("nameFTSIndex", Index.fullTextIndex(FullTextIndexItem.property("name")).ignoreAccents(false));
+database.createIndex("nameFTSIndex", 
+	IndexBuilder.fullTextIndex(FullTextIndexItem.property("name")).ignoreAccents(false));
 ```
 
 Multiple properties to index can be specified in the `Index.fullTextIndex(withItems: [FullTextIndexItem])` method.
@@ -596,11 +583,11 @@ With the index created, an FTS query on the property that is being indexed can b
 
 ```java
 Expression whereClause = FullTextExpression.index("nameFTSIndex").match("buy");
-Query ftsQuery = Query.select(SelectResult.expression(Meta.id))
+Query ftsQuery = QueryBuilder.select(SelectResult.expression(Meta.id))
         .from(DataSource.database(database))
         .where(whereClause);
 ResultSet ftsQueryResult = ftsQuery.execute();
-for(Result result : ftsQueryResult)
+for (Result result : ftsQueryResult)
     Log.i(TAG, String.format("document properties %s", result.getString(0)));
 ```
 
@@ -709,9 +696,10 @@ Replication objects are now bidirectional, this means you can start a `push`/`pu
 
 ```java
 URI uri = new URI("ws://localhost:4984/db");
-ReplicatorConfiguration replConfig = new ReplicatorConfiguration(database, uri);
-replConfig.setReplicatorType(ReplicatorConfiguration.ReplicatorType.PULL);
-Replicator replication = new Replicator(replConfig);
+Endpoint endpoint = new URLEndpoint(uri);
+ReplicatorConfiguration config = new ReplicatorConfiguration(database, endpoint);
+config.setReplicatorType(ReplicatorConfiguration.ReplicatorType.PULL);
+Replicator replication = new Replicator(config);
 replication.start();
 ```
 
@@ -780,13 +768,10 @@ The `cert.pem` and `key.pem` can be used in the Sync Gateway configuration (see 
 On the Couchbase Lite side, the replication must be configured with the `cert.cer` file.
 
 ```java
-let sslCert = Bundle.main.path(forResource: "cert", ofType: "cer")
-if let path = sslCert {
-	if let data = NSData(contentsOfFile: path) {
-		let certificate = SecCertificateCreateWithData(nil, data)
-		replConfig.pinnedServerCertificate = certificate
-	}
-}
+InputStream is = getAsset("cert.cer");
+byte[] cert = IOUtils.toByteArray(is);
+is.close();
+config.setPinnedServerCertificate(cert);
 ```
 
 This example loads the certificate from the application sandbox, then converts it to the appropriate type to configure the replication object.
