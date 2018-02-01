@@ -100,7 +100,7 @@ var Swagger = require('swagger-client')
   , bodyParser = require('body-parser');
 
 var client = new Swagger({
-  url: 'http://developer.couchbase.com/mobile/swagger/sync-gateway-admin/spec.json',
+  url: 'http://couchbase-docs.s3.amazonaws.com/mobile/1.5/rest-apis/sync-gateway-admin.json',
   usePromise: true
 })
   .then(function (res) {
