@@ -71,6 +71,8 @@ dbConfig.encryptionKey = EncryptionKey.password("secretpassword")
 self.database = try Database(name: "my-database", config: dbConfig)
 ```
 
+Encryption is available in the Enterprise Edition only.
+
 ### Migrating from 1.x Databases
 
 Databases that were created with Couchbase Mobile 1.2 or later can be read using the 2.0 API. Upon detecting it is a 1.x database file format, Couchbase Lite will automatically upgrade it to the new format used in 2.0. This feature is currently only available for the default storage type (i.e not for ForestDB databases).
