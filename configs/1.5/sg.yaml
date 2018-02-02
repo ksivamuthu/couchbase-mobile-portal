@@ -364,7 +364,9 @@ properties:
               replicator_2:
                 type: boolean
                 description: |
-                  Property to enable the replication protocol used in [Couchbase Lite 2.0 Developer Builds](https://developer.couchbase.com/documentation/mobile/2.0/guides/couchbase-lite/native-api/replication/index.html). Note that if this property is set to `true`, Sync Gateway will no longer accept incoming requests from clients running the 1.x implementation. This includes Couchbase Lite 1.x and CouchDB-based databases (such as PouchDB and Cloudant).
+                  Property to enable the replication protocol used in Couchbase Lite 2.0.
+                  
+                  To use this protocol with Couchbase Lite 2.0, the replication URL should specify WebSockets as the URL scheme (see the [Replication](https://developer.couchbase.com/documentation/mobile/2.0/guides/couchbase-lite/native-api/replication/index.html) section). Mobile clients using Couchbase Lite 1.x can continue to use http as the URL scheme. Sync Gateway will automatically use the 1.x replication protocol when a Couchbase Lite 1.x client connects through "http://localhost:4984/db" and the 2.0 replication protocol when a Couchbase Lite 2.0 client connects through "ws://localhost:4984/db".
                   
                   More details about the protocol can be found in the [Replication Protocol](https://github.com/couchbase/couchbase-lite-core/wiki/Replication-Protocol) wiki.
                 default: 'false'
