@@ -367,7 +367,7 @@ properties:
                   Property to enable the replication protocol used in [Couchbase Lite 2.0 Developer Builds](https://developer.couchbase.com/documentation/mobile/2.0/guides/couchbase-lite/native-api/replication/index.html). Note that if this property is set to `true`, Sync Gateway will no longer accept incoming requests from clients running the 1.x implementation. This includes Couchbase Lite 1.x and CouchDB-based databases (such as PouchDB and Cloudant).
                   
                   More details about the protocol can be found in the [Replication Protocol](https://github.com/couchbase/couchbase-lite-core/wiki/Replication-Protocol) wiki.
-                default: 'true'
+                default: 'false'
           username:
             type: string
             description: Bucket username for authenticating to Couchbase Server. There is no default.
