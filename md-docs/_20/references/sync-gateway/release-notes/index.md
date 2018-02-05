@@ -5,6 +5,34 @@ title: SG release notes
 
 ## 2.0.0
 
+__Upgrading__
+
+Starting in Sync Gateway 2.0, Sync Gateway’s design documents include the version number in the design document name. In this release for example, the design documents are named `_design/sync_gateway_2.0` and `_design/sync_housekeeping_2.0`.
+
+On startup, Sync Gateway will check for the existence of these design documents, and only attempt to create them if they do not already exist. Then, Sync Gateway will wait until views are available and indexed before starting to serve requests. To evaluate this, Sync Gateway will issue a `stale=false&limit=1` query against the Sync Gateway views (channels, access and role_access).
+
+If the view request exceeds the default timeout of 75s (which would be expected when indexing large buckets), Sync Gateway will log additional messages and retry. The logging output will look like this:
+
+```bash
+14:26:41.039-08:00 Design docs for current SG view version (2.0) found.
+14:26:41.039-08:00 Verifying view availability for bucket default...
+14:26:42.045-08:00 Timeout waiting for view "access" to be ready for bucket "default" - retrying...
+14:26:42.045-08:00 Timeout waiting for view "channels" to be ready for bucket "default" - retrying...
+14:26:42.045-08:00 Timeout waiting for view "role_access" to be ready for bucket "default" - retrying...
+14:26:44.065-08:00 Timeout waiting for view "access" to be ready for bucket "default" - retrying...
+14:26:44.065-08:00 Timeout waiting for view "role_access" to be ready for bucket "default" - retrying...
+14:26:44.065-08:00 Timeout waiting for view "channels" to be ready for bucket "default" - retrying...
+14:26:44.072-08:00 Views ready for bucket default.
+```
+
+Sync Gateway 2.0 will **not** automatically remove the previous design documents. Removal of the obsolete design documents is done via a call to the new  [`/{db}/_post_upgrade`](../admin-rest-api/index.html) endpoint in Sync Gateway’s Admin REST API. This endpoint can be run in preview mode (`?preview=true`) to see which design documents would be removed. To summarize, the steps to perform an upgrade to Sync Gateway 2.0 are:
+
+1. Upgrade one node in the cluster to 2.0, and wait for it to be reachable via the REST API (for example at [http://localhost:4985/](http://localhost:4985/)).
+2. Upgrade the rest of the nodes in the cluster.
+3. Clean up obsolete views:
+	- **Optional** Issue a call to `/_post_upgrade?preview=true` on any node to preview which design documents will be removed. To upgrade to 2.0, expect to see "sync_gateway" and "sync_housekeeping" listed.
+	- Issue a call to `/post_upgrade` to remove the obsolete design documents. The response should indicate that "sync_gateway" and "sync_housekeeping" were removed.
+
 __Performance Improvements__
 
 - [__#1383__](https://github.com/couchbase/sync_gateway/issues/1383) Nginx load balancer needs plugins to detect db offline state.
