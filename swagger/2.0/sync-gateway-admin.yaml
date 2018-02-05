@@ -484,6 +484,13 @@ parameters:
         disabled:
           type: boolean
           description: Boolean property to disable this user. The user will not be able to login if this property is set to true.
+  upgrade_preview:
+    in: query
+    name: preview
+    description: Lists the design documents to be removed if the request is sent without this paramter.
+    type: boolean
+    default: false
+    required: false
 ################################################################################
 #                                   Paths                                      #
 ################################################################################
@@ -1142,6 +1149,18 @@ paths:
       responses:
         201:
           description: The operation was successful
+  /_post_upgrade:
+    post:
+      tags:
+        - server
+      summary: Remove obsolete design documents
+      description: |
+        Starting in Sync Gateway 2.0, design documents used internally by Sync Gateway will include a version number in their name. After the upgrade is performed, previous design documents are not automatically removed since other Sync Gateway nodes may still be using them. This endpoint should be used to remove those previous design documents (also see [2.0 release notes](../release-notes/index.html)). The `preview=true` query string option can be used to list design documents which would be removed.
+      parameters:
+        - $ref: '#/parameters/upgrade_preview'
+      responses:
+        200:
+          description: The request was successful.
   /_replicate:
     post:
       tags:
