@@ -17,7 +17,7 @@ This release introduces many new APIs including N1QL queries, full-text search a
 ## API Changes with Couchbase Lite 1.x
 
 - The 1.x [Manager](https://developer.couchbase.com/documentation/mobile/1.5/guides/couchbase-lite/native-api/manager/index.html) class has been removed. Top level configuration is now performed on the Database class as static methods.
-- The conflict resolution feature has been removed. When two conflicting changes occur, the conflict will be resolved using the default conflict resolver that ships with Couchbase Lite 2.0.
+- The custom conflict resolution feature has been removed. When two conflicting changes occur, the conflict will be resolved using the default conflict resolver that ships with Couchbase Lite 2.0.
 - The [iOS Models](https://developer.couchbase.com/documentation/mobile/1.5/guides/couchbase-lite/native-api/model/index.html) API has been removed in Couchbase Lite 2.0.
 - The [View](https://developer.couchbase.com/documentation/mobile/1.5/guides/couchbase-lite/native-api/view/index.html) query API has been removed and is replaced with the N1QL-like query syntax in Couchbase Lite 2.0.
 - The experimental Geo query API has been removed and is replaced with the N1QL-like query syntax in Couchbase Lite 2.0.
