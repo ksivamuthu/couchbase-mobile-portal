@@ -555,6 +555,8 @@ using(var ftsQueryResult = ftsQuery.Execute()) {
 
 In the example above, the pattern to  match is a word, the full-text search query matches all documents that contain the word 'buy' in the value of the `doc.name` property.
 
+Full-text search is supported in the following languages: danish, dutch, english, finnish, french, german, hungarian, italian, norwegian, portuguese, romanian, russian, spanish, swedish and turkish.
+
 It's very common to sort full-text results in descending order of relevance. This can be a very difficult heuristic to define, but Couchbase Lite comes with a fairly simple ranking function you can use. In the `OrderBy` array, use a string of the form `Rank(X)`, where `X` is the property or expression being searched, to represent the ranking of the result.
 
 ## Replication
