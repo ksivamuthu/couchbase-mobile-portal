@@ -3,8 +3,8 @@ layout: whatsnew
 features:
   - title: New API
     description: |
-      Couchbase Mobile 2.0 is a groundbreaking new release for Couchbase Mobile. We’ve re-imagined the developer experience with a cross-platform common core, new simplified API, and automated conflict resolution. In this release, we are bringing N1QL queries and full-text search capabilities to mobile.
-    links: 
+      Couchbase Mobile 2.0 is a groundbreaking new release for Couchbase Mobile. We’ve re-imagined the developer experience with a cross-platform common core, new simplified API, and automated conflict resolution. In this release, you will find the following new APIs: <ul><li>N1QL for Couchbase Lite</li><li>Full-Text Search for Couchbase Lite</li><li>WebSocket based replication protocol</li><li>Database Replicas</li></ul>
+    links:
       - name: Learn more
         value: 'couchbase-lite/index.html'
   - title: Travel Sample
