@@ -1,15 +1,58 @@
 ---
 layout: whatsnew
-features:
-  - title: New API
+cbl_features:
+  - title: N1QL for Couchbase Lite
     description: |
-      Couchbase Mobile 2.0 is a groundbreaking new release for Couchbase Mobile. We’ve re-imagined the developer experience with a cross-platform common core, new simplified API, and automated conflict resolution. In this release, you will find the following new APIs: <ul><li>N1QL for Couchbase Lite</li><li>Full-Text Search for Couchbase Lite</li><li>WebSocket based replication protocol</li><li>Database Replicas</li></ul>
+      Couchbase Lite 2.0 introduces a new Query API with semantics based on Couchbase Server's N1QL query language.
     links:
-      - name: Learn more
-        value: 'couchbase-lite/index.html'
+      - name: swift
+        value: couchbase-lite/swift.html#query
+      - name: android
+        value: couchbase-lite/java.html#query
+      - name: c#
+        value: couchbase-lite/csharp.html#query
+      - name: objective-c
+        value: couchbase-lite/objc.html#query
+  - title: WebSocket replication protocol
+    description: |
+      Couchbase Lite 2.0 uses a new replication protocol based on WebSockets. This protocol is designed to be faster and more efficient.
+    links:
+      - name: swift
+        value: couchbase-lite/swift.html#replication
+      - name: android
+        value: couchbase-lite/java.html#replication
+      - name: c#
+        value: couchbase-lite/csharp.html#replication
+      - name: objective-c
+        value: couchbase-lite/objc.html#replication
+  - title: Full-Text Search
+    description: |
+      This release includes the ability to run Full-Text Search queries on documents stored in the local database.
+    links:
+      - name: swift
+        value: couchbase-lite/swift.html#full-text-search
+      - name: android
+        value: couchbase-lite/java.html#full-text-search
+      - name: c#
+        value: couchbase-lite/csharp.html#full-text-search
+      - name: objective-c
+        value: couchbase-lite/objc.html#full-text-search
+  - title: Database Replicas
+    description: |
+      Replication between two local databases is now supported. This feature can be used for local incremental backups for example.
+    links:
+      - name: swift
+        value: couchbase-lite/swift.html#starting-a-replication
+      - name: android
+        value: couchbase-lite/java.html#starting-a-replication
+      - name: c#
+        value: couchbase-lite/csharp.html#starting-a-replication
+      - name: objective-c
+        value: couchbase-lite/objc.html#starting-a-replication
+other:
   - title: Travel Sample
     description: |
-      This application synchronizes documents with Sync Gateway 1.5 and Couchbase Server 5.0. Shared bucket access is enabled to allow web and mobile clients to perform the same operations on the bucket. It uses the Couchbase Lite 2.0 API that includes support for a N1QL like query interface and Full Text Search.
+      This application synchronizes documents with Sync Gateway 1.5 and Couchbase Server 5.0. Shared bucket access is enabled to allow web and mobile clients to perform the same operations on the bucket.
     links:
       - name: Start building
         value: 'http://docs.couchbase.com/tutorials/travel-sample/'
