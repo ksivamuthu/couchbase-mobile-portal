@@ -1,0 +1,74 @@
+<p>The table below summarizes the compatible versions of Couchbase Lite, Sync Gateway and Couchbase Server to use in production. Preview and beta versions should only be used for development and testing.</p>
+<style>
+  table td {
+    text-align: center;
+  }
+  table .nohover, table .nohover:hover {
+    background-color: white !important;
+  }
+</style>
+<table style="width: 100%;">
+  <tr>
+    <th colspan="1" class="nohover" style="border-top: none;border-left: none;"></th>
+    <th colspan="2">Couchbase Lite</th>
+    <th colspan="1" class="nohover" style="border-top: none;"></th>
+    <th colspan="5">Couchbase Server</th>
+  </tr>
+  <tr>
+    <th colspan="1" style="border-right: 1px solid black;">Sync Gateway</th>
+    <td>1.3</td>
+    <td>1.4</td>
+    <th colspan="1" style="border-left: 2px solid black;border-right: 1px solid black;">Sync Gateway</th>
+    <td>4.0</td>
+    <td>4.1</td>
+    <td>4.5</td>
+    <td>4.6</td>
+    <td>5.0</td>
+  </tr>
+  <tr>
+    <td style="border-right: 1px solid black;">1.3</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #f4c5c5">✖</td>
+    <td style="border-left: 2px solid black;border-right: 1px solid black;">1.3</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #f4c5c5">✖</td>
+  </tr>
+  <tr>
+    <td style="border-right: 1px solid black;">1.4</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="border-left: 2px solid black;border-right: 1px solid black;">1.4</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+  </tr>
+  <tr>
+    <td style="border-right: 1px solid black;">1.5</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="border-left: 2px solid black;border-right: 1px solid black;">1.5</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+  </tr>
+  <tr>
+    <td style="border-right: 1px solid black;">1.5 (<a href="../guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-enable_shared_bucket_access">xattrs enabled</a>)</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="background: #cef0ce">✔</td>
+    <td style="border-left: 2px solid black;border-right: 1px solid black;">1.5 (<a href="../guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-enable_shared_bucket_access">xattrs enabled</a>)</td>
+    <td style="background: #f4c5c5">✖</td>
+    <td style="background: #f4c5c5">✖</td>
+    <td style="background: #f4c5c5">✖</td>
+    <td style="background: #f4c5c5">✖</td>
+    <td style="background: #cef0ce">✔</td>
+  </tr>
+</table>
+<p>For all of the above, the Couchbase Server <a href="https://developer.couchbase.com/documentation/server/5.0/architecture/core-data-access-buckets.html#concept_qqk_4r2_xs">bucket type</a> must be <b>Couchbase</b>. Usage of <b>Ephemeral</b> and <b>Memcached</b> buckets with Couchbase Mobile is not supported.</p>
+<p><a href="https://developer.couchbase.com/documentation/mobile/2.0/whatsnew.html" target="_blank">Couchbase Lite 2.0 Developer Builds</a> should synchronize with a Sync Gateway 1.5 instance where the <a href="../guides/sync-gateway/config-properties/index.html#1.5/databases-foo_db-unsupported-replicator_2">new replication protocol</a> is enabled.</p>
