@@ -39,7 +39,7 @@ Comparing this to 1.x you can see we've traded some lower obsolete versions for 
 
 ## API References
 
-[`.NET SDK API References`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021)
+[`.NET SDK API References`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022)
 
 ## Database
 
@@ -51,7 +51,7 @@ As the top-level entity in the API, new databases can be created using the `Data
 var database = new Database("my-database");
 ```
 
-Just as before, the database will be created in a default location. Alternatively, the `Database(string name, DatabaseConfiguration config)` initializer can be used to provide specific options in the [`DatabaseConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_DatabaseConfiguration.htm) object such as the database directory, encryption key through the  object.
+Just as before, the database will be created in a default location. Alternatively, the `Database(string name, DatabaseConfiguration config)` initializer can be used to provide specific options in the [`DatabaseConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/T_Couchbase_Lite_DatabaseConfiguration.htm) object such as the database directory, encryption key through the  object.
 
 ###  Encryption
 
@@ -91,7 +91,7 @@ Database.SetLogLevel(LogDomain.Query, LogLevel.Verbose);
 
 If your app needs to sync a lot of data initially, but that data is fairly static and won't change much, it can be a lot more efficient to bundle a database in your application and install it on the first launch. Even if some of the content changes on the server after you create the app, the app's first pull replication will bring the database up to date.
 
-To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`Database.Copy(string, DatabaseConfiguration)`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/M_Couchbase_Lite_Database_Copy.htm) method as shown below.
+To use a prebuilt database, you need to set up the database, build the database into your app bundle as a resource, and install the database during the initial launch. After your app launches, it needs to check whether the database exists. If the database does not exist, the app should copy it from the app bundle using the [`Database.Copy(string, DatabaseConfiguration)`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/M_Couchbase_Lite_Database_Copy.htm) method as shown below.
 
 ```c#
 // assetPath is the path on the filesystem to the cblite2 folder
@@ -140,7 +140,7 @@ Changes to the document are persisted to the database when the `saveDocument` me
 
 ### Typed Accessors
 
-The `Document` class now offers a set of [`property accessors`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_DictionaryObject.htm) for various scalar types, including boolean, integers, floating-point and strings. These accessors take care of converting to/from JSON encoding, and make sure you get the type you're expecting: for example, `document.GetString(string key)` returns either a `String` or `null`, so you can't get an unexpected object class and crash trying to use it as a string. (Even if the property in the document has an incompatible type, the accessor returns `null`.)
+The `Document` class now offers a set of [`property accessors`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/T_Couchbase_Lite_DictionaryObject.htm) for various scalar types, including boolean, integers, floating-point and strings. These accessors take care of converting to/from JSON encoding, and make sure you get the type you're expecting: for example, `document.GetString(string key)` returns either a `String` or `null`, so you can't get an unexpected object class and crash trying to use it as a string. (Even if the property in the document has an incompatible type, the accessor returns `null`.)
 
 In addition, as a convenience we offer `DateTimeOffset` accessors. Dates are a common data type, but JSON doesn't natively support them, so the convention is to store them as strings in ISO-8601 format. The following example sets the date on the `createdAt` property and reads it back using the `document.GetDate(string key)` accessor method.
 
@@ -230,9 +230,9 @@ With the SELECT statement, you can query and manipulate JSON data. With projecti
 
 A SelectResult represents a single return value of the query statement. Documents in Couchbase Lite comprise of the document properties specified as a Dictionary of Key-Value pairs and associated metadata. The metadata consists of document Id and sequence Id associated with the Document. When you query for a document, the document metadata is not returned by default. You will need to explicitly query for the metadata.
 
-- [`SelectResult.All()`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_Query_SelectResult.htm): Returns all properties associated with a document.
-- `SelectResult(`[`Expression`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_Query_IExpression.htm)`.property("name"))`: Returns the `name` property associated with a document.
-- `SelectResult.expression(`[`Meta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_Query_Meta.htm)`.id`)`: Returns the document ID.
+- [`SelectResult.All()`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/T_Couchbase_Lite_Query_SelectResult.htm): Returns all properties associated with a document.
+- `SelectResult(`[`Expression`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/T_Couchbase_Lite_Query_IExpression.htm)`.property("name"))`: Returns the `name` property associated with a document.
+- `SelectResult.expression(`[`Meta`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/T_Couchbase_Lite_Query_Meta.htm)`.id`)`: Returns the document ID.
 - `SelectResult.expression(Expression.meta().sequence)`: Returns the sequence ID (used in replications).
 
 You can specify a comma separated list of `SelectResult` expressions in the select statement of your query. For instance the following select statement queries for the document `_id` as well as the `type` and `name` properties of all documents in the database. In the query result, we print the `_id` and `name` properties of each row using the property name getter method.
@@ -301,7 +301,7 @@ Similar to SQL, you can use the where clause to filter the documents to be retur
 
 #### Comparison
 
-The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Classes/Expression.html#/Comparison%20Operators) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
+The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/Classes/Expression.html#/Comparison%20Operators) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
 
 ```json
 {
@@ -326,7 +326,7 @@ using(var rows = query.Run()) {
 
 #### Collection Operators
 
-[Collection operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/Classes/Expression.html#/Collection%20operators:) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
+[Collection operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/Classes/Expression.html#/Collection%20operators:) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
 
 ```json
 {
@@ -355,7 +355,7 @@ using(var rows = query.Run()) {
 
 #### Like Operator
 
-The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/M_Couchbase_Lite_Query_IExpression_Like.htm) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
+The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/M_Couchbase_Lite_Query_IExpression_Like.htm) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
 
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
@@ -414,7 +414,7 @@ var query = Query.Select(
 
 #### Regex Operator
 
-The [`regex`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/M_Couchbase_Lite_Query_IExpression_Regex.htm) operator can be used for case sensitive matches. Similar to wildcard `like` expressions, `regex` expressions based pattern matching allow you to have some fuzziness in your search string.
+The [`regex`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/M_Couchbase_Lite_Query_IExpression_Regex.htm) operator can be used for case sensitive matches. Similar to wildcard `like` expressions, `regex` expressions based pattern matching allow you to have some fuzziness in your search string.
 
 In the example below, we are looking for documents of `type` "landmark" where the name property matches any string (on word boundaries) that begins with "eng" followed by exactly 4 wildcard characters and ending in the letter "r".
 The following query will return "landmark" type documents with name matching "Engine", "engine" and so on. Note that the `\b` specifies that the match must occur on word boundaries.
@@ -640,7 +640,7 @@ For platform specific installation instructions, refer to the Sync Gateway [inst
 
 ### Starting a Replication
 
-Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021/html/T_Couchbase_Lite_Sync_ReplicatorConfiguration.htm) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
+Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/T_Couchbase_Lite_Sync_ReplicatorConfiguration.htm) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
 
 ```c#
 var url = new Uri("ws://localhost:4984/db");
