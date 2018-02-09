@@ -15,7 +15,7 @@
 
 <block class="swift" />
 
-- Download the latest [developer build](../../whatsnew.html).
+- Download [Couchbase Lite 2.0](https://www.couchbase.com/downloads).
 - Drag **CouchbaseLiteSwift.framework** from your Finder to the Xcode navigator.
 - Click on Project > General > Embedded Binary and add **CouchbaseLiteSwift.framework** to this section.
 - Import the framework and start using it in your project.
@@ -27,7 +27,7 @@
 
 <block class="objc" />
 
-- Download the latest [developer build](../../whatsnew.html).
+- Download [Couchbase Lite 2.0](https://www.couchbase.com/downloads).
 - Drag **CouchbaseLite.framework** from your Finder to the Xcode navigator.
 - Click on Project > General > Embedded Binary and add **CouchbaseLite.framework** to this section.
 - Import the framework and start using it in your project.
@@ -44,7 +44,7 @@
 <block class="swift" />
 
 1. [Install Carthage](https://github.com/Carthage/Carthage#installing-carthage)
-2. Add `github "couchbase/couchbase-lite-ios" "2.0DB021"` to your **Cartfile**.
+2. Add `github "couchbase/couchbase-lite-ios" "2.0DB022"` to your **Cartfile**.
 3. Run `carthage update --platform ios`.
 4. Drag **CouchbaseLiteSwift.framework** from **Carthage/Build/** to the Xcode navigator.
 5. Click on Project > General > Embedded Binary and add **CouchbaseLiteSwift.framework** to this section.
@@ -52,7 +52,7 @@
 <block class="objc" />
 
 1. [Install Carthage](https://github.com/Carthage/Carthage#installing-carthage)
-2. Add `github "couchbase/couchbase-lite-ios" "2.0DB021"` to your Cartfile.
+2. Add `github "couchbase/couchbase-lite-ios" "2.0DB022"` to your Cartfile.
 3. Run `carthage update --platform ios`.
 4. Drag **CouchbaseLite.framework** from **Carthage/Build/** to the Xcode navigator.
 5. Click on Project > General > Embedded Binary and add **CouchbaseLite.framework** to this section.
@@ -69,7 +69,7 @@
     ```ruby
     target '<your target name>' do
       use_frameworks!
-      pod 'CouchbaseLiteSwift', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '2.0DB021', :submodules => true
+      pod 'CouchbaseLiteSwift', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '2.0DB022', :submodules => true
     end
     ```
 
@@ -87,7 +87,7 @@
     ```ruby
     target '<your target name>' do
       use_frameworks!
-      pod 'CouchbaseLite', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '2.0DB021', :submodules => true
+      pod 'CouchbaseLite', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '2.0DB022', :submodules => true
     end
     ```
 
@@ -122,50 +122,6 @@ Your app must call the relevant `Activate()` function inside of the class that i
 
 	```groovy
 	dependencies {
-		compile 'com.couchbase.lite:couchbase-lite-android:2.0.0-DB021'
+		compile 'com.couchbase.lite:couchbase-lite-android:2.0.0-DB022'
 	}
 	```
-
-<block class="all" />
-
-### Resources
-
-<block class="swift" />
-
-The API references for the Swift SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db021).
-
-#### Sample App
-
-The following tutorial is using the latest Developer Build to demonstrate some of the new features in the 2.0 API.
-
-<div class="dp">
-	<div class="tiles">
-		<div class="column size-1of2">
-			<div class="box">
-				<div class="container">
-					<a href="http://docs.couchbase.com/tutorials/travel-sample-mobile.html" taget="_blank">
-						<p style="text-align: center;">Travel Sample Mobile</p>
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<br/>
-<br/>
-
-<block class="objc" />
-
-The API references for the Objective-C SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db021).
-
-<block class="csharp" />
-
-The API references for the .NET SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021).
-
-<block class="java" />
-	
-The API references for the Java SDK are available [here](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db021).
-
-<block class="objc java" />
-
-The following sections cover the features that are implemented in the latest developer build. Additionally, the [tutorial app](https://github.com/couchbaselabs/mobile-training-todo/tree/feature/2.0) is incrementally updated to use the 2.0 API.
