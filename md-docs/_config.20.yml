@@ -22,12 +22,12 @@ swift_dev_build_download_link: https://packages.couchbase.com/releases/couchbase
 references:
   objc: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db022'
   swift: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db022'
-  csharp: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db021'
+  csharp: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022'
   java: 'http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db022'
 platform_support:
   ios: iOS 9.0+
   tvos: tvOS 9.0+
   android: Android 4.1+
   macos: macOS 10.11+
-  dotnet: .NET Core 1.0+ (.NET 4.6.1+), UWP, Xamarin iOS, Xamarin Android
+  dotnet: .NET Core 2.0+ (.NET 4.6.1+), UWP, Xamarin iOS, Xamarin Android
   java: Java 7,8
