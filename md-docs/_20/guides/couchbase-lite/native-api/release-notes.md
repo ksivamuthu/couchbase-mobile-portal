@@ -8,7 +8,7 @@ permalink: references/couchbase-lite/release-notes/index.html
 
 ## Deprecation notices
 
-⚠️ The new protocol is **incompatible** with CouchDB-based databases. And since Couchbase Lite 2 only supports the new protocol, you will need to run a version of Sync Gateway that supports it. Refer to the Couchbase Lite [Replication API](../../../couchbase-lite/index.html) on the platform of your choice to learn more.
+⚠️ The new protocol is **incompatible** with CouchDB-based databases. And since Couchbase Lite 2 only supports the new protocol, you will need to run a version of Sync Gateway that [supports it](index.html#compatibility-matrix).
 
 ## New Features
 
@@ -33,9 +33,9 @@ This release introduces many new APIs including N1QL queries, full-text search a
 - The [OpenID Connect](https://developer.couchbase.com/documentation/mobile/1.5/guides/authentication/openid/index.html) authenticator API has been removed but may be re-introduced in a later version of Couchbase Lite 2.x.
 - The [Listener](https://developer.couchbase.com/documentation/mobile/1.5/guides/couchbase-lite/native-api/peer-to-peer/index.html) component has been removed in Couchbase Lite 2.0. As a result, hybrid development frameworks such as Cordova and peer-to-peer replications are not supported in Couchbase Lite 2.0. Support for those features may be re-introduced in a later version of Couchbase Lite 2.x.
 
-<div class="dp">
-  <h2>Compatibility Matrix</h2>
+## Compatibility Matrix
 
+<div class="dp">
   {% include compat-matrix.html root='../../..' %}
 </div>
 
