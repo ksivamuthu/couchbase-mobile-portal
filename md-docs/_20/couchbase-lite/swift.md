@@ -334,7 +334,7 @@ The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/c
 let query = QueryBuilder
 	.select(SelectResult.all())
 	.from(DataSource.database(database))
-	.where(Expression.property("type").equalTo("hotel"))
+	.where(Expression.property("type").equalTo(Expression.string("hotel")))
 	.limit(10)
 
 do {
@@ -368,8 +368,8 @@ let query = QueryBuilder
 		SelectResult.expression(Expression.property("public_likes"))
 	)
 	.from(DataSource.database(database))
-	.where(Expression.property("type").equalTo("hotel")
-		.and(Function.arrayContains(Expression.property("public_likes"), value: "Armani Langworth"))
+	.where(Expression.property("type").equalTo(Expression.string("hotel"))
+                .and(ArrayFunction.contains(Expression.property("public_likes"), value: Expression.string("Armani Langworth")))
 	)
 
 do {
@@ -393,8 +393,8 @@ let query = QueryBuilder
 		SelectResult.expression(Expression.property("name"))
 	)
 	.from(DataSource.database(db))
-	.where(Expression.property("type").equalTo("landmark")
-		.and( Expression.property("name").like("Royal engineers museum"))
+	.where(Expression.property("type").equalTo(Expression.string("landmark"))
+                .and(Expression.property("name").like(Expression.string("eng%e%")))
 	)
 	.limit(10)
 
@@ -419,8 +419,8 @@ let query = QueryBuilder
 		SelectResult.expression(Expression.property("name"))
 	)
 	.from(DataSource.database(db))
-	.where(Expression.property("type").equalTo("landmark")
-		.and( Expression.property("name").like("eng%e%")))
+	.where(Expression.property("type").equalTo(Expression.string("landmark"))
+                .and(Expression.property("name").like(Expression.string("eng%e%")))
 	.limit(limit)
 ```
 
@@ -437,8 +437,8 @@ let query = QueryBuilder
 		SelectResult.expression(Expression.property("country")),
 		SelectResult.expression(Expression.property("name")))
 	.from(DataSource.database(db))
-	.where(Expression.property("type").equalTo("landmark")
-		.and(Expression.property("name").like("eng____r")))
+	.where(Expression.property("type").equalTo(Expression.string("landmark"))
+                .and(Expression.property("name").like(Expression.string("eng____r")))
 	.limit(limit)
 ```
 
@@ -456,8 +456,8 @@ let query = QueryBuilder
 		SelectResult.expression(Expression.property("name"))
 	)
 	.from(DataSource.database(db))
-	.where(Expression.property("type").equalTo("landmark")
-		.and(Expression.property("name").regex("\\bEng.*e\\b")))
+	.where(Expression.property("type").equalTo(Expression.string("landmark"))
+                .and(Expression.property("name").like(Expression.string("\\bEng.*e\\b")))
 	.limit(limit)
 ```
 
@@ -486,9 +486,9 @@ let query = QueryBuilder.select(
 	)
 )
 .where(
-	Expression.property("type").from("route").equalTo("route")
-	.and(Expression.property("type").from("airline").equalTo("airline"))
-	.and(Expression.property("sourceairport").from("route").equalTo("RIX"))
+	Expression.property("type").from("route").equalTo(Expression.string("route"))
+                    .and(Expression.property("type").from("airline").equalTo(Expression.string("airline")))
+                    .and(Expression.property("sourceairport").from("route").equalTo(Expression.string("RIX")))
 )
 ```
 
@@ -514,8 +514,8 @@ let query = QueryBuilder.select(
 	)
 	.from(DataSource.database(database))
 	.where(
-		Expression.property("type").equalTo("airport")
-				.and(Expression.property("geo.alt").greaterThanOrEqualTo(300))
+		Expression.property("type").equalTo(Expression.string("airport"))
+                    .and(Expression.property("geo.alt").greaterThanOrEqualTo(Expression.int(300)))
 	)
 	.groupBy(
 		Expression.property("country"),
@@ -547,7 +547,7 @@ let query = QueryBuilder
 		SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("title")))
 	.from(DataSource.database(database))
-	.where(Expression.property("type").equalTo("hotel"))
+	.where(Expression.property("type").equalTo(Expression.string("hotel")))
 	.orderBy(Ordering.property("title").ascending())
 	.limit(limit)
 ```
