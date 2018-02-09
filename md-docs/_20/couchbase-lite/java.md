@@ -23,7 +23,7 @@
 
 	```groovy
 	dependencies {
-		compile 'com.couchbase.lite:couchbase-lite-android:2.0.0-DB021'
+		compile 'com.couchbase.lite:couchbase-lite-android:2.0.0-DB022'
 	}
 	```
 
