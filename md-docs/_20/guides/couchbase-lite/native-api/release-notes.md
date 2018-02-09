@@ -47,8 +47,8 @@ This release introduces many new APIs including N1QL queries, full-text search a
 
 <block class="all" />
 
-- URI scheme update:
-	- The target URI scheme has changed from `blip://` (`blips://`) to `ws://` (`wss://`) respectively.
+- The new replication protocol is enabled by default in Sync Gateway 2.0.
+- The target URI scheme has changed from `blip://` (`blips://`) to `ws://` (`wss://`) respectively.
 
 <block class="net" />
 
