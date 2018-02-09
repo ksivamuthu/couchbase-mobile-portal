@@ -64,6 +64,7 @@ This release introduces many new APIs including N1QL queries, full-text search a
 - Bug fixes and performance improvement.
 
 <block class="java" />
+
 - API Updates:
     - Expression type safe API; new literal value based expression.
     - Renamed Query and Index factory class to QueryBuilder and IndexBuilder respectively.
