@@ -605,6 +605,8 @@ do {
 
 In the example above, the pattern to  match is a word, the full-text search query matches all documents that contain the word 'buy' in the value of the `doc.name` property.
 
+Full-text search is supported in the following languages: danish, dutch, english, finnish, french, german, hungarian, italian, norwegian, portuguese, romanian, russian, spanish, swedish and turkish.
+
 The pattern to match can also be in the following forms:
 
 - **prefix queries:** the query expression used to search for a term prefix is the prefix itself with a '*' character appended to it. For example:
@@ -655,8 +657,6 @@ The pattern to match can also be in the following forms:
 	-- Query for the set of documents that contains the term "linux", and at least
 	-- one of the phrases "couchbase database" and "sqlite library".
 	```
-
-Full-text search is supported in the following languages: danish, dutch, english, finnish, french, german, hungarian, italian, norwegian, portuguese, romanian, russian, spanish, swedish and turkish.
 
 ### Ordering results
 
