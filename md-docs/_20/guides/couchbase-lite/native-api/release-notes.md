@@ -36,7 +36,7 @@ This release introduces many new APIs including N1QL queries, full-text search a
 <div class="dp">
   <h2>Compatibility Matrix</h2>
 
-  {% include compat-matrix.html %}
+  {% include compat-matrix.html root='../../..' %}
 </div>
 
 <block class="all" />
