@@ -31,3 +31,6 @@ platform_support:
   macos: macOS 10.11+
   dotnet: .NET Core 2.0+ (.NET 4.6.1+), UWP, Xamarin iOS, Xamarin Android
   java: Java 7,8
+sg_download_link: 'http://packages.couchbase.com/releases/couchbase-sync-gateway/2.0.0-beta1/'
+sg_package_name: 'couchbase-sync-gateway-enterprise_2.0.0-beta1_x86_64'
+sg_accel_package_name: 'couchbase-sg-accel-centos_enterprise_2.0.0-beta1_x86_64'
