@@ -129,10 +129,10 @@ The following methods/initializers can be used:
 The following code example creates a document and persists it to the database.
 
 ```objectivec
-NSDictionary *dict = @{@"type": @"task",
-                      @"owner": @"todo",
-                      @"createdAt": [NSDate date]};
-CBLMutableDocument *newTask = [[CBLMutableDocument alloc] initWithData:dict];
+CBLMutableDocument *newTask = [[CBLMutableDocument alloc] init];
+[newTask setString:@"task" forKey:@"task"];
+[newTask setString:@"todo" forKey:@"owner"];
+[newTask setString:@"task" forKey:@"createdAt"];
 CBLDocument *saved = [database saveDocument:newTask error:&error];
 ```
 
@@ -141,9 +141,10 @@ CBLDocument *saved = [database saveDocument:newTask error:&error];
 By default, when a document is read from the database it is immutable. The `document.toMutable()` method should be used to create an instance of the document which can be updated.
 
 ```objectivec
-// newTask is a MutableDocument
-[newTask setString:@"apples" forKey:@"name"];
-[database saveDocument:newTask error:&error];
+CBLDocument *document = [database documentWithID:@"xyz"];
+CBLMutableDocument *mutableDocument = [document toMutable];
+[mutableDocument setString:@"apples" forKey:@"name"];
+[database saveDocument:mutableDocument error:&error];
 ```
 
 Changes to the document are persisted to the database when the `saveDocument` method is called.
