@@ -65,6 +65,8 @@ var dbConfig = new DatabaseConfiguration {
 Database = new Database("my-database", dbConfig);
 ```
 
+**NOTE**: Encryption is an Enterprise Edition only feature
+
 ### Migrating from 1.x Databases
 
 Databases that were created with Couchbase Mobile 1.2 or later can be read using the 2.0 API. Upon detecting it is a 1.x database file format, Couchbase Lite will automatically upgrade it to the new format used in 2.0. This feature is currently only available for the default storage type (i.e not for ForestDB databases).
@@ -215,7 +217,7 @@ The following example creates a new index for the `type` and `name` properties.
 ```
 
 ```csharp
-database.CreateIndex("TypeNameIndex", Index.ValueIndex().On(
+database.CreateIndex("TypeNameIndex", IndexBuilder.ValueIndex(
 	ValueIndexItem.Expression(Expression.Property("type")),
         ValueIndexItem.Expression(Expression.Property("name"))));
 ```
@@ -246,13 +248,13 @@ You can specify a comma separated list of `SelectResult` expressions in the sele
 ```
 
 ```csharp
-using(var query = Query.Select(SelectResult.Expression(Expression.Property("name")))
+using(var query = QueryBuilder.Select(SelectResult.Property("name"))
 	.From(DataSource.Database(database))
 	.Where(
-		Expression.Property("type").EqualTo("user")
-		.And(Expression.Property("admin").EqualTo(false))
+		Expression.Property("type").EqualTo(Expression.String("user"))
+		.And(Expression.Property("admin").EqualTo(Expression.Boolean(false)))
 	))
-using(var rows = query.Run()) {
+    var rows = query.Execute();
     foreach(var row in rows)
     {
 	Console.WriteLine($"user name :: ${row.GetString(0)}");
@@ -263,7 +265,7 @@ using(var rows = query.Run()) {
 The `SelectResult.all()` method can be used to query all the properties of a document. In this case, the document in the result is embedded in a dictionary where the key is the database name. The following snippet shows the same query using `SelectResult.all()` and the result in JSON.
 
 ```csharp
-var query = Query
+var query = QueryBuilder
     .Select(SelectResult.All())
     .From(DataSource.Database(database));
 ```
@@ -312,11 +314,11 @@ The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/c
 ```
 
 ```csharp
-using(var query = Query.Select(SelectResult.Expression(Expression.Property("name")))
+using(var query = QueryBuilder.Select(SelectResult.Property("name"))
 	.From(DataSource.Database(database))
-	.Where(Expression.Property("type").EqualTo("hotel"))
+	.Where(Expression.Property("type").EqualTo(Expression.String("hotel")))
 	.Limit(10))
-using(var rows = query.Run()) {
+    var rows = query.Execute());
     foreach(var row in rows)
     {
         Console.WriteLine($"user name :: ${row.GetString("name")}");
@@ -337,14 +339,14 @@ using(var rows = query.Run()) {
 ```
 
 ```csharp
-using(var query = Query.Select(
-        SelectResult.Expression(Expression.Meta().ID),
+using(var query = QueryBuilder.Select(
+        SelectResult.Expression(Meta.ID),
 	SelectResult.Expression(Expression.Property("name")),
 	SelectResult.Expression(Expression.Property("public_likes")))
 	.From(DataSource.Database(database))
-	.Where(Expression.Property("type").EqualTo("hotel")
-	    .And(Function.ArrayContains(Expression.Property("public_likes"), "Armani Langworth"))))
-using(var rows = query.Run()) {
+	.Where(Expression.Property("type").EqualTo(Expression.String("hotel"))
+	    .And(ArrayFunction.Contains(Expression.Property("public_likes"), Expression.String("Armani Langworth")))))
+    var rows = query.Execute();
     foreach(var row in rows)
     {
         // Serialize the array first to get meaningful string output
@@ -360,19 +362,19 @@ The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-net/db022/html/
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
 ```csharp
-using(var query = Query.Select(
-        SelectResult.Expression(Expression.Meta().ID),
+using(var query = QueryBuilder.Select(
+        SelectResult.Expression(Meta.ID),
 	SelectResult.Expression(Expression.Property("country")),
 	SelectResult.Expression(Expression.Property("name")))
 	.From(DataSource.Database(database))
-	.Where(Expression.Property("type").EqualTo("landmark")
-	    .And(Expression.Property("name").Like("Royal engineers museum")))
+	.Where(Expression.Property("type").EqualTo(Expression.String("landmark"))
+	    .And(Expression.Property("name").Like(Expression.String("Royal engineers museum"))))
 	.Limit(10))
-using(var rows = query.Run()) {
+    var rows = query.Execute();
     foreach(var row in rows)
     {
         // Serialize the array first to get meaningful string output
-        Console.WriteLine($"public_likes :: ${row.GetArray("public_likes")}");
+        Console.WriteLine($"name property :: ${row.GetString("name")}");
     }
 }
 ```
@@ -384,13 +386,13 @@ We can use `%` sign within a `like` expression to do a wildcard match against ze
 In the example below, we are looking for documents of `type` "landmark" where the name property matches any string that begins with "eng" followed by zero or more characters, the letter "e", followed by zero or more characters. The following query will return "landmark" type documents with name matching "Engineers", "engine", "english egg" , "England Eagle" and so on. Notice that the matches may span word boundaries.
 
 ```csharp
-var query = Query.Select(
-    SelectResult.Expression(Expression.Meta().ID)
+var query = QueryBuilder.Select(
+    SelectResult.Expression(Meta.ID)
     SelectResult.Expression(Expression.Property("country")),
     SelectResult.Expression(Expression.Property("name")))
 	.From(DataSource.Database(database))
-	.Where(Expression.Property("type").EqualTo("landmark")
-	    .And(Expression.Property("name").Like("eng%e%")))
+	.Where(Expression.Property("type").EqualTo(Expression.String("landmark"))
+	    .And(Expression.Property("name").Like(Expression.String("eng%e%"))))
 	.Limit(limit)
 ```
 
@@ -402,13 +404,13 @@ In the example below, we are looking for documents of type "landmark" where the 
 The following query will return "landmark" `type` documents with the `name` matching "Engineer", "engineer" and so on.
 
 ```csharp
-var query = Query.Select(
-    SelectResult.Expression(Expression.Meta().ID),
+var query = QueryBuilder.Select(
+    SelectResult.Expression(Meta.ID),
     SelectResult.Expression(Expression.Property("country")),
     SelectResult.Expression(Expression.Property("name")))
     .From(DataSource.Database(database))
-    .Where(Expression.Property("type").EqualTo("landmark")
-        .And(Expression.Property("name").Like("eng____r")))
+    .Where(Expression.Property("type").EqualTo(Expression.String("landmark"))
+        .And(Expression.Property("name").Like(Expression.String("eng____r"))))
     .Limit(limit))
 ```
 
@@ -420,12 +422,12 @@ In the example below, we are looking for documents of `type` "landmark" where th
 The following query will return "landmark" type documents with name matching "Engine", "engine" and so on. Note that the `\b` specifies that the match must occur on word boundaries.
 
 ```csharp
-var query = Query.Select(
-    SelectResult.Expression(Expression.Meta().ID),
-    SelectResult.Expression(Expression.Property("name")))
+var query = QueryBuilder.Select(
+    SelectResult.Expression(Meta.ID),
+    SelectResult.Expression(Expression.Property(Expression.String("name"))))
     .From(DataSource.Database(db))
-    .Where(Expression.Property("type").EqualTo("landmark")
-        .And(Expression.Property("name").Regex("\\bEng.*e\\b")))
+    .Where(Expression.Property("type").EqualTo(Expression.String("landmark"))
+        .And(Expression.Property("name").Regex(Expression.String("\\bEng.*e\\b"))))
     .Limit(limit))
 ```
 
@@ -436,7 +438,7 @@ The JOIN clause enables you to create new input objects by combining two or more
 The following example uses a JOIN clause to find the airline details which have routes that start from RIX. This example JOINS the document of type "route" with documents of type "airline" using the document ID (`_id`) on the "airline" document and  `airlineid` on the "route" document.
 
 ```csharp
-var query = Query.Select(
+var query = QueryBuilder.Select(
         SelectResult.Expression(Expression.Property("name").From("airline")),
         SelectResult.Expression(Expression.Property("callsign").From("airline")),
         SelectResult.Expression(Expression.Property("destinationairport").From("route")),
@@ -444,11 +446,11 @@ var query = Query.Select(
         SelectResult.Expression(Expression.Property("airline").From("route")))
     .From(DataSource.Database(database).As("airline"))
     .Joins(Join.DefaultJoin(DataSource.Database(database).As("route"))
-        .On(Expression.Meta().ID.From("airline").EqualTo(Expression.Property("airlineid").From("route"))))
+        .On(Meta.ID.From("airline").EqualTo(Expression.Property("airlineid").From("route"))))
     .Where(
-        Expression.Property("type").From("route").EqualTo("route")
-	    .And(Expression.Property("type").From("airline").EqualTo("airline"))
-	    .And(Expression.Property("sourceairport").From("route").EqualTo("RIX")))
+        Expression.Property("type").From("route").EqualTo(Expression.String("route"))
+	    .And(Expression.Property("type").From("airline").EqualTo(Expression.String("airline")))
+	    .And(Expression.Property("sourceairport").From("route").EqualTo(Expression.String("RIX"))))
 ```
 
 ### GROUP BY statement
@@ -466,18 +468,17 @@ You can perform further processing on the data in your result set before the fin
 ```
 
 ```csharp
-using(var query = Query.Select(
-        SelectResult.Expression(Function.Count("*")),
+using(var query = QueryBuilder.Select(
+        SelectResult.Expression(Function.Count(Expression.All())),
 	SelectResult.Expression(Expression.Property("country")),
 	SelectResult.Expression(Expression.Property("tz")))
     .From(DataSource.Database(database))
     .Where(
-        Expression.Property("type").EqualTo("airport")
+        Expression.Property("type").EqualTo(Expression.String("airport"))
 	    .And(Expression.Property("geo.alt").GreaterThanOrEqualTo(300)))
     .GroupBy(
         Expression.Property("country"),
-	Expression.Property("tz")))
-using(var rows = query.Run()) {
+    var rows = query.Execute();
     foreach(var row in rows) {
         Console.WriteLine($"There are {row.GetInt("$1")} airports on the {row.GetString("tz")} timezone located in " +
 	    $"{row.GetString("country")} and above 300 ft");
@@ -498,11 +499,11 @@ There are 123 airports on the America/Denver timezone located in United States a
 It is possible to sort the results of a query based on a given expression result. The example below returns documents of type equal to "hotel" sorted in ascending order by the value of the title property.
 
 ```csharp
-var query = Query.Select(
-        SelectResult.Expression(Expression.Meta().ID),
+var query = QueryBuilder.Select(
+        SelectResult.Expression(Meta.ID),
 	SelectResult.Expression(Expression.Property("title")))
     .From(DataSource.Database(database))
-    .Where(Expression.Property("type").EqualTo("hotel"))
+    .Where(Expression.Property("type").EqualTo(Expression.String("hotel")))
     .OrderBy(Ordering.Property("title").Ascending())
     .Limit(limit);
 ```
@@ -533,20 +534,20 @@ foreach(var task in tasks) {
 }
 
 // Create index
-database.CreateIndex("nameFTSIndex", Index.FullTextIndex(FullTextIndexItem.Property("name")).IgnoreAccents(false));
+database.CreateIndex("nameFTSIndex", IndexBuilder.FullTextIndex(FullTextIndexItem.Property("name")).IgnoreAccents(false));
 ```
 
-Multiple properties to index can be specified in the `Index.FullTextIndex(params FullTextIndexItem[] items)` method.
+Multiple properties to index can be specified in the `IndexBuilder.FullTextIndex(params FullTextIndexItem[] items)` method.
 
 With the index created, an FTS query on the property that is being indexed can be constructed and ran. The full-text search criteria is defined as a `FullTextExpression`. The left-hand side is the full-text index to use and the right-hand side is the pattern to match.
 
 ```c#
 var whereClause = FullTextExpression.Index("nameFTSIndex").Match("'buy'");
-var ftsQuery = Query.Select(SelectResult.Expression(Meta.ID))
+var ftsQuery = QueryBuilder.Select(SelectResult.Expression(Meta.ID))
                   .From(DataSource.Database(database))
                   .Where(whereClause);
 
-using(var ftsQueryResult = ftsQuery.Execute()) {
+    var ftsQueryResult = ftsQuery.Execute();
     foreach(var row in ftsQueryResult) {
 	Console.WriteLine($"document properties ${row.GetString(0)}");
     }
