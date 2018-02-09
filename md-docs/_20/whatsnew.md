@@ -11,6 +11,8 @@ cbl_features:
         value: couchbase-lite/java.html#query
       - name: c#
         value: couchbase-lite/csharp.html#query
+      - name: objective-c
+        value: couchbase-lite/objc.html#query
   - title: WebSocket replication protocol
     description: |
       Couchbase Lite 2.0 uses a new replication protocol based on WebSockets. This protocol is designed to be faster and more efficient.
@@ -21,6 +23,8 @@ cbl_features:
         value: couchbase-lite/java.html#replication
       - name: c#
         value: couchbase-lite/csharp.html#replication
+      - name: objective-c
+        value: couchbase-lite/objc.html#replication
   - title: Full-Text Search
     description: |
       This release includes the ability to run Full-Text Search queries on documents stored in the local database.
@@ -31,6 +35,8 @@ cbl_features:
         value: couchbase-lite/java.html#full-text-search
       - name: c#
         value: couchbase-lite/csharp.html#full-text-search
+      - name: objective-c
+        value: couchbase-lite/objc.html#full-text-search
   - title: Database Replicas
     description: |
       Replication between two local databases is now supported. This feature can be used for local incremental backups for example.
@@ -41,6 +47,8 @@ cbl_features:
         value: couchbase-lite/java.html#starting-a-replication
       - name: c#
         value: couchbase-lite/csharp.html#starting-a-replication
+      - name: objective-c
+        value: couchbase-lite/objc.html#starting-a-replication
 sg_features:
   - title: No Conflicts Mode
     description: |
