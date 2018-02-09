@@ -66,9 +66,8 @@ Just as before, the database will be created in a default location. Alternativel
 The following example demonstrates how to create a database with an encryption key (or open an existing one).
 
 ```objectivec
-CBLDatabaseConfiguration *config = [[CBLDatabaseConfiguration alloc] initWithBlock:^(CBLDatabaseConfigurationBuilder *builder) {
-	[builder setEncryptionKey:[[CBLEncryptionKey alloc] initWithPassword:@"secretpassword"]];
-}];
+CBLDatabaseConfiguration *config = [[CBLDatabaseConfiguration alloc] init];
+config.encryptionKey = [[CBLEncryptionKey alloc] initWithPassword:@"secretpassword"];
 
 NSError *error;
 CBLDatabase *database = [[CBLDatabase alloc] initWithName:@"my-database" config: config error:&error];
@@ -228,7 +227,7 @@ The following example creates a new index for the `type` and `name` properties.
 ```objectivec
 CBLValueIndexItem *type = [CBLValueIndexItem property:@"type"];
 CBLValueIndexItem *name = [CBLValueIndexItem property:@"name"];
-CBLIndex *index = [CBLIndex valueIndexWithItems:@[type, name]];
+CBLIndex* index = [CBLIndexBuilder valueIndexWithItems:@[type, name]];
 [database createIndex:index withName:@"TypeNameIndex" error:&error];
 ```
 
@@ -259,10 +258,10 @@ You can specify a comma separated list of `SelectResult` expressions in the sele
 
 ```objectivec
 CBLQuerySelectResult *name = [CBLQuerySelectResult property:@"name"];
-CBLQuery *query = [CBLQuery select:@[name]
-                              from:[CBLQueryDataSource database:database]
-                             where:[[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"user"]] andExpression:
-                                    [[CBLQueryExpression property:@"admin"] equalTo:[CBLQueryExpression boolean:NO]]]];
+CBLQuery *query = [CBLQueryBuilder select:@[name]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"user"]] andExpression:
+                                           [[CBLQueryExpression property:@"admin"] equalTo:[CBLQueryExpression boolean:NO]]]];
 
 NSEnumerator* rs = [query execute:&error];
 for (CBLQueryResult *result in rs) {
@@ -273,8 +272,8 @@ for (CBLQueryResult *result in rs) {
 The `SelectResult.all()` method can be used to query all the properties of a document. In this case, the document in the result is embedded in a dictionary where the key is the database name. The following snippet shows the same query using `SelectResult.all()` and the result in JSON.
 
 ```objectivec
-CBLQuery *query = [CBLQuery select:@[[CBLQuerySelectResult all]]
-                              from:[CBLQueryDataSource database:database]];
+CBLQuery *query = [CBLQueryBuilder select:@[[CBLQuerySelectResult all]]
+                                     from:[CBLQueryDataSource database:database]];
 ```
 
 ```json
@@ -321,11 +320,11 @@ The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/c
 ```
 
 ```objectivec
-CBLQuery *query = [CBLQuery select:@[[CBLQuerySelectResult all]]
-                              from:[CBLQueryDataSource database:database]
-                             where:[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression string:@"hotel"]]
-                           groupBy:nil having:nil orderBy:nil
-                             limit:[CBLQueryLimit limit:[CBLQueryExpression integer:10]]];
+CBLQuery *query = [CBLQueryBuilder select:@[[CBLQuerySelectResult all]]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression string:@"hotel"]]
+                                  groupBy:nil having:nil orderBy:nil
+                                    limit:[CBLQueryLimit limit:[CBLQueryExpression integer:10]]];
 
 NSEnumerator* rs = [query execute:&error];
 for (CBLQueryResult *result in rs) {
@@ -357,9 +356,9 @@ CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQu
 CBLQueryExpression *contains = [CBLQueryArrayFunction contains:[CBLQueryExpression property:@"public_likes"]
                                                          value:[CBLQueryExpression string:@"Armani Langworth"]];
 
-CBLQuery *query = [CBLQuery select:@[id, name, likes]
-                              from:[CBLQueryDataSource database:database]
-                             where:[type andExpression: contains]];
+CBLQuery *query = [CBLQueryBuilder select:@[id, name, likes]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[type andExpression: contains]];
 
 NSEnumerator* rs = [query execute:&error];
 for (CBLQueryResult *result in rs) {
@@ -381,9 +380,9 @@ CBLQuerySelectResult *name = [CBLQuerySelectResult property:@"name"];
 CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"landmark"]];
 CBLQueryExpression *like = [[CBLQueryExpression property:@"name"] like:[CBLQueryExpression value:@"Royal engineers museum"]];
 
-CBLQuery *query = [CBLQuery select:@[id, country, name]
-                              from:[CBLQueryDataSource database:database]
-                             where:[type andExpression: like]];
+CBLQuery *query = [CBLQueryBuilder select:@[id, country, name]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[type andExpression: like]];
 
 NSEnumerator* rs = [query execute:&error];
 for (CBLQueryResult *result in rs) {
@@ -407,11 +406,11 @@ CBLQueryExpression *like = [[CBLQueryExpression property:@"name"] like:[CBLQuery
 
 CBLQueryLimit *limit = [CBLQueryLimit limit:[CBLQueryExpression integer:10]];
 
-CBLQuery *query = [CBLQuery select:@[id, country, name]
-                              from:[CBLQueryDataSource database:database]
-                             where:[type andExpression: like]
-                           groupBy:nil having:nil orderBy:nil
-                             limit:limit];
+CBLQuery *query = [CBLQueryBuilder select:@[id, country, name]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[type andExpression: like]
+                                  groupBy:nil having:nil orderBy:nil
+                                    limit:limit];
 ```
 
 ##### Wildcard Character Match
@@ -431,11 +430,11 @@ CBLQueryExpression *like = [[CBLQueryExpression property:@"name"] like:[CBLQuery
 
 CBLQueryLimit *limit = [CBLQueryLimit limit:[CBLQueryExpression integer:10]];
 
-CBLQuery *query = [CBLQuery select:@[id, country, name]
-                              from:[CBLQueryDataSource database:database]
-                             where:[type andExpression: like]
-                           groupBy:nil having:nil orderBy:nil
-                             limit:limit];
+CBLQuery *query = [CBLQueryBuilder select:@[id, country, name]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[type andExpression: like]
+                                  groupBy:nil having:nil orderBy:nil
+                                    limit:limit];
 ```
 
 #### Regex Match
@@ -454,11 +453,11 @@ CBLQueryExpression *regex = [[CBLQueryExpression property:@"name"] regex:[CBLQue
 
 CBLQueryLimit *limit = [CBLQueryLimit limit:[CBLQueryExpression integer:10]];
 
-CBLQuery *query = [CBLQuery select:@[id, name]
-                              from:[CBLQueryDataSource database:database]
-                             where:[type andExpression: regex]
-                           groupBy:nil having:nil orderBy:nil
-                             limit:limit];
+CBLQuery *query = [CBLQueryBuilder select:@[id, name]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[type andExpression: regex]
+                                  groupBy:nil having:nil orderBy:nil
+                                    limit:limit];
 ```
 
 ### JOIN statement
@@ -481,10 +480,10 @@ CBLQueryExpression *typeRoute = [[CBLQueryExpression property:@"type" from:@"rou
 CBLQueryExpression *typeAirline = [[CBLQueryExpression property:@"type" from:@"airline"] equalTo:[CBLQueryExpression value:@"airline"]];
 CBLQueryExpression *sourceRIX = [[CBLQueryExpression property:@"sourceairport" from:@"route"] equalTo:[CBLQueryExpression value:@"RIX"]];
 
-CBLQuery *query = [CBLQuery select:@[name, callsign, dest, stops, airline]
-                              from:[CBLQueryDataSource database:database as:@"airline"]
-                              join:@[join]
-                             where:[[typeRoute andExpression:typeAirline] andExpression:sourceRIX]];
+CBLQuery *query = [CBLQueryBuilder select:@[name, callsign, dest, stops, airline]
+                                     from:[CBLQueryDataSource database:database as:@"airline"]
+                                     join:@[join]
+                                    where:[[typeRoute andExpression:typeAirline] andExpression:sourceRIX]];
 ```
 
 ### GROUP BY statement
@@ -509,11 +508,11 @@ CBLQuerySelectResult *tz = [CBLQuerySelectResult property:@"tz"];
 CBLQueryExpression *type = [[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"airport"]];
 CBLQueryExpression *geoAlt = [[CBLQueryExpression property:@"geo.alt"] greaterThanOrEqualTo:[CBLQueryExpression integer:300]];
 
-CBLQuery *query = [CBLQuery select:@[count, country, tz]
-                              from:[CBLQueryDataSource database:database]
-                             where:[type andExpression: geoAlt]
-                           groupBy:@[[CBLQueryExpression property:@"country"],
-                                     [CBLQueryExpression property:@"tz"]]];
+CBLQuery *query = [CBLQueryBuilder select:@[count, country, tz]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[type andExpression: geoAlt]
+                                  groupBy:@[[CBLQueryExpression property:@"country"],
+                                            [CBLQueryExpression property:@"tz"]]];
 ```
 
 ```text
@@ -532,10 +531,10 @@ It is possible to sort the results of a query based on a given expression result
 CBLQuerySelectResult *id = [CBLQuerySelectResult expression:[CBLQueryMeta id]];
 CBLQuerySelectResult *title = [CBLQuerySelectResult property:@"title"];
 
-CBLQuery *query = [CBLQuery select:@[id, title]
-                              from:[CBLQueryDataSource database:database]
-                             where:[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"hotel"]]
-                           orderBy:@[[[CBLQueryOrdering property:@"title"] descending]]];
+CBLQuery *query = [CBLQueryBuilder select:@[id, title]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:[[CBLQueryExpression property:@"type"] equalTo:[CBLQueryExpression value:@"hotel"]]
+                                  orderBy:@[[[CBLQueryOrdering property:@"title"] descending]]];
 ```
 
 ```text
@@ -563,10 +562,8 @@ for (NSString *task in tasks) {
 }
 
 // Create index
-CBLFullTextIndexOptions *options = [[CBLFullTextIndexOptions alloc] init];
-options.ignoreAccents = NO;
-CBLIndex *index = [CBLIndex fullTextIndexWithItems:@[[CBLFullTextIndexItem property:@"name"]]
-                                           options:options];
+CBLFullTextIndex *index = [CBLIndexBuilder fullTextIndexWithItems:@[[CBLFullTextIndexItem property:@"name"]]];
+index.ignoreAccents = NO;
 [database createIndex:index withName:@"nameFTSIndex" error:&error];
 ```
 
@@ -576,9 +573,9 @@ With the index created, an FTS query on the property that is being indexed can b
 
 ```objectivec
 CBLQueryExpression *where = [[CBLQueryFullTextExpression indexWithName:@"nameFTSIndex"] match:@"'buy'"];
-CBLQuery *query = [CBLQuery select:@[[CBLQuerySelectResult expression:[CBLQueryMeta id]]]
-                              from:[CBLQueryDataSource database:database]
-                             where:where];
+CBLQuery *query = [CBLQueryBuilder select:@[[CBLQuerySelectResult expression:[CBLQueryMeta id]]]
+                                     from:[CBLQueryDataSource database:database]
+                                    where:where];
 
 NSEnumerator* rs = [query execute:&error];
 for (CBLQueryResult *result in rs) {
@@ -672,11 +669,8 @@ Replication objects are now bidirectional, this means you can start a `push`/`pu
 ```objectivec
 NSURL *url = [NSURL URLWithString:@"ws://localhost:4984/db"];
 CBLURLEndpoint *target = [[CBLURLEndpoint alloc] initWithURL: url];
-CBLReplicatorConfiguration *config = [[CBLReplicatorConfiguration alloc] initWithDatabase:database
-                                                                                   target:target
-                                                                                    block:^(CBLReplicatorConfigurationBuilder *builder) {
-    builder.replicatorType = kCBLReplicatorPull;
-}];
+CBLReplicatorConfiguration *config = [[CBLReplicatorConfiguration alloc] initWithDatabase:database target:target];
+config.replicatorType = kCBLReplicatorTypePull;			       
 CBLReplicator *replicator = [[CBLReplicator alloc] initWithConfig:config];
 [replicator start];
 ```
@@ -742,12 +736,9 @@ On the Couchbase Lite side, the replication must be configured with the `cert.ce
 
 ```objectivec
 NSData *data = [self dataFromResource: @"cert" ofType: @"cer"];
-SecCertificateRef certificate = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)data);
-CBLReplicatorConfiguration *config = [[CBLReplicatorConfiguration alloc] initWithDatabase:database
-                                                                                   target:target
-                                                                                    block:^(CBLReplicatorConfigurationBuilder *builder) {
-                                                                                        builder.pinnedServerCertificate = certificate;
-                                                                                    }];
+SecCertificateRef cert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)data);
+CBLReplicatorConfiguration *config = [[CBLReplicatorConfiguration alloc] initWithDatabase:database target:target];
+config.pinnedServerCertificate = (SecCertificateRef)CFAutorelease(cert);
 ```
 
 This example loads the certificate from the application sandbox, then converts it to the appropriate type to configure the replication object.
