@@ -54,6 +54,22 @@ This release introduces many new APIs including N1QL queries, full-text search a
 
 - More API changes to conform to internal spec (in other words, to have as close to the same signatures as Java and Swift as possible).  The final review has been completed and there are no more anticipated changes.  See [Issue 941](https://github.com/couchbase/couchbase-lite-net/issues/941) for a list of most of the changes
 
+<block class="objc swift" />
+
+- API Updates:
+    - Expression type safe API; new literal value based expression.
+    - Removed CBLFullTextIndexOptions and moved all of CBLFullTextIndexOptions's properties into CBLFullTextIndex.
+    - Renamed Query and Index factory class to QueryBuilder and IndexBuilder respectively.
+    - Cleaned up Swift API function labels.
+- Bug fixes and performance improvement.
+
+<block class="java" />
+- API Updates:
+    - Expression type safe API; new literal value based expression.
+    - Renamed Query and Index factory class to QueryBuilder and IndexBuilder respectively.
+    - Cleaned up Swift API function labels.
+- Bug fixes and performance improvement.
+
 <block class="all" />
 
 ### Developer build 21
