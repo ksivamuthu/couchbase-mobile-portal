@@ -117,11 +117,11 @@ The following methods/initializers can be used:
 The following code example creates a document and persists it to the database.
 
 ```java
-Map<String, Object> dict = new HashMap<>();
-dict.put("type", "task");
-dict.put("owner", "todo");
-dict.put("createdAt", new Date());
-MutableDocument newTask = new MutableDocument(dict);
+MutableDocument newTask = new MutableDocument();
+newTask.setString("type", "task");
+newTask.setString("owner", "todo");
+newTask.setDate("createdAt", new Date());
+
 try {
     database.save(newTask);
 } catch (CouchbaseLiteException e) {
@@ -134,12 +134,13 @@ try {
 By default, when a document is read from the database it is immutable. The `document.toMutable()` method should be used to create an instance of the document which can be updated.
 
 ```java
-// newTask is a MutableDocument
-newTask.setString("name", "apples");
+Document document = database.getDocument("xyz");
+MutableDocument mutableDocument = document.toMutable();
+mutableDocument.setString("name", "apples");
 try {
-    database.save(newTask);
+	database.save(mutableDocument);
 } catch (CouchbaseLiteException e) {
-    Log.e(TAG, e.toString());
+	Log.e(TAG, e.toString());
 }
 ```
 
