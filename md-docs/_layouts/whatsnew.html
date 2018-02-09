@@ -43,7 +43,15 @@ layout: docs
     <h2>Sync Gateway</h2>
   {% endif %}
   <div class="box-container">
-
+    {% for feature in page.sg_features %}
+    <div class="box">
+      <h3>{{ feature.title }}</h3>
+      <p>{{ feature.description }}</p>
+      {% for link in feature.links %}
+      <a href="{{ link.value }}">{{ link.name }}</a>{% if forloop.last == false %} |{% endif %}
+      {% endfor %}
+    </div>
+    {% endfor %}
   </div>
   {% if page.other %}
     <h2>Example & Release Notes</h2>
