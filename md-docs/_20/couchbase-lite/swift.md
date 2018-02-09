@@ -31,7 +31,7 @@
     ```ruby
     target '<your target name>' do
       use_frameworks!
-      pod 'CouchbaseLiteSwift', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '2.0DB021', :submodules => true
+      pod 'CouchbaseLiteSwift', :git => 'https://github.com/couchbase/couchbase-lite-ios.git', :tag => '2.0DB022', :submodules => true
     end
     ```
 
