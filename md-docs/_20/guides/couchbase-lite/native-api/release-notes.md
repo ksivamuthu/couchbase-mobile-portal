@@ -28,6 +28,12 @@ This release introduces many new APIs including N1QL queries, full-text search a
 - The 1.x Attachment API has been renamed to Blob but the functionality remains the same.
 - The 1.x `Database.inTransaction` method has been renamed to `Database.inBatch` to emphasize that Couchbase Lite does not offer transactional guarantees, and that the purpose of the method is to optimize batch operations rather than to enable ACID transactions.
 
+<div class="dp">
+  <h2>Compatibility Matrix</h2>
+
+  {% include compat-matrix.html %}
+</div>
+
 ## Known Issues
 
 - The [OpenID Connect](https://developer.couchbase.com/documentation/mobile/1.5/guides/authentication/openid/index.html) authenticator API has been removed but may be re-introduced in a later version of Couchbase Lite 2.x.
