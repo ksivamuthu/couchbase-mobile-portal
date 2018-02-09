@@ -37,6 +37,14 @@ This release introduces many new APIs including N1QL queries, full-text search a
 
 ## Incremental API Changes
 
+### Developer build 22
+
+<block class="net" />
+
+- More API changes to conform to internal spec (in other words, to have as close to the same signatures as Java and Swift as possible).  The final review has been completed and there are no more anticipated changes.  See [Issue 941](https://github.com/couchbase/couchbase-lite-net/issues/941) for a list of most of the changes
+
+<block class="all" />
+
 ### Developer build 21
 
 <block class="objc swift" />
