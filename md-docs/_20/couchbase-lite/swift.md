@@ -66,9 +66,9 @@ Just as before, the database will be created in a default location. Alternativel
 The following example demonstrates how to create a database with an encryption key (or open an existing one).
 
 ```swift
-var dbConfig = DatabaseConfiguration()
-dbConfig.encryptionKey = EncryptionKey.password("secretpassword")
-self.database = try Database(name: "my-database", config: dbConfig)
+let config = DatabaseConfiguration()
+config.encryptionKey = EncryptionKey.password("secretpassword")
+self.database = try Database(name: "my-database", config: config)
 ```
 
 Encryption is available in the Enterprise Edition only.
@@ -130,7 +130,7 @@ let newTask = MutableDocument()
 		.setString("task", forKey: "type")
 		.setString("todo", forKey: "owner")
 		.setDate(Date(), forKey: "createdAt")
-try? database.saveDocument(newTask)
+try database.saveDocument(newTask)
 ```
 
 ### Mutability
@@ -141,7 +141,7 @@ By default, when a document is read from the database it is immutable. The `docu
 guard let document = database.document(withID: "xyz") else { return }
 let mutableDocument = document.toMutable()
 mutableDocument.setString("apples", forKey: "name")
-try? database.saveDocument(mutableDocument)
+try database.saveDocument(mutableDocument)
 ```
 
 Changes to the document are persisted to the database when the `saveDocument` method is called.
@@ -188,7 +188,7 @@ We've renamed "attachments" to "blobs", for clarity. The new behavior should be 
 let appleImage = UIImage(named: "avatar.jpg")!
 let imageData = UIImageJPEGRepresentation(appleImage, 1)!
 
-let blob = Blob(contentType: "image/jpg", data: imageData)
+let blob = Blob(contentType: "image/jpeg", data: imageData)
 newTask.setBlob(blob, forKey: "avatar")
 try? database.save(newTask)
 
@@ -229,10 +229,10 @@ The following example creates a new index for the `type` and `name` properties.
 ```
 
 ```swift
-database.createIndex(Index.valueIndex().on(
-                ValueIndexItem.expression(Expression.property("type")),
-                ValueIndexItem.expression(Expression.property("name"))),
-         withName: "TypeNameIndex")
+let index = IndexBuilder.valueIndex(items:
+            ValueIndexItem.expression(Expression.property("type")),
+            ValueIndexItem.expression(Expression.property("name")))
+try database.createIndex(index, withName: "TypeNameIndex")
 ```
 
 If there are multiple expressions, the first one will be the primary key, the second the secondary key, etc.
@@ -261,7 +261,7 @@ You can specify a comma separated list of `SelectResult` expressions in the sele
 ```
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(
 		SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("type")),
@@ -282,7 +282,7 @@ do {
 The `SelectResult.all()` method can be used to query all the properties of a document. In this case, the document in the result is embedded in a dictionary where the key is the database name. The following snippet shows the same query using `SelectResult.all()` and the result in JSON.
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(SelectResult.all())
 	.from(DataSource.database(database))
 ```
@@ -331,7 +331,7 @@ The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/c
 ```
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(SelectResult.all())
 	.from(DataSource.database(database))
 	.where(Expression.property("type").equalTo("hotel"))
@@ -361,7 +361,7 @@ do {
 ```
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(
 		SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("name")),
@@ -386,7 +386,7 @@ The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db022/Cla
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(
 		SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("country")),
@@ -412,7 +412,7 @@ We can use `%` sign within a `like` expression to do a wildcard match against ze
 In the example below, we are looking for documents of `type` "landmark" where the name property matches any string that begins with "eng" followed by zero or more characters, the letter "e", followed by zero or more characters. The following query will return "landmark" type documents with name matching "Engineers", "engine", "english egg" , "England Eagle" and so on. Notice that the matches may span word boundaries.
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(
 		SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("country")),
@@ -432,7 +432,7 @@ In the example below, we are looking for documents of type "landmark" where the 
 The following query will return "landmark" `type` documents with the `name` matching "Engineer", "engineer" and so on.
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("country")),
 		SelectResult.expression(Expression.property("name")))
@@ -450,7 +450,7 @@ In the example below, we are looking for documents of `type` "landmark" where th
 The following query will return "landmark" type documents with name matching "Engine", "engine" and so on. Note that the `\b` specifies that the match must occur on word boundaries.
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(
 		SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("name"))
@@ -468,7 +468,7 @@ The JOIN clause enables you to create new input objects by combining two or more
 The following example uses a JOIN clause to find the airline details which have routes that start from RIX. This example JOINS the document of type "route" with documents of type "airline" using the document ID (`_id`) on the "airline" document and  `airlineid` on the "route" document.
 
 ```swift
-let query = Query.select(
+let query = QueryBuilder.select(
 	SelectResult.expression(Expression.property("name").from("airline")),
 	SelectResult.expression(Expression.property("callsign").from("airline")),
 	SelectResult.expression(Expression.property("destinationairport").from("route")),
@@ -507,7 +507,7 @@ You can perform further processing on the data in your result set before the fin
 ```
 
 ```swift
-let query = Query.select(
+let query = QueryBuilder.select(
 	SelectResult.expression(Function.count("*")),
 	SelectResult.expression(Expression.property("country")),
 	SelectResult.expression(Expression.property("tz"))
@@ -542,7 +542,7 @@ There are 123 airports on the America/Denver timezone located in United States a
 It is possible to sort the results of a query based on a given expression result. The example below returns documents of type equal to "hotel" sorted in ascending order by the value of the title property.
 
 ```swift
-let query = Query
+let query = QueryBuilder
 	.select(
 		SelectResult.expression(Expression.meta().id),
 		SelectResult.expression(Expression.property("title")))
@@ -579,7 +579,8 @@ for task in tasks {
 
 // Create index
 do {
-	try database.createIndex(Index.fullTextIndex(withItems: FullTextIndexItem.property("name")).ignoreAccents(false), withName: "nameFTSIndex")
+	let index = IndexBuilder.fullTextIndex(items: FullTextIndexItem.property("name")).ignoreAccents(false)
+        try database.createIndex(index, withName: "nameFTSIndex")
 } catch let error {
 	print(error.localizedDescription)
 }
