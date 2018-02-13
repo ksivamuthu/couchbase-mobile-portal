@@ -27,6 +27,14 @@
 	}
 	```
 
+### Supported Versions
+
+| Platform         | Runtime architectures | Minimum API Level |
+| ---------------- | --------------------- | ----------------- |
+| Android          | armeabi-v7a           | 19                |
+| Android          | arm64-v8a             | 21                |
+| Android          | x86                   | 19                |
+
 ## API References
 
 [Java SDK API References](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db022)

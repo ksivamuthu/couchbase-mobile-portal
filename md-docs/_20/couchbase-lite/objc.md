@@ -41,6 +41,14 @@
     pod install
     ```
 
+### Supported Versions
+
+| Platform         | Minimum OS version |
+| ---------------- | ------------------ |
+| iOS              | 10.3.1             |
+| tvOS             | 10.0.1             |
+| macOS            | 10.9               |
+
 ## API References
 
 [Objective-C SDK API References](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db022)
