@@ -39,6 +39,13 @@ This release introduces many new APIs including N1QL queries, full-text search a
   {% include compat-matrix.html root='../../..' %}
 </div>
 
+## EE features
+
+The following features are available in the [Couchbase Lite Enterprise Edition](https://www.couchbase.com/downloads?family=mobile&edition=enterprise) only:
+
+- Database encryption
+- Database replicas
+
 <block class="all" />
 
 ## Incremental API Changes
