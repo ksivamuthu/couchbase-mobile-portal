@@ -348,10 +348,10 @@ properties:
           items:
             type: string
   serverReadTimeout:
-    description: Maximum duration in seconds before timing out the read of an HTTP(S) request.
+    description: Maximum duration in seconds before timing out the read of an HTTP(S) request. This property only effects the HTTP connections on the Sync Gateway public and admin ports. Sync Gateway is written in the Go programming language, therefor the value set in the configuration file is passed to Go's server instance [https://golang.org/pkg/net/http/#Server](https://golang.org/pkg/net/http/#Server).
     type: integer
   serverWriteTimeout:
-    description: Maximum duration in seconds before timing out the write of an HTTP(S) response.
+    description: Maximum duration in seconds before timing out the write of an HTTP(S) response. This property only effects the HTTP connections on the Sync Gateway public and admin ports. Sync Gateway is written in the Go programming language, therefor the value set in the configuration file is passed to Go's server instance [https://golang.org/pkg/net/http/#Server](https://golang.org/pkg/net/http/#Server).
     type: integer
   slowServerCallWarningThreshold:
     description: Log warnings if database calls made by Sync Gateway take this many milliseconds or longer.
