@@ -67,7 +67,7 @@ do {
 }
 ```
 
-Just as before, the database will be created in a default location. Alternatively, the `Database(name: Strings, config: DatabaseConfiguration?)` initializer can be used to provide specific options in the [`DatabaseConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db022/Structs/DatabaseConfiguration.html) object such as the database directory, encryption key through the  object.
+Just as before, the database will be created in a default location. Alternatively, the `Database(name: Strings, config: DatabaseConfiguration?)` initializer can be used to provide specific options in the [`DatabaseConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db022/Classes/DatabaseConfiguration.html) object such as the database directory, encryption key through the  object.
 
 ###  Encryption
 
@@ -695,7 +695,7 @@ For platform specific installation instructions, refer to the Sync Gateway [inst
 
 ### Starting a Replication
 
-Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db022/Structs/ReplicatorConfiguration.html) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
+Replication objects are now bidirectional, this means you can start a `push`/`pull` replication with a single instance. The replication's parameters can be specified through the [`ReplicatorConfiguration`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-swift/db022/Classes/ReplicatorConfiguration.html) object; for example, if you wish to start a `push` only or `pull` only replication. The following example creates a `pull` only replication instance with Sync Gateway.
 
 ```swift
 let url = URL(string: "ws://localhost:4984/db")!

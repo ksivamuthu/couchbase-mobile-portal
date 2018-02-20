@@ -318,7 +318,7 @@ Similar to SQL, you can use the where clause to filter the documents to be retur
 
 #### Comparison
 
-The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db022/Classes/Expression.html#/Comparison%20Operators) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
+The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db022/Classes/CBLQueryExpression.html) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
 
 ```json
 {
@@ -346,7 +346,7 @@ The list of supported comparison operators include, among others, `lessThan`, `l
 
 #### Collection Operators
 
-[Collection operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db022/Classes/Expression.html#/Collection%20operators:) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
+[Collection operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-objc/db022/Classes/CBLQueryExpression.html#/Collection%20operators:) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
 
 ```json
 {

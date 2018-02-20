@@ -346,7 +346,7 @@ Similar to SQL, you can use the where clause to filter the documents to be retur
 
 #### Comparison
 
-The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db022/Classes/Expression.html#/Comparison%20Operators) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
+The `Expression`'s [comparison operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db022/com/couchbase/lite/Expression.html) can be used in the WHERE statement to specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents where the `type` property equals "hotel".
 
 ```json
 {
@@ -372,7 +372,7 @@ for (Result result : rs) {
 
 #### Collection Operators
 
-[Collection operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db022/Classes/Expression.html#/Collection%20operators:) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
+[Collection operators](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db022/com/couchbase/lite/ArrayFunction.html) are useful to check if a given value is present in an array. The following example uses the `Function.arrayContains` to find documents whose `public_likes` array property contain a value equal to "Armani Langworth".
 
 ```json
 {
@@ -397,7 +397,7 @@ for (Result result : rs)
 
 #### Like Operator
 
-The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db022/com/couchbase/lite/Expression.html#like-java.lang.Object-) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
+The [`like`](http://docs.couchbase.com/mobile/2.0/couchbase-lite-java/db022/com/couchbase/lite/Expression.html#like-com.couchbase.lite.Expression-) operator can be used for string matching. It is recommended to use the `like` operator for case insensitive matches and the `regex` operator (see below) for case sensitive matches.
 
 In the example below, we are looking for documents of type `landmark` where the name property exactly matches the string "Royal engineers museum". Note that since `like` does a case insensitive match, the following query will return "landmark" type documents with name matching "Royal Engineers Museum", "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on.
 
