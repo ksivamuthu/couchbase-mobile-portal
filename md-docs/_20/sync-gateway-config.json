@@ -1,0 +1,19 @@
+{
+    "databases": {
+        "example_sg_db": {
+            "server": "http://localhost:8091",
+            "bucket": "example_bucket",
+            "username": "sync_gateway_user",
+            "password": "secret_pass",
+            "users": {
+              "GUEST": {"disabled": false},
+              "john": {"password": "pass"}
+            },
+            "sync": `function (doc, oldDoc) {
+                if (doc.language) {
+                    channel(doc.language);
+                }
+            }`
+        }
+    }
+}
