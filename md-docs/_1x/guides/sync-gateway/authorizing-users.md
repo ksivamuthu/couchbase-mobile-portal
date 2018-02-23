@@ -61,6 +61,10 @@ $ curl -X PUT localhost:4985/$DB/_user/GUEST --data \
    '{"disabled":false, "admin_channels":["public"]}'
 ```
 
+### Admin Access
+
+When sending a change to Sync Gateway through the Admin REST API, the Sync Function is executed with admin privileges: calls to `requireUser`, `requireAccess` and `requireRole` are no-ops (i.e will always be successful).
+
 ### Roles
 
 Roles are named collections of channels. A user account can be assigned to zero or more roles. A user inherits the channel access of all roles it belongs to. This is very much like Unix groups, except that roles do not form a hierarchy.
