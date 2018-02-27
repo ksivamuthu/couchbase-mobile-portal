@@ -1,0 +1,83 @@
+<style>
+  .install-tabs > a {
+    padding: 12px 10px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    background-color: #efefefb3;
+  }
+  .install-tabs > div {
+    margin-top: 9px;
+    background-color: #efefefb3 !important;
+    padding-top: 15px !important;
+    padding-bottom: 10px !important;
+  }
+</style>
+<script>
+  function transformTree() {
+    var nodelist = document.querySelectorAll('h3.tab');
+    var headers = Array.prototype.slice.call(nodelist);
+    var titles = headers.map(function (header) {return header.textContent;});
+    /* Prepend elements with tabs html. */
+    var parent = headers[0].parentNode;
+    var tabs = document.createElement('div');
+    tabs.className = 'install-tabs';
+    /* Insert elements in <div class="install-tabs"></div>. */
+    titles.forEach(function (title) {
+      var anchor = document.createElement('a');
+      anchor.innerHTML = title;
+      anchor.className = 'button-ios';
+      anchor.setAttribute('name', title);
+      anchor.href = 'javascript:void(0);';
+      anchor.setAttribute('target', '_self');
+      anchor.addEventListener('click', handler, false);
+      tabs.appendChild(anchor);
+    });
+    parent.insertBefore(tabs, headers[0]);
+    /* Loop through each header element. */
+    headers.forEach(function (header, index) {
+      /* Create the tab element. */
+      var div = document.createElement('div');
+      div.className = header.textContent;
+      div.setAttribute('name', header.textContent);
+      tabs.appendChild(div);
+      parent.removeChild(nodelist[index]);
+      var next = tabs.nextElementSibling;
+      while (next.tagName != 'H3') {
+        div.appendChild(next);
+        next = tabs.nextElementSibling;
+      }
+    });
+  }
+
+  function handler() {
+    let selected = this.getAttribute('name');
+
+    /* Use this.parentNode as the context */
+    var links = this.parentNode.querySelectorAll('.install-tabs > a');
+    for (var j = 0; j < links.length; j++) {
+      let name = links[j].getAttribute('name');
+      if (selected === name) {
+        links[j].style.backgroundColor = '#efefefb3';
+      } else {
+        links[j].style.backgroundColor = 'white';
+      }
+    }
+
+    /* Use this.parentNode as the context. */
+    var tabs = this.parentNode.querySelectorAll('.install-tabs > div');
+    for (var j = 0; j < tabs.length; j++) {
+      let name = tabs[j].getAttribute('name');
+      if (selected === name) {
+        tabs[j].style.display = 'block';
+      } else {
+        tabs[j].style.display = 'none';
+      }
+    }
+
+  }
+
+  setTimeout(function() {
+    transformTree();
+    var links = document.querySelectorAll('.install-tabs > a')[0].click();
+  }, 0);
+</script>
