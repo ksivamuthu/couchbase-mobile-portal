@@ -62,15 +62,13 @@ Just as before, the database will be created in a default location. Alternativel
 
 ###  Encryption
 
-The following example demonstrates how to create a database with an encryption key (or open an existing one).
+Encryption is available in the **Enterprise Edition** only. The following example demonstrates how to create a database with an encryption key (or open an existing one). Note that this code won't compile if you're running the **Community Edition** of Couchbase Lite.
 
 ```swift
 let config = DatabaseConfiguration()
 config.encryptionKey = EncryptionKey.password("secretpassword")
 self.database = try Database(name: "my-database", config: config)
 ```
-
-Encryption is available in the Enterprise Edition only.
 
 ### Migrating from 1.x Databases
 
