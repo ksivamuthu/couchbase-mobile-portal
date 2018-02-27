@@ -455,7 +455,7 @@ You can register for notifications when documents are added/updated/deleted from
         usingBlock: ^(NSNotification *n) {
             NSArray* changes = n.userInfo[@"changes"];
             for (CBLDatabaseChange* change in changes)
-                NSLog(@"Document '%@' changed.", change.documentID);
+                NSLog(@"Document changed, revision ID '%@'", [change revisionID]);
         }
 ];
 ```
@@ -465,7 +465,7 @@ NSNotificationCenter.defaultCenter().addObserverForName(kCBLDatabaseChangeNotifi
   (notification) -> Void in
     if let changes = notification.userInfo!["changes"] as? [CBLDatabaseChange] {
         for change in changes {
-            NSLog("Document '%@' changed.", change.documentID)
+            NSLog("Document changed, revision ID '%@'", change.revisionID)
         }
     }
 }
@@ -474,13 +474,14 @@ NSNotificationCenter.defaultCenter().addObserverForName(kCBLDatabaseChangeNotifi
 ```java+android+
 try {
      Database db = manager.getExistingDatabase("my-database");
-     
+
      if(db != null) {
          db.addChangeListener(new ChangeListener() {
              public void changed(ChangeEvent event) {
-                 //
-                 // Process the notification here
-                 //
+                 for (DocumentChange change : event.getChanges()) {
+                 	/* Access the document revision related to that change. */
+                 	Map<String, Object> properties = change.getAddedRevision().getBody().getProperties();
+                 }
              }
          });
      }
@@ -495,12 +496,12 @@ try {
 database.Changed += (sender, e) => {
     var changes = e.Changes.ToList();
     foreach (DocumentChange change in changes) {
-        Log.D(Tag, "Document " + change.DocumentId + " changed");
+        Log.D(Tag, "Document changed, revision ID " + change.RevisionId);
     }
 };
 ```
 
-> **Note:** The notifications may not be delivered immediately after the document changes. Notifications aren't delivered during a transaction; they're buffered up for delivery after the transaction completes. And on iOS / Mac OS, the notifications are scheduled on the runloop, so they won't be delivered until after the event that triggered them completes.
+The example above shows how to access the revision linked to the document change that is being processed. The notifications may not be delivered immediately after the document changes. Notifications aren't delivered during a transaction; they're buffered up for delivery after the transaction completes.
 
 ## Database housekeeping
 
