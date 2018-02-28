@@ -197,7 +197,7 @@ At the **local** level this operation is still transactional: no other `Database
 
 ### Blobs
 
-We've renamed "attachments" to "blobs", for clarity. The new behavior should be clearer too: a `Blob` is now a normal object that can appear in a document as a property value. In other words, there's no special API for creating or accessing attachments; you just instantiate an `Blob` and set it as the value of a property, and then later you can get the property value, which will be a `Blob` object. The following code example adds a blob to the document under the `avatar` property.
+We've renamed "attachments" to "blobs", for clarity. The new behavior should be clearer too: a `Blob` is now a normal object that can appear in a document as a property value. In other words, you just instantiate a `Blob` and set it as the value of a property, and then later you can get the property value, which will be a `Blob` object. The following code example adds a blob to the document under the `avatar` property.
 
 ```java
 InputStream is = getAsset("attachment.png");
@@ -219,9 +219,17 @@ try {
 }
 ```
 
-`Blob` itself has a simple API that lets you access the contents as in-memory data (a `Data` object) or as a `InputStream`. It also supports an optional `type` property that by convention stores the MIME type of the contents. Unlike attachments, blobs don't have names; if you need to associate a name you can put it in another document property, or make the filename be the property name (e.g. `document.set(imageBlob, forKey: "thumbnail.jpg")`)
+The `Blob` API lets you access the contents as in-memory data (a `Data` object) or as a `InputStream`. It also supports an optional `type` property that by convention stores the MIME type of the contents.
 
-> **Note:** A blob is stored in the document's raw JSON as an object with a property `"@type":"blob"`. It also has properties such as `"digest"` (a SHA-1 digest of the data), `"length"` (the length in bytes), and optionally `"content_type"` (the MIME type.) As always, the data is not stored in the document, but in a separate content-addressable store, indexed by the digest.
+In the example above, "image/jpeg" is the MIME type and "avatar" is the key which references that `Blob`. That key can be used to retrieve the `Blob` object at a later time.
+
+When a document is synchronized, the Couchbase Lite replicator will add an `_attachments` dictionary to the document's properties if it contains a blob. A random access name will be generated for each `Blob` which is different to the "avatar" key that was used in the example above. On the image below, the document now contains the `_attachments` dictionary when viewed in the Couchbase Server Admin Console.
+
+<img class="portrait" style="width: 450px" src="img/attach_replicated.png" />
+
+A blob also has properties such as `"digest"` (a SHA-1 digest of the data), `"length"` (the length in bytes), and optionally `"content_type"` (the MIME type.) The data is not stored in the document, but in a separate content-addressable store, indexed by the digest.
+
+This `Blob` can be retrieved on the Sync Gateway REST API at [localhost:4984/justdoit/user.david/blob_1](http://localhost:4984/justdoit/user.david/blob_1). Notice that the blob identifier in the URL path is "blob_1" (not "avatar").
 
 ## Query
 
