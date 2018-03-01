@@ -6,21 +6,19 @@ permalink: guides/couchbase-lite/native-api/model/index.html
 
 Most applications use the Model/View/Controller design pattern to separate user interface and user interaction from underlying data structures and logic. Of course, one of the responsibilities of the app's object model is persistence.
 
-Couchbase Lite on iOS provides support for creating model objects that persist to Couchbase Lite documents, and can be queried using Couchbase Lite queries. (This functionality is similar to Core Data's NSManagedObject.) You subclass the abstract class CBLModel and add your own Objective-C properties, plus a very small amount of annotation that defines how those properties map to JSON in the document.
-
-> **Note:** Model objects are currently only available in Objective-C. They may be added to the other implementations in the future, although the property-related features may be different in order to fit in with those platforms' idioms.
+Couchbase Lite on iOS provides support for creating model objects that persist to Couchbase Lite documents, and can be queried using Couchbase Lite queries. You subclass the abstract class CBLModel and add your own properties, plus a very small amount of annotation that defines how those properties map to JSON in the document.
 
 ### What model objects give you
 
-- **Native property access:** Access document properties as native Objective-C properties.
+- **Native property access:** Access document properties as native properties.
 - **Extended type support:** Transparent support for common types that don't have a JSON representation, like NSDate and NSData. You can even represent references to other model objects.
 - **Mutable state:** Properties can be `readwrite`, so they can be changed in memory, then later saved back to the document.
 - **Key-Value Observing:** You can observe the value of a property and get notified when it changes. On Mac OS X, you can also use bindings to connect properties to UI controls.
-- **Dynamic typing:** You can use the CBLModelFactory to associate each model class with a document type. You can create a hierarchy of model classes and have the appropriate subclass instantiated at runtime according to the document's type.
+- **Dynamic typing:** You can use the `CBLModelFactory` to associate each model class with a document type. You can create a hierarchy of model classes and have the appropriate subclass instantiated at runtime according to the document's type.
 
 ### Defining model classes
 
-To create your own model class, just make it inherit from CBLModel. You can create any number of model classes, and they can inherit from each other. Each model class will correspond to a different type of persistent entity in your application.
+To create your own model class, just make it inherit from `CBLModel`. You can create any number of model classes, and they can inherit from each other. Each model class will correspond to a different type of persistent entity in your application.
 
 You define persistent properties of your model classes simply by declaring Objective-C properties in its `@interface` block using the `@property` syntax. To mark a property as persistent, in the `@implementation` block you must declare it as being `@dynamic`, as shown in the next example.
 
@@ -65,9 +63,7 @@ And here's the implementation of the class:
 @end
 ```
 
-This is, literally, all the code you need to write for a minimal but fully functional model class!
-
-> **Note:** The name of the Objective-C property is exactly the same as the name of the JSON property in the document. If you're defining a model class for pre-existing documents, make sure you spell the property names the same way, including capitalization and underscores!
+This is all the code you need to write for a minimal but fully functional model class. The name of the property is exactly the same as the name of the JSON property in the document. If you're defining a model class for pre-existing documents, make sure you spell the property names the same way, including capitalization and underscores.
 
 ### Types of properties and how they're stored
 
@@ -80,11 +76,11 @@ CBLModel supports a pretty broad range of data types for properties, but not eve
 - **NSData:** JSON doesn't support binary data, so the data will be encoded as Base64 and stored as a string. (The size and CPU overhead of the conversion make this inefficient for large data. Consider using an attachment instead.)
 - **Other CBLModel classes:** You can create a one-to-one references to another model object by declaring a persistent property whose type is a CBLModel subclass. The value will be persisted as a JSON string containing the document ID of the model object.
 - **NSArray:** An NSArray is saved as a JSON array, with each element of the array converted to JSON according to the rules in this section. When reading a JSON array from a document, however, it can be ambiguous what type of object to use; there are annotations that can customize that. See below.
-- **Any class implementing CBLJSONEncoding:** `CBLJSONEncoding` is an Objective-C protocol defined by Couchbase Lite. Any class of yours that implements this protocol can be used as the type of a persistent property; CBLModel will call the CBLJSONEncoding API to tell the object to convert itself to/from JSON.
+- **Any class implementing CBLJSONEncoding:** `CBLJSONEncoding` is a protocol defined by Couchbase Lite. Any class of yours that implements this protocol can be used as the type of a persistent property; CBLModel will call the CBLJSONEncoding API to tell the object to convert itself to/from JSON.
 
-> **Note:** If an object-valued property has a value of `nil`, its corresponding JSON property will be left out entirely when saving the document; it will _not_ be written with a JSON `null` as a value. Similarly, any missing property in the JSON will be converted to a nil or 0 or false value in Objective-C.
+If an object-valued property has a value of `nil`, its corresponding JSON property will be left out entirely when saving the document; it will _not_ be written with a JSON `null` as a value. Similarly, any missing property in the JSON will be converted to a nil or 0 or false value.
 
-> **Note:** If a JSON value read from a document has a type that's incompatible with the corresponding model property — like a string when the property type is `int` — the model property will be set to the appropriate empty value (`0`, `false`, or `nil`). If you need stricter type matching, you should add a validation function to the Database, to ensure that documents have the correct JSON property types.
+If a JSON value read from a document has a type that's incompatible with the corresponding model property — like a string when the property type is `int` — the model property will be set to the appropriate empty value (`0`, `false`, or `nil`). If you need stricter type matching, you should add a validation function to the Database, to ensure that documents have the correct JSON property types.
 
 ### Array element types
 
@@ -132,7 +128,7 @@ No code example is currently available.
 
 ### Raw access to document properties
 
-You don't _have_ to create an Objective-C property for every document property. It's possible to access arbitrary document properties by name, by calling `-getValueOfProperty:` and `-setValue:ofProperty:`.
+You don't _have_ to create a native property for every document property. It's possible to access arbitrary document properties by name, by calling `-getValueOfProperty:` and `-setValue:ofProperty:`.
 
 <div class="tabs"></div>
 
