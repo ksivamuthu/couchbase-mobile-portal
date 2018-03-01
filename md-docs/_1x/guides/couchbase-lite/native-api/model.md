@@ -82,6 +82,66 @@ If an object-valued property has a value of `nil`, its corresponding JSON proper
 
 If a JSON value read from a document has a type that's incompatible with the corresponding model property — like a string when the property type is `int` — the model property will be set to the appropriate empty value (`0`, `false`, or `nil`). If you need stricter type matching, you should add a validation function to the Database, to ensure that documents have the correct JSON property types.
 
+### CBLJSONEncoding
+
+A `CBLModel` always represents an entire document. The `CBLJSONEncoding` protocol, on the other hand, can be used to represent part of a document.
+
+If a model class indicates that one of its properties is of a custom class that implements that protocol, then the protocol's init method will be used to construct the object from the JSON object. Likewise, if a property value in memory is an instance of the protocol, the `encodeAsJSON` method will be used to get a JSON representation.
+
+Let's consider the following document as a JSON schema:
+
+```json
+{
+  "title": "New note",
+  "user": {
+    "name": "jack"
+  }
+}
+```
+
+The following example maps that document as two native classes: the `Note` class which is the model class and the `User` class which represents the user fragment in the JSON schema.
+
+<div class="tabs"></div>
+
+```objective-c+
+No code example is currently available.
+```
+
+```swift+
+@objc(Note)
+class Note: CBLModel {
+    @NSManaged var title: String
+    @NSManaged var user: User
+}
+
+@objc(User)
+class User: NSObject, CBLJSONEncoding {
+    var name: String = ""
+
+    required init?(json jsonObject: Any) {
+        super.init()
+        guard let jsonObject = jsonObject as? [String : AnyObject] else { return }
+        self.name = jsonObject["name"] as! String
+    }
+
+    func encodeAsJSON() -> Any {
+        return ["name": self.name]
+    }
+}
+```
+
+```java+
+No code example is currently available.
+```
+
+```android+
+No code example is currently available.
+```
+
+```c+
+No code example is currently available.
+```
+
 ### Array element types
 
 The `NSArray` property type often needs special handling, to ensure that the items of JSON arrays are converted to the correct type of object. By default, the items are simply parsed as JSON; this breaks round-trip fidelity if you store NSDate or NSData or CBLModel objects -- they'll all be read back in as NSStrings. And if you store objects implementing CBLJSONEncoding, they'll be read back in as whatever JSON-compatible value the object encoded itself as.
