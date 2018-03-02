@@ -9,15 +9,20 @@ Your app must call the relevant `Activate()` function inside of the class that i
 
 ### Supported Versions
 
-Couchbase Lite .NET will be a .NET Standard 2.0 library as of the Couchbase Lite .NET 2.0 GA release.
+Couchbase Lite .NET will be a .NET Standard 2.0 library as of the Couchbase Lite .NET 2.0 GA release. Runtimes which have received more testing and are **officially** supported are:
 
 | .NET Runtime     | Minimum Runtime Version | Minimum OS version |
 | ---------------- | ----------------------- | ------------------ |
 | .NET Core Win    | 2.0                     | 10 (any supported) |
+| UWP              | 6.0.1                   | 10.0.16299         |
+
+The following runtimes are also compatible but have not received as much testing and are **not officially** supported.
+
+| .NET Runtime     | Minimum Runtime Version | Minimum OS version |
+| ---------------- | ----------------------- | ------------------ |
 | .NET Core Mac    | 2.0                     | 10.12              |
 | .NET Core Linux  | 2.0                     | n/a*               |
 | .NET Framework   | 4.6.1                   | 10 (any supported) |
-| UWP              | 6.0.1                   | 10.0.16299         |
 | Xamarin iOS      | 10.14                   | 10.3.1             |
 | Xamarin Android  | 8.0                     | 4.4 (API 19)       |
 
