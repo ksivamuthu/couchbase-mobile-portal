@@ -14,19 +14,19 @@ Couchbase Lite .NET will be a .NET Standard 2.0 library as of the Couchbase Lite
 | .NET Runtime     | Minimum Runtime Version | Minimum OS version |
 | ---------------- | ----------------------- | ------------------ |
 | .NET Core Win    | 2.0                     | 10 (any supported) |
+| .NET Framework   | 4.6.1                   | 10 (any supported) |
 | UWP              | 6.0.1                   | 10.0.16299         |
 
-The following runtimes are also compatible but have not received as much testing and are **not officially** supported.
+The following runtimes are also compatible but have not received as much testing and are **not officially** supported yet, but they will be once they go through the QE process.
 
 | .NET Runtime     | Minimum Runtime Version | Minimum OS version |
 | ---------------- | ----------------------- | ------------------ |
 | .NET Core Mac    | 2.0                     | 10.12              |
 | .NET Core Linux  | 2.0                     | n/a*               |
-| .NET Framework   | 4.6.1                   | 10 (any supported) |
 | Xamarin iOS      | 10.14                   | 10.3.1             |
 | Xamarin Android  | 8.0                     | 4.4 (API 19)       |
 
-* There are many different variants of Linux, and we don't have the resources to test all of them.  They are tested on Ubuntu 16.04, but have been shown to work on CentOS, and in theory work on any distro supported by .NET Core.
+\* There are many different variants of Linux, and we don't have the resources to test all of them.  They are tested on Ubuntu 16.04, but have been shown to work on CentOS, and in theory work on any distro supported by .NET Core.
 
 Comparing this to 1.x you can see we've traded some lower obsolete versions for new platform support:
 
@@ -38,7 +38,7 @@ Comparing this to 1.x you can see we've traded some lower obsolete versions for 
 | Xamarin iOS      | 8.0*                    | 8.0                |
 | Xamarin Android  | 4.6*                    | 2.3 (API 9)        |
 
-* These runtime versions are approximate.  Couchbase Lite 1.x is built using relatively new versions of all of these and an absolute minimum is unclear, and cannot actually be determined anymore due to lack of vendor support (i.e. Xamarin iOS 8 uses Xcode 6, etc).  So basically "any version" is an approximately good metric here.
+\* These runtime versions are approximate.  Couchbase Lite 1.x is built using relatively new versions of all of these and an absolute minimum is unclear, and cannot actually be determined anymore due to lack of vendor support (i.e. Xamarin iOS 8 uses Xcode 6, etc).  So basically "any version" is an approximately good metric here.
 
 ** See above note about Linux
 
