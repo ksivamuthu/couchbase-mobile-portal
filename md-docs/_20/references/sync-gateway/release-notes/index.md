@@ -33,6 +33,10 @@ Sync Gateway 2.0 will **not** automatically remove the previous design documents
 	- **Optional** Issue a call to `/_post_upgrade?preview=true` on any node to preview which design documents will be removed. To upgrade to 2.0, expect to see "sync_gateway" and "sync_housekeeping" listed.
 	- Issue a call to `/post_upgrade` to remove the obsolete design documents. The response should indicate that "sync_gateway" and "sync_housekeeping" were removed.
 
+## New Features
+
+- No conflicts mode ([databases.$db.allow_conflicts](../../../guides/sync-gateway/config-properties/index.html#2.0/databases-foo_db-allow_conflicts))
+
 __Performance Improvements__
 
 - [__#1383__](https://github.com/couchbase/sync_gateway/issues/1383) Nginx load balancer needs plugins to detect db offline state.
