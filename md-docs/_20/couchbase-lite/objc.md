@@ -747,15 +747,15 @@ Starting in Couchbase Lite 2.0, it is possible to delegate the resolution of con
 
 - `save(document: MutableDocument)`: when concurrent writes to an individual record occur, the conflict is automatically resolved and only one non-conflicting document update is stored in the database. The Last-Write-Win (LWW) algorithm is used to pick the winning revision.
 - `save(document: MutableDocument, concurrencyControl: ConcurrencyControl)`: attempts to save the document with a concurrency control. The concurrency control parameter has two possible values:
-	- `none`: The last operation wins if there is a conflict.
-	- `optimistic`: The operation will fail if there is a conflict.
+	- `lastWriteWins`: The last operation wins if there is a conflict.
+	- `failOnConflict`: The operation will fail if there is a conflict.
 
 Similarly to the save operation, the delete operation also has two method signatures to specify how to resolve a possible conflict:
 
 - `delete(document: Document)`: The last write will win if there is a conflict.
 - `delete(document: Document, concurrencyControl: ConcurrencyControl)`: attemps to delete the document with a concurrency control. The concurrency control parameter has two possible values:
-	- `none`: The last operation wins if there is a conflict.
-	- `optimistic`: The operation will fail if there is a conflict.
+	- `lastWriteWins`: The last operation wins if there is a conflict.
+	- `failOnConflict`: The operation will fail if there is a conflict.
 
 ## Certificate Pinning
 
