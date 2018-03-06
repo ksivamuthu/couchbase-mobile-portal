@@ -276,11 +276,11 @@ mgr.backgroundTellDatabaseNamed(name, to: { (bgdb: CBLDatabase!) -> Void in
 ```
 
 ```java+android+
-No code example is currently available.
+Not supported on this platform.
 ```
 
 ```c+
-No code example is currently available.
+Not supported on this platform.
 ```
 
 ### Running Couchbase Lite on a background thread
@@ -329,11 +329,11 @@ func runBackground(bgMgr: CBLManager) {
 ```
 
 ```java+android+
-No code example is currently available.
+Not supported on this platform.
 ```
 
 ```c+
-No code example is currently available.
+Not supported on this platform.
 ```
 
 If you don't plan to use Couchbase Lite on the main thread at all, the setup is even easier. Just have the background thread create a new instance of CBLManager from scratch and use that:
@@ -376,9 +376,9 @@ func runBackground {
 ```
 
 ```java+android+
-No code example is currently available.
+Not supported on this platform.
 ```
 
 ```c+
-No code example is currently available.
+Not supported on this platform.
 ```
