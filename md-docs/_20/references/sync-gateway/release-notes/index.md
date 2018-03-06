@@ -35,8 +35,8 @@ Sync Gateway 2.0 will **not** automatically remove the previous design documents
 
 ## New Features
 
-- No conflicts mode ([databases.$db.allow\_conflicts](../../../guides/sync-gateway/config-properties/index.html#2.0/databases-foo_db-allow_conflicts))
-- Expiry value for local documents managed by Sync Gateway ([databases.$db.local\_doc\_expiry\_secs](../../../guides/sync-gateway/config-properties/index.html#2.0/databases-foo_db-local_doc_expiry_secs))
+- No conflicts mode ([`databases.$db.allow\_conflicts`](../../../guides/sync-gateway/config-properties/index.html#2.0/databases-foo_db-allow_conflicts))
+- Expiry value for local documents managed by Sync Gateway ([`databases.$db.local\_doc\_expiry\_secs`](../../../guides/sync-gateway/config-properties/index.html#2.0/databases-foo_db-local_doc_expiry_secs))
 
 __Performance Improvements__
 
